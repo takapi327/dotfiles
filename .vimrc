@@ -150,7 +150,8 @@ if dein#load_state('/Users/takapi327/.cache/dein')
   " Add or remove your plugins here like this:
   "call dein#add('Shougo/neosnippet.vim')
   "call dein#add('Shougo/neosnippet-snippets')
-  call dein#add('airblade/vim-gitgutter')
+  call dein#add('airblade/vim-gitgutter')   " git追加削除表示機能
+  call dein#add('tpope/vim-commentary')     " 複数コメントアウト機能
 
   " Required:
   call dein#end()
