@@ -150,6 +150,7 @@ if dein#load_state('/Users/takapi327/.cache/dein')
   " Add or remove your plugins here like this:
   "call dein#add('Shougo/neosnippet.vim')
   "call dein#add('Shougo/neosnippet-snippets')
+  call dein#add('airblade/vim-gitgutter')
 
   " Required:
   call dein#end()
