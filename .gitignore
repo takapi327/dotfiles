@@ -9,6 +9,7 @@ target
 .bloop/
 ui/node_modules
 ui/dist
+.vim/
 .DS_store
 .metals.sbt
 /RUNNING_PID
