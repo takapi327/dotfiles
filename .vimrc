@@ -90,7 +90,11 @@ call plug#begin()
  Plug 'junegunn/fzf.vim'
  Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
  Plug 'derekwyatt/vim-scala'
- Plug 'neoclide/coc.vim', {'do': { -> coc#util#install()}}
+ "Plug 'neoclide/coc.vim', {'do': { -> coc#util#install()}}
+ Plug 'airblade/vim-gitgutter'
+ Plug 'tpope/vim-commentary'
+ " :Gdiff
+ Plug 'tpope/vim-fugitive'  
 call plug#end()
 "----------------------------------------
 
@@ -131,40 +135,41 @@ inoremap {<Enter> ()<Left><CR><ESC><S-o>
 
 au BufRead,BufNewFile *.sbt set filetype=scala
 
+
 "dein Scripts-----------------------------
-if &compatible
-  set nocompatible               " Be iMproved
-endif
+"if &compatible
+"  set nocompatible               " Be iMproved
+"endif
 
-" Required:
-set runtimepath+=/Users/takapi327/.cache/dein/repos/github.com/Shougo/dein.vim
+"" Required:
+"set runtimepath+=/Users/takapi327/.cache/dein/repos/github.com/Shougo/dein.vim
 
-" Required:
-if dein#load_state('/Users/takapi327/.cache/dein')
-  call dein#begin('/Users/takapi327/.cache/dein')
+"" Required:
+"if dein#load_state('/Users/takapi327/.cache/dein')
+"  call dein#begin('/Users/takapi327/.cache/dein')
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('/Users/takapi327/.cache/dein/repos/github.com/Shougo/dein.vim')
+"  " Let dein manage dein
+"  " Required:
+"  call dein#add('/Users/takapi327/.cache/dein/repos/github.com/Shougo/dein.vim')
 
-  " Add or remove your plugins here like this:
-  "call dein#add('Shougo/neosnippet.vim')
-  "call dein#add('Shougo/neosnippet-snippets')
-  call dein#add('airblade/vim-gitgutter')   " git追加削除表示機能
-  call dein#add('tpope/vim-commentary')     " 複数コメントアウト機能
+"  " Add or remove your plugins here like this:
+"  "call dein#add('Shougo/neosnippet.vim')
+"  "call dein#add('Shougo/neosnippet-snippets')
+"  call dein#add('airblade/vim-gitgutter')   " git追加削除表示機能
+"  call dein#add('tpope/vim-commentary')     " 複数コメントアウト機能
 
-  " Required:
-  call dein#end()
-  call dein#save_state()
-endif
+"  " Required:
+"  call dein#end()
+"  call dein#save_state()
+"endif
 
-" Required:
-filetype plugin indent on
-syntax enable
+"" Required:
+"filetype plugin indent on
+"syntax enable
 
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
-endif
+"" If you want to install not installed plugins on startup.
+"if dein#check_install()
+"  call dein#install()
+"endif
 
 "End dein Scripts-------------------------
