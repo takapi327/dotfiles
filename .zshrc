@@ -1,7 +1,5 @@
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 
-export ZSH="/Users/takapi327/.oh-my-zsh"
-
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
 plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
@@ -156,3 +154,5 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 source  ~/powerlevel9k/powerlevel9k.zsh-theme
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

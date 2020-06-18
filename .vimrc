@@ -88,7 +88,8 @@ call plug#begin()
  Plug 'vim-airline/vim-airline-themes'
  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
  Plug 'junegunn/fzf.vim'
- Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+ "Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+ Plug 'neoclide/coc.nvim', {'branch': 'release'}
  Plug 'derekwyatt/vim-scala'
  "Plug 'neoclide/coc.vim', {'do': { -> coc#util#install()}}
  Plug 'airblade/vim-gitgutter'
@@ -113,12 +114,9 @@ autocmd bufenter * if (winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isT
 nnoremap ff :Files<Return>
 nnoremap <C-b> :Blines<Return>
 nnoremap <C-h> :History<Return>
-nnoremap <C-f> :Rg<Return>
+nnoremap <C-r> :Rg<Return>
 
 command! -bang -nargs=? -complete=dir Files
-      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-command! -bang -nargs=? -complete=dir Rg
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 if (has("termguicolors"))
@@ -135,7 +133,11 @@ inoremap {<Enter> ()<Left><CR><ESC><S-o>
 
 au BufRead,BufNewFile *.sbt set filetype=scala
 
-
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gf <Plug>(coc-format)
 "dein Scripts-----------------------------
 "if &compatible
 "  set nocompatible               " Be iMproved
