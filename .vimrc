@@ -96,6 +96,7 @@ call plug#begin()
  Plug 'tpope/vim-commentary'
  " :Gdiff
  Plug 'tpope/vim-fugitive'  
+ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
 call plug#end()
 "----------------------------------------
 
@@ -138,6 +139,10 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gf <Plug>(coc-format)
+
+""" ----[ markdown ]--------------------- 
+let g: mkdp_auto_start = 1
+let g: mkdp_refresh_slow = 1
 "dein Scripts-----------------------------
 "if &compatible
 "  set nocompatible               " Be iMproved
