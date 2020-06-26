@@ -79,7 +79,8 @@ inoremap <C-Return> <ESC>
 call plug#begin()
  Plug 'preservim/nerdtree'
  Plug 'blueshirts/darcula'
- Plug 'joshdick/onedark.vim'
+" Plug 'joshdick/onedark'
+ Plug 'morhetz/gruvbox'
  Plug 'arcticicestudio/nord-vim'
  Plug 'haishanh/night-owl.vim'
  Plug 'alvan/vim-closetag'
@@ -100,7 +101,11 @@ call plug#begin()
 call plug#end()
 "----------------------------------------
 
-colorscheme onedark
+autocmd ColorScheme * highlight markdownCode guifg=#DDDDDD
+autocmd ColorScheme * highlight markdownCodeDelimiter guifg=#DDDDDD
+
+"colorscheme onedark
+colorscheme gruvbox
 
 highlight Normal ctermbg=none
 highlight NonText ctermbg=none
@@ -116,6 +121,7 @@ nnoremap ff :Files<Return>
 nnoremap <C-b> :Blines<Return>
 nnoremap <C-h> :History<Return>
 nnoremap <C-r> :Rg<Return>
+nnoremap <C-n> :NERDTree<Return>
 
 command! -bang -nargs=? -complete=dir Files
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
@@ -181,3 +187,41 @@ let g:mkdp_refresh_slow = 1
 "endif
 
 "End dein Scripts-------------------------
+
+function! s:get_syn_id(transparent)
+  let synid = synID(line("."), col("."), 1)
+  if a:transparent
+    return synIDtrans(synid)
+  else
+    return synid
+  endif
+endfunction
+function! s:get_syn_attr(synid)
+  let name = synIDattr(a:synid, "name")
+  let ctermfg = synIDattr(a:synid, "fg", "cterm")
+  let ctermbg = synIDattr(a:synid, "bg", "cterm")
+  let guifg = synIDattr(a:synid, "fg", "gui")
+  let guibg = synIDattr(a:synid, "bg", "gui")
+  return {
+        \ "name": name,
+        \ "ctermfg": ctermfg,
+        \ "ctermbg": ctermbg,
+        \ "guifg": guifg,
+        \ "guibg": guibg}
+endfunction
+function! s:get_syn_info()
+  let baseSyn = s:get_syn_attr(s:get_syn_id(0))
+  echo "name: " . baseSyn.name .
+        \ " ctermfg: " . baseSyn.ctermfg .
+        \ " ctermbg: " . baseSyn.ctermbg .
+        \ " guifg: " . baseSyn.guifg .
+        \ " guibg: " . baseSyn.guibg
+  let linkedSyn = s:get_syn_attr(s:get_syn_id(1))
+  echo "link to"
+  echo "name: " . linkedSyn.name .
+        \ " ctermfg: " . linkedSyn.ctermfg .
+        \ " ctermbg: " . linkedSyn.ctermbg .
+        \ " guifg: " . linkedSyn.guifg .
+        \ " guibg: " . linkedSyn.guibg
+endfunction
+command! SyntaxInfo call s:get_syn_info()
