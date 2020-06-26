@@ -141,8 +141,9 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gf <Plug>(coc-format)
 
 """ ----[ markdown ]--------------------- 
-let g: mkdp_auto_start = 1
-let g: mkdp_refresh_slow = 1
+let g:mkdp_auto_start = 1
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 1
 "dein Scripts-----------------------------
 "if &compatible
 "  set nocompatible               " Be iMproved
