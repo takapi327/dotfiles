@@ -98,6 +98,7 @@ call plug#begin()
  " :Gdiff
  Plug 'tpope/vim-fugitive'  
  Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
+ Plug 'Yggdroot/indentLine'
 call plug#end()
 "----------------------------------------
 
@@ -146,7 +147,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gf <Plug>(coc-format)
 
-""" ----[ markdown ]--------------------- 
+""" ----[ markdown ]---------------------- 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
 let g:mkdp_refresh_slow = 1
@@ -190,3 +191,10 @@ function! s:get_syn_info()
         \ " guibg: " . linkedSyn.guibg
 endfunction
 command! SyntaxInfo call s:get_syn_info()
+
+""" ----[ indentLine ] -------------------
+"let g:indentLine_setColors = 0
+"let g:indentLine_char = 'c'
+"let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+"let g:indentLine_concealcursor = 'inc'
+"let g:indentLine_conceallevel = 2
