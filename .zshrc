@@ -1,5 +1,7 @@
+export XDG_CONFIG_HOME=$HOME/.config
 export PATH=$HOME/.nodebrew/current/bin:$PATH
-#export TERM="xterm-color256"
+#export TERM="xterm-256color"
+export TERM=screen-256color
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
@@ -149,6 +151,15 @@ alias ls="gls --color=auto"
 alias la="ls -la"
 alias tmux="tmux -2"
 alias vi='nvim'
+### git コマンド ###
+alias ga='git add'
+alias gc-b='git checkout -b'
+alias gm='git commit -m'
+alias gp='git push -u origin'
+alias gd='git diff'
+alias gs='git status'
+
+alias ll='ls -l'
 
 ### ここから下は環境設定 ###
 
