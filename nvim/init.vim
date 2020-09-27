@@ -180,3 +180,28 @@ nnoremap <silent> nn :<C-u> Defx <CR>
 
 autocmd BufWritePost * call defx#redraw()
 autocmd BufEnter * call defx#redraw()
+
+"---------------------------------"
+" ターミナル設定
+"---------------------------------"
+"下部分にターミナルウィンドウを作る
+function! Myterm()
+    split
+    wincmd j
+    resize 10
+    terminal
+    wincmd k
+endfunction
+command! Myterm call Myterm()
+
+nnoremap <silent> tt :Myterm <CR>
+"起動時にターミナルウィンドウを設置
+"if has('vim_starting')
+"    Myterm
+"endif
+
+"上のエディタウィンドウと下のターミナルウィンドウ(ターミナル挿入モード)を行き来
+tnoremap <C-t> <C-\><C-n><C-w>k
+nnoremap <C-t> <C-w>ji
+"ターミナル挿入モードからターミナルモードへ以降
+tnoremap <Esc> <C-\><C-n>
