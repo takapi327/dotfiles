@@ -1,0 +1,45 @@
+[[plugins]]                                    
+repo = 'Shougo/dein.vim'                                          
+
+# ------------------------------------                                    
+# Git vim-fugitive                                     
+# ------------------------------------                                    
+[[plugins]]                                    
+repo = 'tpope/vim-fugitive'
+hook_add = '''                                    
+    nnoremap <silent> gs :Gstatus<CR><C-w>T                                    
+    nnoremap <silent> gps :Gpush<CR>                                    
+    nnoremap <silent> gpl :Gpull<CR>                                    
+'''
+
+# ------------------------------------                                    
+# Git defx                                     
+# ------------------------------------                                    
+[[plugins]]                                    
+repo = 'Shougo/defx.nvim'
+repo = 'roxma/nvim-yarp'
+repo = 'roxma/vim-hug-neovim-rpc'
+
+# ------------------------------------                                    
+# Git defx-icons                                     
+# ------------------------------------                                    
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+
+[[plugins]]
+repo = 'kristijanhusak/defx-icons'
+
+# ------------------------------------                                    
+# Git defx-git                                   
+# ------------------------------------                                    
+[[plugins]]
+repo = 'kristijanhusak/defx-git'
+
+# ------------------------------------                                    
+#  Syntax highlight of Languages
+# ------------------------------------                                    
+[[plugins]]
+repo = 'derekwyatt/vim-scala'
+repo = 'gre/play2vim'
+repo = 'leafgarland/typescript-vim'
+repo = 'digitaltoad/vim-pug'
