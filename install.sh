@@ -16,6 +16,7 @@ else
 fi
 
 ## make directory .config
+echo "[INFO] create config directory"
 mkdir -p ~/.config
 
 ## install tmux
@@ -40,9 +41,13 @@ fi
 if ! which neovim > /dev/null; then
     echo "[INFO] install neovim"
     brew install neovim
+    echo "[INFO] create nvim directory"
+    mkdir -p ~/.config/nvim
     ln -nfs ~/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
     ln -nfs ~/dotfiles/nvim/dein.vim ~/.config/nvim/dein.vim
     ln -nfs ~/dotfiles/nvim/lazy.vim ~/.config/nvim/lazy.vim
+    echo "[INFO] create colors directory"
+    mkdir -p ~/.config/nvim/colors
     ln -nfs ~/dotfiles/colors/hybrid.vim ~/.config/nvim/colors/hybrid.vim
 else
     echo "[INFO] neovim is already installed"
