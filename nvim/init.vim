@@ -8,9 +8,9 @@ noremap <Space>w :<C-u>w<CR>                                    " ファイル�
 colorscheme hybrid
 
 " ＜追加＞分割画面移動
-noremap <silent><C-h> <C-w>h                                    
-noremap <silent><C-j> <C-w>j                                                                                                                                                                                                                                                          
-noremap <silent><C-k> <C-w>k                                                                              
+noremap <silent><C-h> <C-w>h
+noremap <silent><C-j> <C-w>j
+noremap <silent><C-k> <C-w>k
 noremap <silent><C-l> <C-w>l
 
 " Insert Mode

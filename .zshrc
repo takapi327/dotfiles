@@ -1,5 +1,5 @@
 export PATH=$HOME/.nodebrew/current/bin:$PATH
-export TERM="xterm-256color"
+#export TERM="xterm-color256"
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
@@ -148,6 +148,7 @@ setopt AUTO_PARAM_KEYS
 alias ls="gls --color=auto"
 alias la="ls -la"
 alias tmux="tmux -2"
+alias vi='nvim'
 
 ### ここから下は環境設定 ###
 

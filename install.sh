@@ -43,12 +43,12 @@ if ! which neovim > /dev/null; then
     ln -nfs ~/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
     ln -nfs ~/dotfiles/nvim/dein.vim ~/.config/nvim/dein.vim
     ln -nfs ~/dotfiles/nvim/lazy.vim ~/.config/nvim/lazy.vim
-    ln -nfs ~/dotfiles/colors/hybrid.vim ~/.config/colors/hybrid.vim
+    ln -nfs ~/dotfiles/colors/hybrid.vim ~/.config/nvim/colors/hybrid.vim
 else
     echo "[INFO] neovim is already installed"
 fi
 ln -sf ~/dotfiles/.vim ~/.vim
-ln -sf ~/dotfiles/.vimrc ~/.vimrc
+#ln -sf ~/dotfiles/.vimrc ~/.vimrc
 #ln -sf ~/dotfiles/.zshrc ~/.zshrc
 #ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
 #chsh -s $(which zsh)
