@@ -12,6 +12,18 @@ hook_add = '''
     nnoremap <silent> gpl :Gpull<CR>                                    
 '''
 
+# ------------------------------------
+# カラースキーマ
+# ------------------------------------
+[[plugins]]
+repo = 'w0ng/vim-hybrid'
+hook_add = '''
+  set background=dark
+  " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
+  " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
+  au MyAutoCmd VimEnter * nested colorscheme hybrid
+'''
+
 # ------------------------------------                                    
 # Git defx                                     
 # ------------------------------------                                    

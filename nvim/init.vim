@@ -5,7 +5,6 @@
 cnoremap init :<C-u>edit $MYVIMRC<CR>                           " init.vim呼び出し
 noremap <Space>s :source $MYVIMRC<CR>                           " init.vim読み込み
 noremap <Space>w :<C-u>w<CR>                                    " ファイル保存
-colorscheme hybrid
 
 " ＜追加＞分割画面移動
 noremap <silent><C-h> <C-w>h
@@ -65,25 +64,26 @@ if dein#load_state(s:dein_dir)
   call dein#load_toml(s:toml_dir . '/lazy.toml', {'lazy': 1})
 
   call defx#custom#option('_', {
-      \ 'winwidth': 60,
-      \ 'split': 'floating',
-      \ 'direction': 'topleft',
-      \ 'show_ignored_files': 1,
-      \ 'buffer_name': 'exlorer',
-      \ 'toggle': 1,
-      \ 'resume': 1,
-      \ })
+    \ 'winwidth': 60,
+    \ 'split': 'floating',
+    \ 'direction': 'topleft',
+    \ 'show_ignored_files': 1,
+    \ 'buffer_name': 'exlorer',
+    \ 'toggle': 1,
+    \ 'resume': 1,
+    \ })
 
   call defx#custom#column('git', 'indicators', {
-  \ 'Modified'  : '✹',
-  \ 'Staged'    : '✚',
-  \ 'Untracked' : '✭',
-  \ 'Renamed'   : '➜',
-  \ 'Unmerged'  : '═',
-  \ 'Ignored'   : '☒',
-  \ 'Deleted'   : '✖',
-  \ 'Unknown'   : '?'
-  \ })
+    \ 'Modified'  : '✹',
+    \ 'Staged'    : '✚',
+    \ 'Untracked' : '✭',
+    \ 'Renamed'   : '➜',
+    \ 'Unmerged'  : '═',
+    \ 'Ignored'   : '☒',
+    \ 'Deleted'   : '✖',
+    \ 'Unknown'   : '?'
+    \ })
+
   " Add or remove your plugins here like this:
   "call dein#add('Shougo/neosnippet.vim')
   "call dein#add('Shougo/neosnippet-snippets')
@@ -92,6 +92,9 @@ if dein#load_state(s:dein_dir)
   call dein#end()
   call dein#save_state()
 endif
+" Color scheme
+set background=dark
+colorscheme hybrid
 
 " Required:
 filetype plugin indent on
