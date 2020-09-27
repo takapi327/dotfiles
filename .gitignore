@@ -14,3 +14,4 @@ ui/dist
 .metals.sbt
 /RUNNING_PID
 docker/db/data/
+.vim/
