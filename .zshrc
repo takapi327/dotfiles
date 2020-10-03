@@ -2,6 +2,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 export PATH=$HOME/.nodebrew/current/bin:$PATH
 #export TERM="xterm-256color"
 export TERM=screen-256color
+export PATH="$HOME/.cargo/bin:$PATH"
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
@@ -164,7 +165,7 @@ alias ll='ls -l'
 ### ここから下は環境設定 ###
 
 ### なんかiTerm2が勝手に書いたやつ ###
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 source  ~/powerlevel9k/powerlevel9k.zsh-theme
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
