@@ -7,9 +7,9 @@ repo = 'Shougo/dein.vim'
 [[plugins]]                                    
 repo = 'tpope/vim-fugitive'
 hook_add = '''                                    
-    nnoremap <silent> gs :Gstatus<CR><C-w>T                                    
-    nnoremap <silent> gps :Gpush<CR>                                    
-    nnoremap <silent> gpl :Gpull<CR>                                    
+  nnoremap <silent> gs :Gstatus<CR><C-w>T
+  nnoremap <silent> gps :Gpush<CR>
+  nnoremap <silent> gpl :Gpull<CR>
 '''
 
 # ------------------------------------
@@ -71,7 +71,7 @@ repo = 'airblade/vim-gitgutter'
 [[plugins]]
 repo = 'junegunn/fzf.vim'
 hook_add = '''
-    nnoremap <silent> ff :GFiles <CR>
+  nnoremap <silent> ff :GFiles <CR>
 '''
 # ------------------------------------
 #  複数行コメントアウト
