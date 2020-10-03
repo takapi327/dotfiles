@@ -52,8 +52,8 @@ if ! which neovim > /dev/null; then
 else
     echo "[INFO] neovim is already installed"
 fi
-ln -sf ~/dotfiles/.vim ~/.vim
-#ln -sf ~/dotfiles/.vimrc ~/.vimrc
+ln -nsf ~/dotfiles/.vim ~/.vim
+ln -nsf ~/dotfiles/.vimrc ~/.vimrc
 #ln -sf ~/dotfiles/.zshrc ~/.zshrc
 #ln -sf ~/dotfiles/.tmux.conf ~/.tmux.conf
 #chsh -s $(which zsh)
