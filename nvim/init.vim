@@ -264,6 +264,17 @@ nmap <silent> fmt <Plug>(coc-format)
 "htmlの設定
 autocmd Filetype html inoremap <buffer> </ </<C-x><C-o><ESC>F<i
 
+
+"---------------------------------"
+" Tab設定
+"---------------------------------"
+"Tab + tで新規タブを作成
+nnoremap <silent> <tab>t :tabe<Return>
+"Tab + Shiftでタブの移動
+nnoremap <silent> <tab><tab> :tabnext<Return>
+"Tab + cでタブを閉じる
+nnoremap <silent> <tab>c :tabc<Return>
+
 "---------------------------------"
 " ターミナル設定
 "---------------------------------"
