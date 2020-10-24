@@ -1,16 +1,16 @@
-[[plugins]]                                    
-repo = 'Shougo/dein.vim'                                          
+[[plugins]]
+repo = 'Shougo/dein.vim'
 
-# ------------------------------------                                    
-# Git vim-fugitive                                     
-# ------------------------------------                                    
-[[plugins]]                                    
-repo = 'tpope/vim-fugitive'
-hook_add = '''                                    
-  nnoremap <silent> gs :Gstatus<CR><C-w>T
-  nnoremap <silent> gps :Gpush<CR>
-  nnoremap <silent> gpl :Gpull<CR>
-'''
+# ------------------------------------
+# Git vim-fugitive
+# ------------------------------------
+#[[plugins]]
+#repo = 'tpope/vim-fugitive'
+#hook_add = '''
+#  nnoremap <silent> gs :Gstatus<CR><C-w>T
+#  nnoremap <silent> gps :Gpush<CR>
+#  nnoremap <silent> gpl :Gpull<CR>
+#'''
 
 # ------------------------------------
 # カラースキーマ
@@ -21,35 +21,46 @@ hook_add = '''
   set background=dark
   " colorscheme 設定は source 後に行う必要があるので VimEnter で行う。
   " 但し Colorscheme イベントの発生が抑制されないよう nented を付ける。
-  au MyAutoCmd VimEnter * nested colorscheme hybrid
+  "au MyAutoCmd VimEnter * nested colorscheme hybrid
 '''
 
-# ------------------------------------                                    
-# Git defx                                     
-# ------------------------------------                                    
-[[plugins]]                                    
+# ------------------------------------
+# Git defx
+# ------------------------------------
+[[plugins]]
 repo = 'Shougo/defx.nvim'
-repo = 'roxma/nvim-yarp'
-repo = 'roxma/vim-hug-neovim-rpc'
+hook_add = '''
+  call defx#custom#option('_', {
+    \ 'winwidth': 60,
+    \ 'split': 'floating',
+    \ 'direction': 'topleft',
+    \ 'show_ignored_files': 1,
+    \ 'buffer_name': 'exlorer',
+    \ 'toggle': 1,
+    \ 'resume': 1,
+    \ })
+'''
+#repo = 'roxma/nvim-yarp'
+#repo = 'roxma/vim-hug-neovim-rpc'
 
-# ------------------------------------                                    
-# Git defx-icons                                     
-# ------------------------------------                                    
+# ------------------------------------
+# Git defx-icons
+# ------------------------------------
 [[plugins]]
 repo = 'ryanoasis/vim-devicons'
 
 [[plugins]]
 repo = 'kristijanhusak/defx-icons'
 
-# ------------------------------------                                    
-# Git defx-git                                   
-# ------------------------------------                                    
+# ------------------------------------
+# Git defx-git
+# ------------------------------------
 [[plugins]]
 repo = 'kristijanhusak/defx-git'
 
-# ------------------------------------                                    
+# ------------------------------------
 #  Syntax highlight of Languages
-# ------------------------------------                                    
+# ------------------------------------
 [[plugins]]
 repo = 'derekwyatt/vim-scala'
 repo = 'gre/play2vim'
@@ -62,6 +73,21 @@ repo = 'othree/yajs.vim'
 # ------------------------------------
 #  airblade/vim-gitgutter
 # ------------------------------------
+#[[plugins]]
+#repo = 'airblade/vim-gitgutter'
+
+# ------------------------------------
+#  coc
+# ------------------------------------
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+
+# ------------------------------------
+#  git
+# ------------------------------------
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
 
@@ -70,11 +96,8 @@ repo = 'airblade/vim-gitgutter'
 # ------------------------------------
 [[plugins]]
 repo = 'junegunn/fzf.vim'
-hook_add = '''
-  nnoremap <silent> ff :GFiles <CR>
-'''
 # ------------------------------------
 #  複数行コメントアウト
 # ------------------------------------
-[[plugins]]
-repo = 'tpope/vim-commentary'
+#[[plugins]]
+#repo = 'tpope/vim-commentary'
