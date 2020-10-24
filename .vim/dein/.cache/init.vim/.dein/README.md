@@ -1,118 +1,162 @@
-## About
 
-[![Join the chat at https://gitter.im/Shougo/defx.nvim](https://badges.gitter.im/Shougo/defx.nvim.svg)](https://gitter.im/Shougo/defx.nvim?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# vim-hug-neovim-rpc
 
-Defx is a dark powered plugin for Neovim/Vim to browse files.
-It replaces the deprecated vimfiler plugin.
+This is an **experimental project**, trying to build a compatibility layer for
+[neovim rpc client](https://github.com/neovim/python-client) working on vim8.
+I started this project because I want to fix the [vim8
+support](https://github.com/roxma/nvim-completion-manager/issues/14) issue for
+[nvim-completion-manager](https://github.com/roxma/nvim-completion-manager).
 
+Since this is a general purpose module, other plugins needing rpc support may
+benefit from this project. However, there're many neovim rpc methods I haven't
+implemented yet, which make this an experimental plugin. **Please fork and
+open a PR if you get any idea on improving it**.
 
-## Concept
+***Tip: for porting neovim rplugin to vim8, you might need
+[roxma/nvim-yarp](https://github.com/roxma/nvim-yarp)***
 
-* Doesn't depend on denite.nvim
-
-* Vim8/neovim compatible(nvim-yarp is needed for Vim8)
-
-* Implemented by Python3
-
-* No double filer feature
-
-* Column feature
-
-* Source feature like denite.nvim
-
-* Options
-
-* Highlight is defined by column
-
-* Few commands (:Defx command only?)
-
-* Extended rename
-
-* Mark
-
-* Windows supporters are needed
-
-* Maximum features dislike other file managers
-
-
-## Installation
-
-**Note:** defx requires Neovim 0.4.0+ or Vim8.2+ with Python3.6.1+.  See
-[requirements](#requirements) if you aren't sure whether you have this.
-
-For vim-plug
-
-```viml
-if has('nvim')
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/defx.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-```
-
-For dein.vim
-
-```viml
-call dein#add('Shougo/defx.nvim')
-if !has('nvim')
-  call dein#add('roxma/nvim-yarp')
-  call dein#add('roxma/vim-hug-neovim-rpc')
-endif
-```
-
-For manual installation(not recommended)
-
-1. Extract the files and put them in your Neovim or .vim directory
-   (usually `$XDG_CONFIG_HOME/nvim/`).
-
+![screencast](https://cloud.githubusercontent.com/assets/4538941/23102626/9e1bd928-f6e7-11e6-8fa2-2776f70819d9.gif)
 
 ## Requirements
 
-defx requires Python3.6.1+ and Neovim(0.4.0+) or Vim8.2+ with if\_python3.  If
-`:echo has("python3")` returns `1`, then you have python 3 support; otherwise,
-see below.
 
-Note: The latest Neovim is recommended, because it is faster.
+1. vim8
+2. If `has('pythonx')` and `set pyxversion=3`
+    - same requirements as `4. has('python3')`
+2. Else if `has('pythonx')` and `set pyxversion=2`
+    - same requirements as `5. has('python')`
+4. Else if `has('python3')`
+    - [pynvim](https://github.com/neovim/pynvim)
+    - Pynvim is normally installed by `:py3 import pip; pip.main(['install',
+        '--user', 'pynvim'])` or `python3 -m pip install pynvim`.
+    - There should be no error for at least one of `:python3 import pynvim` and
+        `:python3 import neovim`
+5. Else if `has('python')`
+    - [pynvim](https://github.com/neovim/pynvim)
+    - Pynvim is normally installed by `:py import pip; pip.main(['install',
+        '--user', 'pynvim'])` or `python2 -m pip install pynvim`.
+    - There should be no error for at least one of `:python3 import pynvim` and
+        `:python3 import neovim`
+6. `set encoding=utf-8` in your vimrc.
 
-You can enable Python3 interface with pip:
+***Use `:echo neovim_rpc#serveraddr()` to test the installation***. It should print
+something like `127.0.0.1:51359` or `/tmp/vmrUX9X/2`.
 
-    pip3 install --user pynvim
+## API
 
-Please install nvim-yarp plugin for Vim8.
-https://github.com/roxma/nvim-yarp
+| Function                                     | Similar to neovim's                            |
+|----------------------------------------------|------------------------------------------------|
+| `neovim_rpc#serveraddr()`                    | `v:servername`                                 |
+| `neovim_rpc#jobstart(cmd,...)`               | `jobstart({cmd}[, {opts}])`                    |
+| `neovim_rpc#jobstop(jobid)`                  | `jobstop({job})`                               |
+| `neovim_rpc#rpcnotify(channel,event,...)`    | `rpcnotify({channel}, {event}[, {args}...])`   |
+| `neovim_rpc#rpcrequest(channel, event, ...)` | `rpcrequest({channel}, {method}[, {args}...])` |
 
-Please install vim-hug-neovim-rpc plugin for Vim8.
-https://github.com/roxma/vim-hug-neovim-rpc
+Note that `neovim_rpc#jobstart` only support these options:
+
+- `on_stdout`
+- `on_stderr`
+- `on_exit`
+- `detach`
+
+## Incompatibility issues
+
+- Cannot pass `Funcref` object to python client. Pass function name instead.
+- Python `None` will be converted to `''` instead of `v:null` into vimscript.
+  See [vim#2246](https://github.com/vim/vim/issues/2246)
+- The following neovim-only API will be ignored quietly:
+    - `nvim_buf_add_highlight`
+    - `nvim_buf_clear_highlight`
+
+## Overall Implementation
+
+```
+   "vim-hug-neovim-rpc - Sequence Diagram"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-## Note: Python3 must be enabled before updating remote plugins
-If Defx was installed prior to Python support being added to Neovim,
-`:UpdateRemotePlugins` should be executed manually.
+┌───┐            ┌──────────┐                  ┌───────────┐                    ┌──────┐
+│VIM│            │VIM Server│                  │NVIM Server│                    │Client│
+└─┬─┘            └────┬─────┘                  └─────┬─────┘                    └──┬───┘
+  │   Launch thread   │                              │                             │
+  │───────────────────>                              │                             │
+  │                   │                              │                             │
+  │                  Launch thread                   │                             │
+  │─────────────────────────────────────────────────>│                             │
+  │                   │                              │                             │
+  │ `ch_open` connect │                              │                             │
+  │───────────────────>                              │                             │
+  │                   │                              │                             │
+  │                   │────┐                         │                             │
+  │                   │    │ Launch VimHandler thread│                             │
+  │                   │<───┘                         │                             │
+  │                   │                              │                             │
+  │                   │                              │           Connect           │
+  │                   │                              │<─────────────────────────────
+  │                   │                              │                             │
+  │                   │                              ────┐
+  │                   │                                  │ Launch NvimHandler thread
+  │                   │                              <───┘
+  │                   │                              │                             │
+  │                   │                              │    Request (msgpack rpc)    │
+  │                   │                              │<─────────────────────────────
+  │                   │                              │                             │
+  │                   │                              ────┐                         │
+  │                   │                                  │ Request enqueue         │
+  │                   │                              <───┘                         │
+  │                   │                              │                             │
+  │                   │     notify (method call)     │                             │
+  │                   │ <────────────────────────────│                             │
+  │                   │                              │                             │
+  │ notify (json rpc) │                              │                             │
+  │<───────────────────                              │                             │
+  │                   │                              │                             │
+  ────┐                                              │                             │
+      │ Request dequeue                              │                             │
+  <───┘                                              │                             │
+  │                   │                              │                             │
+  ────┐               │                              │                             │
+      │ Process       │                              │                             │
+  <───┘               │                              │                             │
+  │                   │                              │                             │
+  │                   │      Send response (msgpack rpc)                           │
+  │────────────────────────────────────────────────────────────────────────────────>
+┌─┴─┐            ┌────┴─────┐                  ┌─────┴─────┐                    ┌──┴───┐
+│VIM│            │VIM Server│                  │NVIM Server│                    │Client│
+└───┘            └──────────┘                  └───────────┘                    └──────┘
+```
 
+<!-- 
+@startuml
 
-## Configuration Examples
+title "vim-hug-neovim-rpc - Sequence Diagram"
 
-Please see `:help defx-examples`.
+VIM -> "VIM Server": Launch thread
+VIM -> "NVIM Server": Launch thread
+VIM -> "VIM Server": `ch_open` connect
+"VIM Server" -> "VIM Server": Launch VimHandler thread
 
+Client-> "NVIM Server": Connect
+"NVIM Server" -> "NVIM Server": Launch NvimHandler thread
+Client -> "NVIM Server": Request (msgpack rpc)
+"NVIM Server" -> "NVIM Server": Request enqueue
+"NVIM Server" -> "VIM Server": notify (method call)
+"VIM Server" -> VIM: notify (json rpc)
+VIM -> VIM: Request dequeue 
+VIM -> VIM: Process
+VIM -> Client: Send response (msgpack rpc)
 
-## Screenshots
+@enduml
+-->
 
-![Multi root feature](https://user-images.githubusercontent.com/41495/45696476-ac9d0a80-bb9e-11e8-9ee2-120ac7d0f045.png)
-![Defx -split=vertical](https://user-images.githubusercontent.com/2835826/45823772-7190f900-bcbc-11e8-9727-3dda3ce4c07c.png)
-![Defx -new](https://user-images.githubusercontent.com/3047695/45927914-7f07e680-bf3b-11e8-9b36-755e1eec2a8f.png)
-![Defx + neovim-qt](https://user-images.githubusercontent.com/1314340/48659914-0b4a0c00-ea9c-11e8-9953-2f2d5ca7f24a.png)
-![Custom icon](https://user-images.githubusercontent.com/10108377/59982828-ac93d480-9620-11e9-8c10-51909cfeaf94.png)
-![Custom icon2](https://user-images.githubusercontent.com/3021667/55260000-95ba2d80-523d-11e9-877c-756a080a9a28.png)
-![Custom icon3](https://user-images.githubusercontent.com/10397021/57774111-3f04a680-774c-11e9-852a-53c394f672ef.png)
-![Custom icon4](https://user-images.githubusercontent.com/12205650/58801907-d9346d80-85d9-11e9-8a2d-de4635aa1eba.png)
-![Custom icon5](https://user-images.githubusercontent.com/11615211/82411894-381e1b80-9aa5-11ea-9552-fd9847fe25e3.png)
-![Defx on kitty](https://user-images.githubusercontent.com/8403993/51080184-d29e6b80-16b5-11e9-802b-7c2f56705e2e.png)
-![Defx in SpaceVim](https://user-images.githubusercontent.com/13142418/54086225-85233f80-4382-11e9-8091-7f387319b90a.png)
-![Variable column](https://user-images.githubusercontent.com/19503791/56090130-58f26580-5ed0-11e9-8b66-e684cb11b0d1.png)
-![Denite action call](https://user-images.githubusercontent.com/41671631/56280845-a6bfd580-613d-11e9-857a-d81f2633eeab.png)
-![Defx floating window](https://user-images.githubusercontent.com/24732170/59892964-1c823f00-9416-11e9-8369-2e21910e168c.png)
-![Horizon colorscheme](https://user-images.githubusercontent.com/324519/63241202-a4fb4100-c207-11e9-9060-c3c04608ea7b.png)
-![Image preview](https://user-images.githubusercontent.com/41671631/85951370-5d9c2000-b995-11ea-8a3d-2c304d21cc4c.gif)
-![Defx + vim-quickui](https://user-images.githubusercontent.com/32936898/92196371-bd390f00-eea1-11ea-957e-5dcde77afd3e.png)
+## Debugging
+
+Add logging settigns to your vimrc. Log files will be generated with prefix
+`/tmp/nvim_log`. An alternative is to export environment variables before
+starting vim/nvim.
+
+```vim
+let $NVIM_PYTHON_LOG_FILE="/tmp/nvim_log"
+let $NVIM_PYTHON_LOG_LEVEL="DEBUG"
+```
+

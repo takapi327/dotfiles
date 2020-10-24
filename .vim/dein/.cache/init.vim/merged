@@ -1,3 +1,3 @@
 {'repo': v:val.repo, 'rev': get(v:val, 'rev', '')}
 0
-[{'rev': '', 'repo': 'Shougo/defx.nvim'}]
+[{'rev': '', 'repo': 'Shougo/dein.vim'}, {'rev': '', 'repo': 'airblade/vim-gitgutter'}, {'rev': '', 'repo': 'cespare/vim-toml'}, {'rev': '', 'repo': 'junegunn/fzf.vim'}, {'rev': '', 'repo': 'kristijanhusak/defx-git'}, {'rev': '', 'repo': 'kristijanhusak/defx-icons'}, {'rev': '', 'repo': 'othree/yajs.vim'}, {'rev': '', 'repo': 'roxma/vim-hug-neovim-rpc'}, {'rev': '', 'repo': 'ryanoasis/vim-devicons'}, {'rev': '', 'repo': 'tpope/vim-commentary'}, {'rev': '', 'repo': 'tpope/vim-fugitive'}, {'rev': '', 'repo': 'w0ng/vim-hybrid'}]
