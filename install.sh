@@ -44,8 +44,8 @@ if ! which neovim > /dev/null; then
     echo "[INFO] create nvim directory"
     mkdir -p ~/.config/nvim
     ln -nfs ~/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
-    ln -nfs ~/dotfiles/nvim/dein.vim ~/.config/nvim/dein.vim
-    ln -nfs ~/dotfiles/nvim/lazy.vim ~/.config/nvim/lazy.vim
+    ln -nfs ~/dotfiles/nvim/dein.toml ~/.config/nvim/dein.toml
+    ln -nfs ~/dotfiles/nvim/lazy.toml ~/.config/nvim/lazy.toml
     echo "[INFO] create colors directory"
     mkdir -p ~/.config/nvim/colors
     ln -nfs ~/dotfiles/colors/hybrid.vim ~/.config/nvim/colors/hybrid.vim
