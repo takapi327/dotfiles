@@ -1,6 +1,5 @@
 export XDG_CONFIG_HOME=$HOME/.config
 export PATH=$HOME/.nodebrew/current/bin:$PATH
-#export TERM="xterm-256color"
 export TERM=screen-256color
 export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -8,20 +7,19 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 
 plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
-source ~/.zplug/init.zsh
+#source ~/.zplug/init.zsh
 
 # cdを強化する
 # https://github.com/b4b4r07/enhancd
-zplug "b4b4r07/enhancd", use:init.sh
+#zplug "b4b4r07/enhancd", use:init.sh
 
 
 # zshテーマの設定
 # powerline-fontを導入するのを忘れずに
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
+#zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
 
 ### テーマの設定 ###
 POWERLEVEL9K_MODE="nerdfont-complete"
-
 
 #### macコピペ ####
 POWERLEVEL9K_CUSTOM_WIFI_SIGNAL="zsh_wifi_signal"
@@ -107,20 +105,20 @@ POWERLEVEL9K_STATUS_CROSS=true
 ##################
 
 # 補完の強化
-zplug "zsh-users/zsh-completions"
+#zplug "zsh-users/zsh-completions"
 
 # 履歴補完の強化
-zplug ""
+#zplug ""
 
-if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-    echo; zplug install
-  fi
-fi
+#if ! zplug check --verbose; then
+#  printf "Install? [y/N]: "
+#  if read -q; then
+#    echo; zplug install
+#  fi
+#fi
 
 # ここまでに書いたプラグインのロード
-zplug load --verbose
+#zplug load --verbose
 
 #####################################################
 ################# ここから下はzshの設定 ################
@@ -146,7 +144,6 @@ setopt AUTO_CD
 # 環境変数を補完
 setopt AUTO_PARAM_KEYS
 
-
 ### 永続的なalias ###
 alias ls="gls --color=auto"
 alias la="ls -la"
@@ -161,6 +158,7 @@ alias gd='git diff'
 alias gs='git status'
 
 alias ll='ls -l'
+alias sql='mysql -u root -p'
 
 ### ここから下は環境設定 ###
 
