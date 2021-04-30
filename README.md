@@ -2,8 +2,15 @@
 
 ## Install
 ```
-git clone https://github.com/Powerlevel9k/powerlevel9k.git
+$ git clone https://github.com/Powerlevel9k/powerlevel9k.git
 ```
+
+## Font Insatall
+```
+$ brew tap homebrew/cask-fonts
+$ brew install font-hack-nerd-font --cask
+```
+
 Preference->Profiles->Text->Fontのchange Fontから先程追加したフォントを適用する
 
 <img width="582" alt="スクリーンショット 2020-06-17 22 34 24" src="https://user-images.githubusercontent.com/57429437/84904792-b42e7200-b0ea-11ea-972b-6f46816ed964.png">
