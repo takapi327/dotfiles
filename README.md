@@ -78,6 +78,7 @@ cd ~/Development/dotfiles
 - **ターミナル**: iTerm2 + Zsh (Powerlevel9k)
 - **コンテナ**: Docker Desktop + lazydocker
 - **Git**: gh CLI + fugitive (Vim統合)
+- **AWS**: AWS CLI + SAM CLI
 
 ## インストール後の設定
 
@@ -379,6 +380,37 @@ brew install sbt
 <Space>dK  " 変数の値を確認
 <Space>dso " 次の行へ
 <Space>dsi " 関数の中へ
+```
+
+### AWS開発環境のセットアップ
+
+#### AWS CLIの初期設定
+```bash
+# AWS認証情報を設定
+aws configure
+
+# プロファイルを指定して設定
+aws configure --profile myprofile
+
+# 設定確認
+aws configure list
+aws sts get-caller-identity
+```
+
+#### SAM CLIの使い方
+```bash
+# SAMプロジェクトの初期化
+sam init
+
+# ローカルでLambda関数をビルド
+sam build
+
+# ローカルでテスト実行
+sam local start-api
+sam local invoke FunctionName
+
+# デプロイ
+sam deploy --guided
 ```
 
 ### 推奨される.gitignore設定

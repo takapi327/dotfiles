@@ -163,6 +163,11 @@ alias dcdown='docker-compose down'
 alias dclog='docker-compose logs -f'
 alias ld='lazydocker'
 
+# AWS aliases
+alias awsp='aws --profile'
+alias awsl='aws configure list-profiles'
+alias awsw='aws sts get-caller-identity'
+
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme

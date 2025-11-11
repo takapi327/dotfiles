@@ -143,6 +143,8 @@ brew_packages=(
     "pyenv-virtualenv"
     "rbenv"
     "ruby-build"
+    "awscli"
+    "aws-sam-cli"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -499,6 +501,31 @@ echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard �
 echo "  - Rectangle: Use for window management (⌃⌥ + arrows)"
 echo "  - Raycast: Replace Spotlight with ⌘Space"
 echo "  - Check CLAUDE.md for more information about this setup"
+
+# Setup AWS CLI
+echo "☁️  Setting up AWS CLI..."
+if command -v aws &> /dev/null; then
+    echo "  ✓ AWS CLI is installed"
+    echo "  Version: $(aws --version)"
+    
+    # Check if AWS credentials are configured
+    if [ -d "$HOME/.aws" ] && [ -f "$HOME/.aws/credentials" ]; then
+        echo "  ✓ AWS credentials already configured"
+    else
+        echo "  ℹ️  AWS credentials not configured"
+        echo "     Run 'aws configure' to set up your credentials"
+    fi
+else
+    echo "  ⚠️  AWS CLI not found"
+fi
+
+# Check SAM CLI
+if command -v sam &> /dev/null; then
+    echo "  ✓ AWS SAM CLI is installed"
+    echo "  Version: $(sam --version)"
+else
+    echo "  ⚠️  AWS SAM CLI not found"
+fi
 
 # Make install script executable
 chmod +x "$DOTFILES_DIR/install.sh"

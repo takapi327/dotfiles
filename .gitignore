@@ -23,3 +23,9 @@ metals.sbt
 .bsp/
 project/metals.sbt
 project/project/
+
+# AWS
+.aws/credentials
+.aws/cli/cache/
+samconfig.toml
+.aws-sam/
