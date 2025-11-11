@@ -83,6 +83,8 @@ cd ~/Development/dotfiles
 | Git統合 | fugitive | Gitコマンドの実行 |
 | Git統合 | gitgutter | 行ごとのGit差分表示 |
 | 自動補完 | CoC.nvim | LSP対応のインテリセンス |
+| Scala開発 | nvim-metals | Scala LSP (Metals) 統合 |
+| Scala開発 | vim-scala | Scalaシンタックス・インデント |
 | シンタックス | vim-polyglot | 多言語シンタックスハイライト |
 | Linting | ALE | 自動エラーチェック・フォーマット |
 | ステータスライン | airline | 拡張ステータスライン |
@@ -148,6 +150,20 @@ cd ~/Development/dotfiles
 | `:Gdiff` | 差分表示 | 現在のファイルの差分 |
 | `:Gblame` | blame表示 | 行ごとの変更履歴 |
 
+#### Scala開発（Metals）
+
+| キー | 動作 | 説明 |
+|-----|------|------|
+| `<Space>si` | ビルドインポート | sbtプロジェクトをインポート |
+| `<Space>sb` | ビルド接続 | ビルドサーバーに接続 |
+| `<Space>sc` | コンパイル | カスケードコンパイル実行 |
+| `<Space>sr` | サーバー再起動 | Metalsサーバーを再起動 |
+| `<Space>so` | import整理 | 未使用importの削除・整理 |
+| `<Space>mc` | コンパイル | プロジェクト全体をコンパイル |
+| `<Space>mi` | 暗黙引数表示 | 暗黙的な引数の表示切替 |
+| `<Space>md` | 診断 | Metalsの診断情報を表示 |
+| `<Space>mw` | ワークシート | ワークシートのホバー情報 |
+
 ### カラーテーマ
 
 Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`の`colorscheme gruvbox`を編集してください。
@@ -160,8 +176,35 @@ Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`
 | Go | ハードタブ | gofmt | rustc |
 | JavaScript/TypeScript | スペース2 | Prettier | ESLint |
 | Rust | スペース2 | rustfmt | rustc |
+| Scala | スペース2 | scalafmt | Metals LSP, scalac |
 | Markdown | スペース2 | - | 自動改行、プレビュー対応 |
 | その他 | スペース2 | - | デフォルト設定 |
+
+### Scala開発環境のセットアップ
+
+#### 1. 必要なツールのインストール
+```bash
+# Coursier (Scalaツールのインストーラ)
+brew install coursier/formulas/coursier
+
+# Metalsのインストール
+cs install metals
+
+# sbtのインストール（まだの場合）
+brew install sbt
+```
+
+#### 2. Vimでの初回セットアップ
+```vim
+" プラグインのインストール
+:PlugInstall
+
+" Scalaファイルを開いてMetalsを起動
+:MetalsInstall
+
+" プロジェクトのインポート
+:MetalsImportBuild
+```
 
 ### トラブルシューティング
 
@@ -172,7 +215,19 @@ Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`
 
 #### CoC.nvimの言語サーバーをインストール
 ```vim
-:CocInstall coc-json coc-tsserver coc-python coc-rust-analyzer
+:CocInstall coc-json coc-tsserver coc-python coc-rust-analyzer coc-metals
+```
+
+#### Metalsが動作しない場合
+```vim
+" Metalsの診断
+:MetalsDoctor
+
+" ログの確認
+:MetalsLogToggle
+
+" サーバーの再起動
+:MetalsRestartServer
 ```
 
 ## カスタマイズ

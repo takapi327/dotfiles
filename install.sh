@@ -137,6 +137,8 @@ brew_packages=(
     "tree"
     "wget"
     "gh"
+    "sbt"
+    "coursier/formulas/coursier"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -297,6 +299,29 @@ else
     else
         echo "  ⚠️  fzf key bindings configuration failed"
     fi
+fi
+
+# Install Scala development tools
+echo "🔧 Setting up Scala development tools..."
+if command -v cs &> /dev/null; then
+    if cs list | grep -q "metals" 2>/dev/null; then
+        echo "  ✓ Metals already installed"
+    else
+        echo "  Installing Metals..."
+        cs install metals
+        echo "  ✅ Metals installed"
+    fi
+    
+    # Install scalafmt
+    if cs list | grep -q "scalafmt" 2>/dev/null; then
+        echo "  ✓ scalafmt already installed"
+    else
+        echo "  Installing scalafmt..."
+        cs install scalafmt
+        echo "  ✅ scalafmt installed"
+    fi
+else
+    echo "  ⚠️  Coursier not found, skipping Scala tools installation"
 fi
 
 # iTerm2 configuration

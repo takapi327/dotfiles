@@ -50,6 +50,12 @@ Plug 'terryma/vim-multiple-cursors'
 " Markdown preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
+" Scala development
+Plug 'scalameta/nvim-metals', { 'for': 'scala' }
+Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+Plug 'natebosch/vim-lsc', { 'for': 'scala' }
+Plug 'hrsh7th/nvim-compe'
+
 call plug#end()
 
 " Basic Settings
@@ -200,6 +206,7 @@ let g:ale_linters = {
 \   'typescript': ['eslint', 'tsserver'],
 \   'python': ['flake8', 'pylint'],
 \   'rust': ['rustc'],
+\   'scala': ['scalac', 'sbtserver'],
 \}
 let g:ale_fixers = {
 \   'javascript': ['prettier'],
@@ -207,6 +214,7 @@ let g:ale_fixers = {
 \   'css': ['prettier'],
 \   'python': ['black', 'isort'],
 \   'rust': ['rustfmt'],
+\   'scala': ['scalafmt'],
 \}
 let g:ale_fix_on_save = 1
 let g:ale_sign_error = '✘'
@@ -232,4 +240,40 @@ augroup filetype_config
   autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4
   autocmd FileType go setlocal noexpandtab tabstop=4 shiftwidth=4
   autocmd FileType markdown setlocal wrap linebreak
+  autocmd FileType scala setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  autocmd FileType sbt setlocal tabstop=2 shiftwidth=2 softtabstop=2
+augroup END
+
+" Metals (Scala LSP) configuration
+lua << EOF
+local metals_config = require'metals'.bare_config()
+metals_config.settings = {
+  showImplicitArguments = true,
+  excludedPackages = {"akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl"},
+}
+
+-- Autocmd to start Metals
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {"scala", "sbt", "java"},
+  callback = function()
+    require("metals").initialize_or_attach(metals_config)
+  end,
+  group = vim.api.nvim_create_augroup("nvim-metals", {clear = true}),
+})
+
+-- Metals keybindings
+vim.keymap.set("n", "<leader>mc", function() require("metals").compile_cascade() end, { desc = "Metals compile cascade" })
+vim.keymap.set("n", "<leader>mi", function() require("metals").toggle_setting("showImplicitArguments") end, { desc = "Toggle implicit args" })
+vim.keymap.set("n", "<leader>md", function() require("metals").doctor() end, { desc = "Metals doctor" })
+vim.keymap.set("n", "<leader>mw", function() require("metals").hover_worksheet() end, { desc = "Hover worksheet" })
+EOF
+
+" Scala-specific keybindings
+augroup scala_bindings
+  autocmd!
+  autocmd FileType scala nnoremap <buffer> <leader>si :MetalsImportBuild<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>sb :MetalsBuildConnect<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>sc :MetalsCompileCascade<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>sr :MetalsRestartServer<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>so :MetalsOrganizeImports<CR>
 augroup END
