@@ -79,6 +79,7 @@ cd ~/Development/dotfiles
 - **コンテナ**: Docker Desktop + lazydocker
 - **Git**: gh CLI + fugitive (Vim統合)
 - **AWS**: AWS CLI + SAM CLI
+- **データベース**: MySQL Shell
 
 ## インストール後の設定
 
@@ -473,6 +474,47 @@ sam local invoke FunctionName
 # デプロイ
 sam deploy --guided
 ```
+
+### MySQL Shellの使い方
+
+#### 基本的な接続方法
+```bash
+# MySQL Shellで接続（デフォルトはJavaScript モード）
+mysqlsh -u username -h hostname -P 3306
+
+# SQLモードで接続
+mysqlsh --sql -u username -h hostname
+
+# URI形式で接続
+mysqlsh --uri username@hostname:3306/database
+
+# エイリアスを使った接続
+msh -u root -h localhost  # JavaScriptモード
+sql                        # 従来のmysqlクライアント
+```
+
+#### MySQL Shellのモード切り替え
+```sql
+-- SQLモードに切り替え
+\sql
+
+-- JavaScriptモードに切り替え
+\js
+
+-- Pythonモードに切り替え
+\py
+
+-- 現在のモードを確認
+\status
+```
+
+#### 便利なエイリアス
+- `msh`: MySQL Shell（デフォルト）
+- `mysqlsh`: SQLモードで起動
+- `mshjs`: JavaScriptモードで起動
+- `mshpy`: Pythonモードで起動
+- `mshdump`: ダンプユーティリティ
+- `sql`: 従来のMySQLクライアント
 
 ### 推奨される.gitignore設定
 

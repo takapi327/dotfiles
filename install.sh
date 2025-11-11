@@ -147,6 +147,7 @@ brew_packages=(
     "node-build"
     "awscli"
     "aws-sam-cli"
+    "mysql-shell"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -579,6 +580,26 @@ if command -v sam &> /dev/null; then
     echo "  Version: $(sam --version)"
 else
     echo "  ⚠️  AWS SAM CLI not found"
+fi
+
+# Setup MySQL Shell
+echo "🗄️  Setting up MySQL Shell..."
+if command -v mysqlsh &> /dev/null; then
+    echo "  ✓ MySQL Shell is installed"
+    echo "  Version: $(mysqlsh --version)"
+    
+    # Create MySQL Shell config directory if it doesn't exist
+    MYSQLSH_CONFIG_DIR="$HOME/.mysqlsh"
+    if [ ! -d "$MYSQLSH_CONFIG_DIR" ]; then
+        mkdir -p "$MYSQLSH_CONFIG_DIR"
+        echo "  Created MySQL Shell config directory: $MYSQLSH_CONFIG_DIR"
+    fi
+    
+    echo "  ℹ️  To connect to MySQL:"
+    echo "     mysqlsh -u username -h hostname -P port"
+    echo "     or use: mysqlsh --uri username@hostname:port/database"
+else
+    echo "  ⚠️  MySQL Shell not found"
 fi
 
 # Make install script executable

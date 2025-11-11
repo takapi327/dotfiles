@@ -145,7 +145,14 @@ alias gd='git diff'
 alias gs='git status'
 
 alias ll='ls -l'
+
+# MySQL aliases
 alias sql='mysql -u root -p'
+alias mysqlsh='mysqlsh --sql'
+alias msh='mysqlsh'
+alias mshjs='mysqlsh --js'
+alias mshpy='mysqlsh --py'
+alias mshdump='mysqlsh --util dumpInstance'
 
 # Claude Code用のalias
 alias cc='claude-code'
