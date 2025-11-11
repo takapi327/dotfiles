@@ -52,3 +52,4 @@ cd ~/Development/dotfiles
 - Homebrew、pyenv、nodenv、rbenvなどの設定も含まれています
 - iTerm2プロファイルは自動でDynamic Profilesとしてインストールされます
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
+- rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します

@@ -202,7 +202,9 @@ export GPG_TTY=${TTY}
 
 eval "$(nodenv init -)"
 
-eval "$(rbenv init -)"
+# Ruby/rbenv設定
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init - zsh)"
 
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
     . $HOME/.nix-profile/etc/profile.d/nix.sh;

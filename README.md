@@ -214,6 +214,7 @@ Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`
 | 言語                    | タブ設定  | フォーマッター      | その他                |
 |-----------------------|-------|--------------|--------------------|
 | Python                | スペース4 | black, isort | flake8, pylint     |
+| Ruby                  | スペース2 | rubocop      | solargraph LSP     |
 | Go                    | ハードタブ | gofmt        | rustc              |
 | JavaScript/TypeScript | スペース2 | Prettier     | ESLint             |
 | Rust                  | スペース2 | rustfmt      | rustc              |
@@ -269,6 +270,54 @@ pyenv local myproject-env
 - **flake8**: リンター
 - **pylint**: 高度なリンター
 - **mypy**: 型チェッカー
+
+### Ruby開発環境のセットアップ（rbenv）
+
+#### 1. rbenvの基本的な使い方
+```bash
+# インストール可能なRubyバージョンを確認
+rbenv install --list
+
+# 特定のバージョンをインストール
+rbenv install 3.2.3
+
+# グローバルバージョンを設定
+rbenv global 3.2.3
+
+# プロジェクト固有のバージョンを設定
+cd /path/to/project
+rbenv local 3.0.6
+
+# 現在のバージョンを確認
+rbenv version
+
+# インストール済みバージョン一覧
+rbenv versions
+
+# シムの再構築（新しいgemをインストール後）
+rbenv rehash
+```
+
+#### 2. Gemの管理
+```bash
+# Bundlerを使用したプロジェクトセットアップ
+gem install bundler
+bundle init
+
+# Gemfileに依存関係を追加後
+bundle install
+
+# プロジェクト内でgemを実行
+bundle exec rails server
+```
+
+#### 3. インストール済みのRuby開発ツール
+- **bundler**: Gem依存関係管理
+- **rails**: Webフレームワーク
+- **rubocop**: コードスタイルチェッカー
+- **solargraph**: Language Server（VSCode/Vim用）
+- **pry**: 高機能REPL/デバッガ
+- **rspec**: テストフレームワーク
 
 ### Scala開発環境のセットアップ
 

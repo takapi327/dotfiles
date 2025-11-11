@@ -141,6 +141,8 @@ brew_packages=(
     "coursier/formulas/coursier"
     "pyenv"
     "pyenv-virtualenv"
+    "rbenv"
+    "ruby-build"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -383,6 +385,68 @@ if command -v pyenv &> /dev/null; then
     fi
 else
     echo "  ⚠️  pyenv not found, skipping Python setup"
+fi
+
+# Setup Ruby with rbenv
+echo "💎 Setting up Ruby development environment..."
+if command -v rbenv &> /dev/null; then
+    echo "  ✓ rbenv is installed"
+    
+    # Install Ruby build dependencies
+    echo "  Installing Ruby build dependencies..."
+    ruby_deps=(
+        "openssl@3"
+        "readline"
+        "libyaml"
+        "gmp"
+    )
+    
+    for dep in "${ruby_deps[@]}"; do
+        if brew list "$dep" &>/dev/null 2>&1; then
+            echo "    ✓ $dep already installed"
+        else
+            echo "    Installing $dep..."
+            brew install "$dep"
+        fi
+    done
+    
+    # Install latest stable Ruby versions
+    RUBY_LATEST_27=$(rbenv install -l | grep -E "^\s*2\.7\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    RUBY_LATEST_30=$(rbenv install -l | grep -E "^\s*3\.0\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    RUBY_LATEST_31=$(rbenv install -l | grep -E "^\s*3\.1\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    RUBY_LATEST_32=$(rbenv install -l | grep -E "^\s*3\.2\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    RUBY_LATEST_33=$(rbenv install -l | grep -E "^\s*3\.3\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    
+    # Install Ruby 3.2 as default (stable for most projects)
+    if [ ! -z "$RUBY_LATEST_32" ]; then
+        if rbenv versions | grep -q "$RUBY_LATEST_32"; then
+            echo "  ✓ Ruby $RUBY_LATEST_32 already installed"
+        else
+            echo "  Installing Ruby $RUBY_LATEST_32..."
+            rbenv install "$RUBY_LATEST_32"
+            echo "  ✅ Ruby $RUBY_LATEST_32 installed"
+        fi
+        
+        # Set global Ruby version
+        echo "  Setting Ruby $RUBY_LATEST_32 as global version..."
+        rbenv global "$RUBY_LATEST_32"
+        
+        # Install essential Ruby gems
+        echo "  Installing essential Ruby gems..."
+        eval "$(rbenv init -)"
+        gem install bundler
+        gem install rails
+        gem install rubocop
+        gem install solargraph
+        gem install pry
+        gem install rspec
+        rbenv rehash
+        echo "  ✅ Ruby development tools installed"
+    else
+        echo "  ⚠️  Could not find Ruby 3.2 version to install"
+    fi
+else
+    echo "  ⚠️  rbenv not found, skipping Ruby setup"
 fi
 
 # iTerm2 configuration
