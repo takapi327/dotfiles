@@ -93,26 +93,29 @@ cd ~/Development/dotfiles
 
 ### インストールされるプラグイン
 
-| カテゴリ         | プラグイン        | 説明                    |
-|--------------|--------------|-----------------------|
-| ファイルエクスプローラー | NERDTree     | サイドバーでファイル管理          |
-| ファジーファインダー   | fzf.vim      | 高速ファイル検索              |
-| Git統合        | fugitive     | Gitコマンドの実行            |
-| Git統合        | gitgutter    | 行ごとのGit差分表示           |
-| 自動補完         | CoC.nvim     | LSP対応のインテリセンス         |
-| Scala開発      | nvim-metals  | Scala LSP (Metals) 統合 |
-| Scala開発      | vim-scala    | Scalaシンタックス・インデント     |
-| デバッグ         | nvim-dap     | デバッグアダプタープロトコル対応    |
-| デバッグ         | nvim-dap-ui  | デバッグUI               |
-| ファイル検索       | telescope    | 高機能ファジーファインダー       |
-| テストランナー      | neotest      | 統合テストランナー           |
-| シンタックス       | vim-polyglot | 多言語シンタックスハイライト        |
-| Linting      | ALE          | 自動エラーチェック・フォーマット      |
-| ステータスライン     | airline      | 拡張ステータスライン            |
-| 編集補助         | commentary   | コメント切り替え              |
-| 編集補助         | surround     | 括弧・クォート操作             |
-| 編集補助         | auto-pairs   | 括弧の自動閉じ               |
-| その他          | vim-devicons | ファイルアイコン表示            |
+| カテゴリ         | プラグイン          | 説明                            |
+|--------------|----------------|-------------------------------|
+| ファイルエクスプローラー | NERDTree       | サイドバーでファイル管理                  |
+| ファジーファインダー   | fzf.vim        | 高速ファイル検索                      |
+| Git統合        | fugitive       | Gitコマンドの実行                    |
+| Git統合        | gitgutter      | 行ごとのGit差分表示                   |
+| 自動補完         | CoC.nvim       | LSP対応のインテリセンス                 |
+| TypeScript開発 | typescript-vim | TypeScript構文ハイライト             |
+| TypeScript開発 | yats.vim       | Yet Another TypeScript Syntax |
+| JavaScript開発 | vim-javascript | モダンJS構文サポート                   |
+| Scala開発      | nvim-metals    | Scala LSP (Metals) 統合         |
+| Scala開発      | vim-scala      | Scalaシンタックス・インデント             |
+| デバッグ         | nvim-dap       | デバッグアダプタープロトコル対応              |
+| デバッグ         | nvim-dap-ui    | デバッグUI                        |
+| ファイル検索       | telescope      | 高機能ファジーファインダー                 |
+| テストランナー      | neotest        | 統合テストランナー                     |
+| シンタックス       | vim-polyglot   | 多言語シンタックスハイライト                |
+| Linting      | ALE            | 自動エラーチェック・フォーマット              |
+| ステータスライン     | airline        | 拡張ステータスライン                    |
+| 編集補助         | commentary     | コメント切り替え                      |
+| 編集補助         | surround       | 括弧・クォート操作                     |
+| 編集補助         | auto-pairs     | 括弧の自動閉じ                       |
+| その他          | vim-devicons   | ファイルアイコン表示                    |
 
 ### 主要なキーバインド
 
@@ -418,6 +421,40 @@ brew install sbt
 #### CoC.nvimの言語サーバーをインストール
 ```vim
 :CocInstall coc-json coc-tsserver coc-python coc-rust-analyzer coc-metals
+```
+
+### TypeScript開発環境のセットアップ
+
+#### 1. CoC拡張機能
+install.shで以下が自動インストールされます：
+- **coc-tsserver**: TypeScript言語サーバー
+- **coc-eslint**: ESLintサポート
+- **coc-prettier**: Prettierフォーマッター
+- **coc-json**: JSON IntelliSense
+
+#### 2. TypeScript用キーバインド
+既存のCoC.nvimキーバインドがTypeScriptでも使用可能：
+- `gd`: 定義へジャンプ
+- `gr`: 参照箇所一覧
+- `K`: ホバードキュメント表示
+- `<Space>rn`: リネーム
+- `<Space>f`: 自動フォーマット
+
+#### 3. CoC設定（:CocConfig）
+```json
+{
+  "coc.preferences.formatOnSaveFiletypes": [
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact"
+  ],
+  "tsserver.formatOnType": true,
+  "typescript.updateImportsOnFileMove.enable": true,
+  "typescript.suggest.autoImports": true,
+  "eslint.autoFixOnSave": true,
+  "prettier.requireConfig": true
+}
 ```
 
 #### Metalsが動作しない場合

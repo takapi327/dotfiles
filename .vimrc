@@ -28,6 +28,11 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'sheerun/vim-polyglot'
 Plug 'dense-analysis/ale'
 
+" TypeScript development
+Plug 'leafgarland/typescript-vim'
+Plug 'pangloss/vim-javascript'
+Plug 'HerringtonDarkholme/yats.vim'
+
 " Auto completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -224,6 +229,7 @@ let g:airline_theme='gruvbox'
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'typescript': ['eslint', 'tsserver'],
+\   'typescriptreact': ['eslint', 'tsserver'],
 \   'python': ['flake8', 'pylint'],
 \   'rust': ['rustc'],
 \   'scala': ['scalac', 'sbtserver'],
@@ -231,6 +237,7 @@ let g:ale_linters = {
 let g:ale_fixers = {
 \   'javascript': ['prettier'],
 \   'typescript': ['prettier'],
+\   'typescriptreact': ['prettier'],
 \   'css': ['prettier'],
 \   'python': ['black', 'isort'],
 \   'rust': ['rustfmt'],
@@ -262,6 +269,13 @@ augroup filetype_config
   autocmd FileType markdown setlocal wrap linebreak
   autocmd FileType scala setlocal tabstop=2 shiftwidth=2 softtabstop=2
   autocmd FileType sbt setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  autocmd FileType typescript,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  autocmd FileType javascript,javascriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  " TypeScript/JavaScript file extensions
+  autocmd BufNewFile,BufRead *.tsx setlocal filetype=typescriptreact
+  autocmd BufNewFile,BufRead *.jsx setlocal filetype=javascriptreact
+  autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
+  autocmd BufNewFile,BufRead *.js setlocal filetype=javascript
 augroup END
 
 " Metals (Scala LSP) configuration
