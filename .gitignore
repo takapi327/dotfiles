@@ -14,3 +14,12 @@
 # Temporary files
 *.tmp
 *.temp
+
+# Scala/Metals
+.metals/
+.bloop/
+.scala-build/
+metals.sbt
+.bsp/
+project/metals.sbt
+project/project/

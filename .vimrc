@@ -51,10 +51,23 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
 " Scala development
-Plug 'scalameta/nvim-metals', { 'for': 'scala' }
+Plug 'scalameta/nvim-metals', { 'for': ['scala', 'sbt', 'java'] }
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
-Plug 'natebosch/vim-lsc', { 'for': 'scala' }
-Plug 'hrsh7th/nvim-compe'
+Plug 'nvim-lua/plenary.nvim'
+
+" Debugging
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'theHamsta/nvim-dap-virtual-text'
+
+" Better file navigation
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-dap.nvim'
+
+" Test runner
+Plug 'nvim-neotest/neotest'
+Plug 'nvim-neotest/neotest-vim-test'
+Plug 'vim-test/vim-test'
 
 call plug#end()
 
@@ -154,6 +167,13 @@ nnoremap <leader>t :terminal<CR>
 " Clear search highlight
 nnoremap <leader><space> :nohlsearch<CR>
 
+" Telescope
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fm <cmd>Telescope metals commands<cr>
+
 " Save and quit shortcuts
 nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
@@ -249,7 +269,34 @@ lua << EOF
 local metals_config = require'metals'.bare_config()
 metals_config.settings = {
   showImplicitArguments = true,
+  showImplicitConversionsAndClasses = true,
+  showInferredType = true,
+  superMethodLensesEnabled = true,
   excludedPackages = {"akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl"},
+}
+
+-- Enable DAP
+metals_config.init_options.statusBarProvider = "on"
+
+-- Setup DAP
+local dap = require("dap")
+dap.configurations.scala = {
+  {
+    type = "scala",
+    request = "launch",
+    name = "RunOrTest",
+    metals = {
+      runType = "runOrTestFile",
+    },
+  },
+  {
+    type = "scala",
+    request = "launch",
+    name = "Test Target",
+    metals = {
+      runType = "testTarget",
+    },
+  },
 }
 
 -- Autocmd to start Metals
@@ -261,11 +308,29 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("nvim-metals", {clear = true}),
 })
 
+-- Setup DAP on attach
+metals_config.on_attach = function(client, bufnr)
+  require("metals").setup_dap()
+end
+
 -- Metals keybindings
 vim.keymap.set("n", "<leader>mc", function() require("metals").compile_cascade() end, { desc = "Metals compile cascade" })
 vim.keymap.set("n", "<leader>mi", function() require("metals").toggle_setting("showImplicitArguments") end, { desc = "Toggle implicit args" })
 vim.keymap.set("n", "<leader>md", function() require("metals").doctor() end, { desc = "Metals doctor" })
 vim.keymap.set("n", "<leader>mw", function() require("metals").hover_worksheet() end, { desc = "Hover worksheet" })
+
+-- Debugging keybindings
+vim.keymap.set("n", "<leader>dc", function() require("dap").continue() end, { desc = "Debug continue" })
+vim.keymap.set("n", "<leader>dr", function() require("dap").repl.toggle() end, { desc = "Debug REPL" })
+vim.keymap.set("n", "<leader>dK", function() require("dap.ui.widgets").hover() end, { desc = "Debug hover" })
+vim.keymap.set("n", "<leader>dt", function() require("dap").toggle_breakpoint() end, { desc = "Toggle breakpoint" })
+vim.keymap.set("n", "<leader>dso", function() require("dap").step_over() end, { desc = "Step over" })
+vim.keymap.set("n", "<leader>dsi", function() require("dap").step_into() end, { desc = "Step into" })
+vim.keymap.set("n", "<leader>dl", function() require("dap").run_last() end, { desc = "Run last" })
+
+-- Telescope extensions
+pcall(require('telescope').load_extension, 'metals')
+pcall(require('telescope').load_extension, 'dap')
 EOF
 
 " Scala-specific keybindings

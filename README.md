@@ -85,6 +85,10 @@ cd ~/Development/dotfiles
 | 自動補完         | CoC.nvim     | LSP対応のインテリセンス         |
 | Scala開発      | nvim-metals  | Scala LSP (Metals) 統合 |
 | Scala開発      | vim-scala    | Scalaシンタックス・インデント     |
+| デバッグ         | nvim-dap     | デバッグアダプタープロトコル対応    |
+| デバッグ         | nvim-dap-ui  | デバッグUI               |
+| ファイル検索       | telescope    | 高機能ファジーファインダー       |
+| テストランナー      | neotest      | 統合テストランナー           |
 | シンタックス       | vim-polyglot | 多言語シンタックスハイライト        |
 | Linting      | ALE          | 自動エラーチェック・フォーマット      |
 | ステータスライン     | airline      | 拡張ステータスライン            |
@@ -152,17 +156,39 @@ cd ~/Development/dotfiles
 
 #### Scala開発（Metals）
 
+| キー          | 動作         | 説明                         |
+|-------------|------------|----------------------------|
+| `<Space>si` | ビルドインポート   | sbtプロジェクトをインポート            |
+| `<Space>sb` | ビルド接続      | ビルドサーバーに接続                 |
+| `<Space>sc` | コンパイル      | カスケードコンパイル実行               |
+| `<Space>sr` | サーバー再起動    | Metalsサーバーを再起動             |
+| `<Space>so` | import整理   | 未使用importの削除・整理            |
+| `<Space>mc` | コンパイル      | プロジェクト全体をコンパイル             |
+| `<Space>mi` | 暗黙引数表示     | 暗黙的な引数の表示切替                |
+| `<Space>md` | 診断         | Metalsの診断情報を表示             |
+| `<Space>mw` | ワークシート     | ワークシートのホバー情報               |
+| `<Space>fm` | Metalsコマンド | Telescope経由でMetalsコマンド一覧表示 |
+
+#### デバッグ（nvim-dap）
+
+| キー           | 動作       | 説明             |
+|--------------|----------|----------------|
+| `<Space>dt`  | ブレークポイント | ブレークポイントの設定/解除 |
+| `<Space>dc`  | デバッグ開始   | デバッグセッションを開始   |
+| `<Space>dr`  | REPL起動   | デバッグREPLを開く    |
+| `<Space>dK`  | 変数確認     | カーソル位置の変数値を表示  |
+| `<Space>dso` | ステップオーバー | 次の行へ進む         |
+| `<Space>dsi` | ステップイン   | 関数内に入る         |
+| `<Space>dl`  | 最後のデバッグ  | 前回のデバッグ設定で再実行  |
+
+#### Telescope検索
+
 | キー          | 動作       | 説明              |
 |-------------|----------|-----------------|
-| `<Space>si` | ビルドインポート | sbtプロジェクトをインポート |
-| `<Space>sb` | ビルド接続    | ビルドサーバーに接続      |
-| `<Space>sc` | コンパイル    | カスケードコンパイル実行    |
-| `<Space>sr` | サーバー再起動  | Metalsサーバーを再起動  |
-| `<Space>so` | import整理 | 未使用importの削除・整理 |
-| `<Space>mc` | コンパイル    | プロジェクト全体をコンパイル  |
-| `<Space>mi` | 暗黙引数表示   | 暗黙的な引数の表示切替     |
-| `<Space>md` | 診断       | Metalsの診断情報を表示  |
-| `<Space>mw` | ワークシート   | ワークシートのホバー情報    |
+| `<Space>ff` | ファイル検索   | プロジェクト内のファイル検索  |
+| `<Space>fg` | 内容検索     | ファイル内容を横断検索     |
+| `<Space>fb` | バッファ検索   | 開いているバッファから検索   |
+| `<Space>fh` | ヘルプ検索    | Vimヘルプを検索       |
 
 ### カラーテーマ
 
@@ -228,6 +254,32 @@ brew install sbt
 
 " サーバーの再起動
 :MetalsRestartServer
+```
+
+#### デバッグ機能を使う場合
+```vim
+" ブレークポイントを設定してからデバッグ開始
+<Space>dt  " ブレークポイント設定
+<Space>dc  " デバッグ実行
+
+" デバッグ中の操作
+<Space>dK  " 変数の値を確認
+<Space>dso " 次の行へ
+<Space>dsi " 関数の中へ
+```
+
+### 推奨される.gitignore設定
+
+Scalaプロジェクトで以下のディレクトリを除外することを推奨：
+```gitignore
+# Scala/Metals
+.metals/
+.bloop/
+.scala-build/
+metals.sbt
+.bsp/
+project/metals.sbt
+project/project/
 ```
 
 ## カスタマイズ
