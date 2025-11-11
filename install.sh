@@ -139,6 +139,8 @@ brew_packages=(
     "gh"
     "sbt"
     "coursier/formulas/coursier"
+    "pyenv"
+    "pyenv-virtualenv"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -322,6 +324,65 @@ if command -v cs &> /dev/null; then
     fi
 else
     echo "  ⚠️  Coursier not found, skipping Scala tools installation"
+fi
+
+# Setup Python with pyenv
+echo "🐍 Setting up Python development environment..."
+if command -v pyenv &> /dev/null; then
+    echo "  ✓ pyenv is installed"
+    
+    # Install Python build dependencies
+    echo "  Installing Python build dependencies..."
+    python_deps=(
+        "openssl"
+        "readline"
+        "sqlite3"
+        "xz"
+        "zlib"
+        "tcl-tk"
+    )
+    
+    for dep in "${python_deps[@]}"; do
+        if brew list "$dep" &>/dev/null 2>&1; then
+            echo "    ✓ $dep already installed"
+        else
+            echo "    Installing $dep..."
+            brew install "$dep"
+        fi
+    done
+    
+    # Install latest stable Python versions
+    PYTHON_LATEST_38=$(pyenv install -l | grep -E "^\s*3\.8\.[0-9]+$" | tail -1 | xargs)
+    PYTHON_LATEST_39=$(pyenv install -l | grep -E "^\s*3\.9\.[0-9]+$" | tail -1 | xargs)
+    PYTHON_LATEST_310=$(pyenv install -l | grep -E "^\s*3\.10\.[0-9]+$" | tail -1 | xargs)
+    PYTHON_LATEST_311=$(pyenv install -l | grep -E "^\s*3\.11\.[0-9]+$" | tail -1 | xargs)
+    PYTHON_LATEST_312=$(pyenv install -l | grep -E "^\s*3\.12\.[0-9]+$" | tail -1 | xargs)
+    
+    # Install Python 3.11 as default (stable for most projects)
+    if [ ! -z "$PYTHON_LATEST_311" ]; then
+        if pyenv versions | grep -q "$PYTHON_LATEST_311"; then
+            echo "  ✓ Python $PYTHON_LATEST_311 already installed"
+        else
+            echo "  Installing Python $PYTHON_LATEST_311..."
+            pyenv install "$PYTHON_LATEST_311"
+            echo "  ✅ Python $PYTHON_LATEST_311 installed"
+        fi
+        
+        # Set global Python version
+        echo "  Setting Python $PYTHON_LATEST_311 as global version..."
+        pyenv global "$PYTHON_LATEST_311"
+        
+        # Upgrade pip and install essential packages
+        echo "  Upgrading pip and installing essential packages..."
+        eval "$(pyenv init -)"
+        pip install --upgrade pip
+        pip install pipenv poetry virtualenv black flake8 pylint mypy
+        echo "  ✅ Python development tools installed"
+    else
+        echo "  ⚠️  Could not find Python 3.11 version to install"
+    fi
+else
+    echo "  ⚠️  pyenv not found, skipping Python setup"
 fi
 
 # iTerm2 configuration

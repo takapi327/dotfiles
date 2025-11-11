@@ -64,6 +64,21 @@ cd ~/Development/dotfiles
 - iTerm2
 - Git
 
+## 含まれる開発環境
+
+### プログラミング言語
+- **Python**: pyenv + pyenv-virtualenvで複数バージョン管理
+- **Node.js**: nodenvで管理
+- **Ruby**: rbenvで管理  
+- **Scala**: sbt + Coursier + Metals
+- **Go**: 公式インストーラー
+
+### 開発ツール
+- **エディタ**: Neovim (vim-plug)
+- **ターミナル**: iTerm2 + Zsh (Powerlevel9k)
+- **コンテナ**: Docker Desktop + lazydocker
+- **Git**: gh CLI + fugitive (Vim統合)
+
 ## インストール後の設定
 
 1. ターミナルを再起動するか `source ~/.zshrc` を実行
@@ -205,6 +220,55 @@ Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`
 | Scala                 | スペース2 | scalafmt     | Metals LSP, scalac |
 | Markdown              | スペース2 | -            | 自動改行、プレビュー対応       |
 | その他                   | スペース2 | -            | デフォルト設定            |
+
+### Python開発環境のセットアップ（pyenv）
+
+#### 1. pyenvの基本的な使い方
+```bash
+# インストール可能なPythonバージョンを確認
+pyenv install --list
+
+# 特定のバージョンをインストール
+pyenv install 3.11.7
+
+# グローバルバージョンを設定
+pyenv global 3.11.7
+
+# プロジェクト固有のバージョンを設定
+cd /path/to/project
+pyenv local 3.10.13
+
+# 現在のバージョンを確認
+pyenv version
+
+# インストール済みバージョン一覧
+pyenv versions
+```
+
+#### 2. 仮想環境の作成（pyenv-virtualenv）
+```bash
+# 仮想環境を作成
+pyenv virtualenv 3.11.7 myproject-env
+
+# 仮想環境をアクティベート
+pyenv activate myproject-env
+
+# 仮想環境をディアクティベート
+pyenv deactivate
+
+# プロジェクトディレクトリに自動アクティベート設定
+cd /path/to/project
+pyenv local myproject-env
+```
+
+#### 3. インストール済みのPython開発ツール
+- **pip**: パッケージ管理
+- **pipenv**: 依存関係管理
+- **poetry**: モダンな依存関係管理
+- **black**: コードフォーマッター
+- **flake8**: リンター
+- **pylint**: 高度なリンター
+- **mypy**: 型チェッカー
 
 ### Scala開発環境のセットアップ
 

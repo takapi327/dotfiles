@@ -19,6 +19,10 @@
 - **エディタ**: Vim/Neovim (vim-plug)
 - **ターミナル**: iTerm2
 - **フォント**: Nerd Fonts (MesloLGS NF)
+- **Python**: pyenv + pyenv-virtualenv
+- **Node.js**: nodenv
+- **Ruby**: rbenv
+- **Scala**: sbt + Metals
 
 ## 主要な設定内容
 
@@ -46,4 +50,5 @@ cd ~/Development/dotfiles
 
 - 既存のzsh設定は保持されています
 - Homebrew、pyenv、nodenv、rbenvなどの設定も含まれています
-- iTerm2プロファイルは手動でインポートが必要です
+- iTerm2プロファイルは自動でDynamic Profilesとしてインストールされます
+- pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
