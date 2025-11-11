@@ -143,6 +143,8 @@ brew_packages=(
     "pyenv-virtualenv"
     "rbenv"
     "ruby-build"
+    "nodenv"
+    "node-build"
     "awscli"
     "aws-sam-cli"
 )
@@ -449,6 +451,58 @@ if command -v rbenv &> /dev/null; then
     fi
 else
     echo "  ⚠️  rbenv not found, skipping Ruby setup"
+fi
+
+# Setup Node.js with nodenv
+echo "🟢 Setting up Node.js development environment..."
+if command -v nodenv &> /dev/null; then
+    echo "  ✓ nodenv is installed"
+    
+    # Install latest stable Node.js versions
+    NODE_LATEST_18=$(nodenv install -l | grep -E "^\s*18\.[0-9]+\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    NODE_LATEST_20=$(nodenv install -l | grep -E "^\s*20\.[0-9]+\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    NODE_LATEST_22=$(nodenv install -l | grep -E "^\s*22\.[0-9]+\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    
+    # Install Node.js 22 as default (latest)
+    if [ ! -z "$NODE_LATEST_22" ]; then
+        if nodenv versions | grep -q "$NODE_LATEST_22"; then
+            echo "  ✓ Node.js $NODE_LATEST_22 already installed"
+        else
+            echo "  Installing Node.js $NODE_LATEST_22..."
+            nodenv install "$NODE_LATEST_22"
+            echo "  ✅ Node.js $NODE_LATEST_22 installed"
+        fi
+        
+        # Set global Node.js version
+        echo "  Setting Node.js $NODE_LATEST_22 as global version..."
+        nodenv global "$NODE_LATEST_22"
+        
+        # Install global npm packages
+        echo "  Installing essential npm packages..."
+        eval "$(nodenv init -)"
+        
+        # Update npm itself
+        npm install -g npm@latest
+        
+        # Install common global packages
+        npm install -g yarn
+        npm install -g pnpm
+        npm install -g typescript
+        npm install -g ts-node
+        npm install -g nodemon
+        npm install -g eslint
+        npm install -g prettier
+        npm install -g npm-check-updates
+        
+        # Rehash to register new executables
+        nodenv rehash
+        
+        echo "  ✅ Node.js development tools installed"
+    else
+        echo "  ⚠️  Could not find Node.js 22 version to install"
+    fi
+else
+    echo "  ⚠️  nodenv not found, skipping Node.js setup"
 fi
 
 # iTerm2 configuration

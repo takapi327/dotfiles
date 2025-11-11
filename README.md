@@ -320,6 +320,67 @@ bundle exec rails server
 - **pry**: 高機能REPL/デバッガ
 - **rspec**: テストフレームワーク
 
+### Node.js開発環境のセットアップ（nodenv）
+
+#### 1. nodenvの基本的な使い方
+```bash
+# インストール可能なNode.jsバージョンを確認
+nodenv install --list
+
+# 特定のバージョンをインストール
+nodenv install 22.11.0
+
+# グローバルバージョンを設定
+nodenv global 22.11.0
+
+# プロジェクト固有のバージョンを設定
+cd /path/to/project
+nodenv local 20.11.0
+
+# 現在のバージョンを確認
+nodenv version
+
+# インストール済みバージョン一覧
+nodenv versions
+
+# パッケージマネージャーでパッケージをインストール後
+nodenv rehash
+```
+
+#### 2. npmパッケージの管理
+```bash
+# package.jsonの初期化
+npm init -y
+
+# 開発用パッケージをインストール
+npm install --save-dev eslint prettier
+
+# 本番用パッケージをインストール
+npm install express
+
+# グローバルパッケージをインストール
+npm install -g typescript
+
+# Yarnを使う場合
+yarn add react
+yarn add -D @types/react
+
+# pnpmを使う場合
+pnpm add fastify
+pnpm add -D vitest
+```
+
+#### 3. インストール済みのNode.js開発ツール
+- **npm**: デフォルトパッケージマネージャー
+- **yarn**: 高速パッケージマネージャー
+- **pnpm**: ディスク効率的なパッケージマネージャー
+- **typescript**: TypeScript言語
+- **ts-node**: TypeScript実行環境
+- **nodemon**: ファイル変更監視・自動再起動
+- **eslint**: JavaScriptリンター
+- **prettier**: コードフォーマッター
+- **npm-check-updates**: パッケージ更新チェッカー
+
 ### Scala開発環境のセットアップ
 
 #### 1. 必要なツールのインストール

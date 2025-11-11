@@ -190,10 +190,9 @@ case ":$PATH:" in
 esac
 # pnpm end
 
-# Node
+# Node.js/nodenv設定
 export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init -)"
-# Node end
 
 # bun completions
 [ -s "/Users/takapi327/.bun/_bun" ] && source "/Users/takapi327/.bun/_bun"
@@ -204,8 +203,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # GPG
 export GPG_TTY=${TTY}
-
-eval "$(nodenv init -)"
 
 # Ruby/rbenv設定
 export PATH="$HOME/.rbenv/bin:$PATH"

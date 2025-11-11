@@ -53,3 +53,4 @@ cd ~/Development/dotfiles
 - iTerm2プロファイルは自動でDynamic Profilesとしてインストールされます
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
+- nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します
