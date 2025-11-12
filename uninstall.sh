@@ -195,9 +195,9 @@ case $REPLY in
         fi
         
         # Remove Java (Amazon Corretto)
-        if brew list --cask corretto21 &>/dev/null; then
+        if brew list --cask corretto@21 &>/dev/null; then
             echo "  🗑️  Uninstalling Amazon Corretto 21..."
-            brew uninstall --cask corretto21 2>/dev/null || true
+            brew uninstall --cask corretto@21 2>/dev/null || true
         fi
         
         # Remove Nerd Font

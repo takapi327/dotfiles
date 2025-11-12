@@ -325,11 +325,11 @@ fi
 # Install Java (Amazon Corretto)
 echo "☕ Installing Java (Amazon Corretto)..."
 if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "Corretto.*21"; then
-    if brew list --cask corretto21 &>/dev/null; then
+    if brew list --cask corretto@21 &>/dev/null; then
         echo "  ✓ Amazon Corretto 21 already installed"
     else
         echo "  Installing Amazon Corretto 21..."
-        brew install --cask corretto21
+        brew install --cask corretto@21
         echo "  ✅ Amazon Corretto 21 installed"
     fi
     
