@@ -452,40 +452,65 @@ if command -v rbenv &> /dev/null; then
         fi
     done
     
-    # Install latest stable Ruby versions
-    RUBY_LATEST_27=$(rbenv install -l | grep -E "^\s*2\.7\.[0-9]+$" | grep -v - | tail -1 | xargs)
-    RUBY_LATEST_30=$(rbenv install -l | grep -E "^\s*3\.0\.[0-9]+$" | grep -v - | tail -1 | xargs)
-    RUBY_LATEST_31=$(rbenv install -l | grep -E "^\s*3\.1\.[0-9]+$" | grep -v - | tail -1 | xargs)
-    RUBY_LATEST_32=$(rbenv install -l | grep -E "^\s*3\.2\.[0-9]+$" | grep -v - | tail -1 | xargs)
-    RUBY_LATEST_33=$(rbenv install -l | grep -E "^\s*3\.3\.[0-9]+$" | grep -v - | tail -1 | xargs)
+    # Install additional build dependencies for macOS
+    echo "  Installing additional build dependencies..."
+    build_deps=(
+        "pkg-config"
+        "autoconf"
+        "automake"
+        "libtool"
+    )
     
-    # Install Ruby 3.2 as default (stable for most projects)
-    if [ ! -z "$RUBY_LATEST_32" ]; then
-        if rbenv versions | grep -q "$RUBY_LATEST_32"; then
-            echo "  ✓ Ruby $RUBY_LATEST_32 already installed"
+    for dep in "${build_deps[@]}"; do
+        if brew list "$dep" &>/dev/null 2>&1; then
+            echo "    ✓ $dep already installed"
         else
-            echo "  Installing Ruby $RUBY_LATEST_32..."
-            rbenv install "$RUBY_LATEST_32"
-            echo "  ✅ Ruby $RUBY_LATEST_32 installed"
+            echo "    Installing $dep..."
+            brew install "$dep"
+        fi
+    done
+    
+    # Use a stable Ruby version that works well with current macOS
+    RUBY_TARGET_VERSION="3.1.6"
+    
+    # Check if target Ruby version is available
+    if rbenv install -l | grep -q "^\s*$RUBY_TARGET_VERSION\s*$"; then
+        if rbenv versions | grep -q "$RUBY_TARGET_VERSION"; then
+            echo "  ✓ Ruby $RUBY_TARGET_VERSION already installed"
+        else
+            echo "  Installing Ruby $RUBY_TARGET_VERSION (stable version for macOS)..."
+            
+            # Set build flags for macOS compatibility
+            export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3) --with-readline-dir=$(brew --prefix readline) --with-libyaml-dir=$(brew --prefix libyaml) --with-gmp-dir=$(brew --prefix gmp) --disable-install-doc"
+            
+            if rbenv install "$RUBY_TARGET_VERSION"; then
+                echo "  ✅ Ruby $RUBY_TARGET_VERSION installed"
+            else
+                echo "  ⚠️  Failed to install Ruby $RUBY_TARGET_VERSION"
+                echo "  Trying with system Ruby..."
+                RUBY_TARGET_VERSION="system"
+            fi
         fi
         
-        # Set global Ruby version
-        echo "  Setting Ruby $RUBY_LATEST_32 as global version..."
-        rbenv global "$RUBY_LATEST_32"
-        
-        # Install essential Ruby gems
-        echo "  Installing essential Ruby gems..."
-        eval "$(rbenv init -)"
-        gem install bundler
-        gem install rails
-        gem install rubocop
-        gem install solargraph
-        gem install pry
-        gem install rspec
-        rbenv rehash
-        echo "  ✅ Ruby development tools installed"
+        if [ "$RUBY_TARGET_VERSION" != "system" ]; then
+            # Set global Ruby version
+            echo "  Setting Ruby $RUBY_TARGET_VERSION as global version..."
+            rbenv global "$RUBY_TARGET_VERSION"
+            
+            # Install essential Ruby gems
+            echo "  Installing essential Ruby gems..."
+            eval "$(rbenv init -)"
+            gem install bundler
+            gem install rails
+            gem install rubocop
+            gem install solargraph
+            gem install pry
+            gem install rspec
+            rbenv rehash
+            echo "  ✅ Ruby development tools installed"
+        fi
     else
-        echo "  ⚠️  Could not find Ruby 3.2 version to install"
+        echo "  ⚠️  Ruby $RUBY_TARGET_VERSION not available in rbenv"
     fi
 else
     echo "  ⚠️  rbenv not found, skipping Ruby setup"
