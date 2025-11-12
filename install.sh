@@ -289,10 +289,10 @@ echo "📦 Installing Vim plugins..."
 if [ -f "$HOME/.vim/autoload/plug.vim" ] && [ -f "$HOME/.vimrc" ]; then
     vim +PlugInstall +qall 2>/dev/null || true
     
-    # Install CoC extensions for TypeScript
+    # Install CoC extensions for TypeScript and Svelte
     echo "  Installing CoC extensions..."
-    vim -c "CocInstall -sync coc-tsserver coc-eslint coc-prettier coc-json" -c "qall" 2>/dev/null || true
-    echo "  ✅ CoC TypeScript extensions installed"
+    vim -c "CocInstall -sync coc-tsserver coc-eslint coc-prettier coc-json coc-svelte" -c "qall" 2>/dev/null || true
+    echo "  ✅ CoC TypeScript and Svelte extensions installed"
 else
     echo "  ⚠️  Skipping Vim plugin installation (vim-plug or .vimrc not found)"
 fi

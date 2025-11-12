@@ -103,6 +103,11 @@ cd ~/Development/dotfiles
 | TypeScript開発 | typescript-vim | TypeScript構文ハイライト             |
 | TypeScript開発 | yats.vim       | Yet Another TypeScript Syntax |
 | JavaScript開発 | vim-javascript | モダンJS構文サポート                   |
+| Svelte開発    | vim-svelte     | Svelte構文ハイライト・インデント          |
+| Svelte開発    | vim-svelte-plugin | 高機能Svelte構文プラグイン           |
+| Svelte開発    | context_filetype.vim | コンテキスト別処理              |
+| Svelte開発    | nerdcommenter  | Svelte対応コメント機能              |
+| Svelte開発    | vim-prettier   | Prettier統合フォーマッター            |
 | Scala開発      | nvim-metals    | Scala LSP (Metals) 統合         |
 | Scala開発      | vim-scala      | Scalaシンタックス・インデント             |
 | デバッグ         | nvim-dap       | デバッグアダプタープロトコル対応              |
@@ -431,6 +436,7 @@ install.shで以下が自動インストールされます：
 - **coc-eslint**: ESLintサポート
 - **coc-prettier**: Prettierフォーマッター
 - **coc-json**: JSON IntelliSense
+- **coc-svelte**: Svelte言語サーバー
 
 #### 2. TypeScript用キーバインド
 既存のCoC.nvimキーバインドがTypeScriptでも使用可能：
@@ -456,6 +462,46 @@ install.shで以下が自動インストールされます：
   "prettier.requireConfig": true
 }
 ```
+
+### Svelte開発環境のセットアップ
+
+#### 1. インストールされるプラグイン
+- **vim-svelte**: 軽量なSvelte構文ハイライト
+- **vim-svelte-plugin**: 高機能Svelte構文プラグイン（Sass/TypeScript対応）
+- **context_filetype.vim**: Svelteファイル内でHTML/JS/CSS部分を区別
+- **nerdcommenter**: Svelte対応コメント機能
+- **vim-prettier**: Prettierフォーマッター統合
+
+#### 2. Svelte用設定
+プロジェクトルートに`svelte.config.js`が必要（TypeScript/Sass使用時）：
+```javascript
+import { vitePreprocess } from '@sveltejs/kit/vite';
+
+const config = {
+  preprocess: vitePreprocess(),
+  kit: {
+    // adapter設定など
+  }
+};
+
+export default config;
+```
+
+#### 3. CoC Svelte設定（:CocConfig）
+```json
+{
+  "svelte.enable": true,
+  "svelte.plugin.typescript.enable": true,
+  "svelte.plugin.css.enable": true,
+  "svelte.plugin.html.enable": true,
+  "svelte.plugin.svelte.format.enable": true
+}
+```
+
+#### 4. Svelteファイルでのコメント
+- HTML部分: `<!-- コメント -->`
+- Script部分: `// コメント`
+- Style部分: `/* コメント */`
 
 #### Metalsが動作しない場合
 ```vim

@@ -33,6 +33,13 @@ Plug 'leafgarland/typescript-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'HerringtonDarkholme/yats.vim'
 
+" Svelte development
+Plug 'evanleck/vim-svelte'
+Plug 'leafOfTree/vim-svelte-plugin'
+Plug 'Shougo/context_filetype.vim'
+Plug 'preservim/nerdcommenter'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+
 " Auto completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -230,6 +237,7 @@ let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'typescript': ['eslint', 'tsserver'],
 \   'typescriptreact': ['eslint', 'tsserver'],
+\   'svelte': ['eslint'],
 \   'python': ['flake8', 'pylint'],
 \   'rust': ['rustc'],
 \   'scala': ['scalac', 'sbtserver'],
@@ -238,6 +246,7 @@ let g:ale_fixers = {
 \   'javascript': ['prettier'],
 \   'typescript': ['prettier'],
 \   'typescriptreact': ['prettier'],
+\   'svelte': ['prettier'],
 \   'css': ['prettier'],
 \   'python': ['black', 'isort'],
 \   'rust': ['rustfmt'],
@@ -271,12 +280,31 @@ augroup filetype_config
   autocmd FileType sbt setlocal tabstop=2 shiftwidth=2 softtabstop=2
   autocmd FileType typescript,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
   autocmd FileType javascript,javascriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  autocmd FileType svelte setlocal tabstop=2 shiftwidth=2 softtabstop=2
   " TypeScript/JavaScript file extensions
   autocmd BufNewFile,BufRead *.tsx setlocal filetype=typescriptreact
   autocmd BufNewFile,BufRead *.jsx setlocal filetype=javascriptreact
   autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
   autocmd BufNewFile,BufRead *.js setlocal filetype=javascript
+  " Svelte file extensions
+  autocmd BufNewFile,BufRead *.svelte setlocal filetype=svelte
 augroup END
+
+" Svelte configuration
+let g:vim_svelte_plugin_load_full_syntax = 1
+let g:vim_svelte_plugin_use_sass = 1
+let g:vim_svelte_plugin_use_typescript = 1
+
+" NERDCommenter configuration for Svelte
+let g:NERDCustomDelimiters = {
+\   'svelte': { 'left': '<!-- ', 'right': ' -->', 'leftAlt': '// ', 'rightAlt': '' }
+\}
+
+" Context filetype for Svelte
+if !exists('g:context_filetype#same_filetypes')
+  let g:context_filetype#same_filetypes = {}
+endif
+let g:context_filetype#same_filetypes.svelte = 'html,javascript,typescript,css,scss'
 
 " Metals (Scala LSP) configuration
 lua << EOF
