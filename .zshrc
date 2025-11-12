@@ -23,7 +23,14 @@ export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
 ### テーマの設定 ###
 # IMPORTANT: Set POWERLEVEL9K_MODE before loading the theme
-POWERLEVEL9K_MODE="nerdfont-complete"
+# Check if Nerd Font is available, fallback to powerline mode
+if [ -f "$HOME/Library/Fonts/"*"Nerd Font"* ] 2>/dev/null || fc-list 2>/dev/null | grep -i "nerd" >/dev/null; then
+    POWERLEVEL9K_MODE="nerdfont-complete"
+else
+    # Fallback to powerline mode if Nerd Font is not available
+    POWERLEVEL9K_MODE="awesome-patched"
+    echo "ℹ️  Using Powerline mode. For full icon support, install Nerd Fonts."
+fi
 
 #### macコピペ ####
 POWERLEVEL9K_CUSTOM_WIFI_SIGNAL="zsh_wifi_signal"

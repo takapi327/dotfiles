@@ -163,11 +163,37 @@ done
 
 # Install Nerd Font
 echo "🔤 Installing Nerd Font..."
-if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
-    echo "  ✓ Nerd Font already installed"
-else
-    echo "  Installing Nerd Font..."
-    brew install --cask font-meslo-lg-nerd-font
+
+# Check if MesloLGS Nerd Font is already installed (file-based check)
+NERD_FONT_INSTALLED=false
+if ls "$HOME/Library/Fonts/"*"MesloLGS"*"Nerd"* 2>/dev/null | head -1 >/dev/null; then
+    echo "  ✓ MesloLGS Nerd Font already installed"
+    NERD_FONT_INSTALLED=true
+elif brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
+    echo "  ✓ Nerd Font already installed via Homebrew"
+    NERD_FONT_INSTALLED=true
+fi
+
+if [ "$NERD_FONT_INSTALLED" = false ]; then
+    echo "  Installing MesloLGS Nerd Font..."
+    if brew install --cask font-meslo-lg-nerd-font; then
+        echo "  ✅ MesloLGS Nerd Font installed successfully"
+    else
+        echo "  ⚠️  Failed to install via Homebrew, trying direct download..."
+        
+        # Fallback: Direct download from Nerd Fonts repository
+        NERD_FONT_DIR="$HOME/Library/Fonts"
+        mkdir -p "$NERD_FONT_DIR"
+        
+        echo "  Downloading MesloLGS Nerd Font files..."
+        NERD_FONT_BASE_URL="https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/Meslo/S/Regular/MesloLGSNerdFont-Regular.ttf"
+        
+        if curl -fL "$NERD_FONT_BASE_URL" -o "$NERD_FONT_DIR/MesloLGSNerdFont-Regular.ttf"; then
+            echo "  ✅ MesloLGS Nerd Font downloaded and installed"
+        else
+            echo "  ⚠️  Failed to download Nerd Font. Powerlevel9k will use Powerline mode."
+        fi
+    fi
 fi
 
 # Install Powerline Source Code Pro font
@@ -659,9 +685,12 @@ echo "  - Use 'cc' as an alias for claude-code"
 echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"
-echo "  - Rectangle: Use for window management (⌃⌥ + arrows)"
-echo "  - Raycast: Replace Spotlight with ⌘Space"
 echo "  - Check CLAUDE.md for more information about this setup"
+echo ""
+echo "🔤 Font Setup:"
+echo "  - For full Powerlevel9k icon support, use MesloLGS Nerd Font in your terminal"
+echo "  - Alternative: Use any Powerline-patched font for basic icon support"
+echo "  - iTerm2: Preferences → Profiles → Text → Font"
 
 # Setup AWS CLI
 echo "☁️  Setting up AWS CLI..."
