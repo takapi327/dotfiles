@@ -315,27 +315,22 @@ fi
 
 # Install Powerlevel9k theme
 echo "🎨 Setting up Powerlevel9k theme..."
-if ! brew list powerlevel9k &>/dev/null; then
-    echo "  Adding Powerlevel9k tap..."
-    if ! brew tap | grep -q "sambadevi/powerlevel9k"; then
-        brew tap sambadevi/powerlevel9k
-    fi
-    
-    echo "  Installing Powerlevel9k via Homebrew..."
-    brew install powerlevel9k
-    echo "  ✅ Powerlevel9k installed"
+POWERLEVEL9K_DIR="$HOME/Development/vim/powerlevel9k"
+
+# Use Git clone method (official recommended way for vanilla zsh)
+if [ ! -d "$POWERLEVEL9K_DIR" ]; then
+    echo "  Installing Powerlevel9k via Git clone (official method)..."
+    mkdir -p "$HOME/Development/vim"
+    git clone https://github.com/bhilburn/powerlevel9k.git "$POWERLEVEL9K_DIR"
+    echo "  ✅ Powerlevel9k installed from official repository"
 else
     echo "  ✓ Powerlevel9k already installed"
-fi
-
-# Create compatibility symlink for existing .zshrc configuration
-HOMEBREW_P9K_PATH="/opt/homebrew/opt/powerlevel9k/powerlevel9k.zsh-theme"
-LEGACY_P9K_DIR="$HOME/Development/vim/powerlevel9k"
-if [ -f "$HOMEBREW_P9K_PATH" ] && [ ! -d "$LEGACY_P9K_DIR" ]; then
-    echo "  Creating compatibility symlink..."
-    mkdir -p "$HOME/Development/vim"
-    ln -sf "$(dirname "$HOMEBREW_P9K_PATH")" "$LEGACY_P9K_DIR"
-    echo "  ✅ Compatibility symlink created"
+    
+    # Update existing installation
+    echo "  Updating Powerlevel9k..."
+    cd "$POWERLEVEL9K_DIR"
+    git pull origin master 2>/dev/null || true
+    echo "  ✅ Powerlevel9k updated"
 fi
 
 # Install fzf key bindings and completion

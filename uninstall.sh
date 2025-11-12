@@ -112,20 +112,13 @@ fi
 
 # Remove Powerlevel9k theme
 echo "🎨 Removing Powerlevel9k theme..."
-if brew list powerlevel9k &>/dev/null; then
-    echo "  🗑️  Uninstalling Homebrew Powerlevel9k..."
-    brew uninstall powerlevel9k 2>/dev/null || true
-    
-    # Remove tap if no other packages from this tap are installed
-    if brew tap | grep -q "sambadevi/powerlevel9k"; then
-        echo "  🗑️  Removing Powerlevel9k tap..."
-        brew untap sambadevi/powerlevel9k 2>/dev/null || true
-    fi
-fi
-
-if [ -d "$HOME/Development/vim/powerlevel9k" ]; then
-    echo "  🗑️  Removing manual installation at $HOME/Development/vim/powerlevel9k"
-    rm -rf "$HOME/Development/vim/powerlevel9k"
+POWERLEVEL9K_DIR="$HOME/Development/vim/powerlevel9k"
+if [ -d "$POWERLEVEL9K_DIR" ]; then
+    echo "  🗑️  Removing Powerlevel9k installation at $POWERLEVEL9K_DIR"
+    rm -rf "$POWERLEVEL9K_DIR"
+    echo "  ✅ Powerlevel9k removed"
+else
+    echo "  ✓ Powerlevel9k not found (already removed)"
 fi
 
 # Remove completions and configurations

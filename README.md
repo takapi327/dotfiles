@@ -31,13 +31,15 @@ cd ~/Development/dotfiles
 - **Linting**: ALE
 
 ### Zsh設定 (`.zshrc`, `.zprofile`)
-- **テーマ**: Powerlevel9k (Nerd Font対応)
+- **テーマ**: Powerlevel9k (Nerd Font対応、公式Git cloneインストール)
 - **プラグイン**: git, zsh-syntax-highlighting, zsh-autosuggestions
 - **パッケージマネージャー**: Homebrew, pyenv, nodenv, rbenv対応
 - **エイリアス**: 
   - Git shortcuts
   - Claude Code (`cc`)
   - Docker (`dps`, `dimg`, `dc`, `ld`等)
+
+**注意**: Powerlevel9kは2020年にアーカイブされましたが、安定版として使用可能です。
 
 ### iTerm2設定
 - **カラースキーム**: Gruvbox Dark

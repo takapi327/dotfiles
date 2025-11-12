@@ -22,6 +22,7 @@ export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
 ### テーマの設定 ###
+# IMPORTANT: Set POWERLEVEL9K_MODE before loading the theme
 POWERLEVEL9K_MODE="nerdfont-complete"
 
 #### macコピペ ####
@@ -177,17 +178,14 @@ alias awsw='aws sts get-caller-identity'
 
 ### ここから下は環境設定 ###
 
-# Powerlevel9k theme
-# Try Homebrew installation first, then fallback to manual installation
-if [ -f "/opt/homebrew/opt/powerlevel9k/powerlevel9k.zsh-theme" ]; then
-    source "/opt/homebrew/opt/powerlevel9k/powerlevel9k.zsh-theme"
-elif [ -f "/usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme" ]; then
-    source "/usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme"
-elif [ -f "$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme" ]; then
-    source "$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
+# Powerlevel9k theme (official vanilla zsh installation)
+POWERLEVEL9K_INSTALLATION_PATH="$HOME/Development/vim/powerlevel9k"
+if [ -f "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme" ]; then
+    source "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme"
 else
-    echo "⚠️  Powerlevel9k theme not found. Using default zsh prompt."
-    echo "    Install with: brew tap sambadevi/powerlevel9k && brew install powerlevel9k"
+    echo "⚠️  Powerlevel9k theme not found at $POWERLEVEL9K_INSTALLATION_PATH"
+    echo "    The installation script will download it automatically."
+    echo "    Using default zsh prompt for now."
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
