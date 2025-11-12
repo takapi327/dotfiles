@@ -178,12 +178,16 @@ alias awsw='aws sts get-caller-identity'
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme
-POWERLEVEL9K_THEME_PATH="$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
-if [ -f "$POWERLEVEL9K_THEME_PATH" ]; then
-    source "$POWERLEVEL9K_THEME_PATH"
+# Try Homebrew installation first, then fallback to manual installation
+if [ -f "/opt/homebrew/opt/powerlevel9k/powerlevel9k.zsh-theme" ]; then
+    source "/opt/homebrew/opt/powerlevel9k/powerlevel9k.zsh-theme"
+elif [ -f "/usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme" ]; then
+    source "/usr/local/opt/powerlevel9k/powerlevel9k.zsh-theme"
+elif [ -f "$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme" ]; then
+    source "$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
 else
-    echo "⚠️  Powerlevel9k theme not found at $POWERLEVEL9K_THEME_PATH"
-    echo "    Using default zsh prompt instead"
+    echo "⚠️  Powerlevel9k theme not found. Using default zsh prompt."
+    echo "    Install with: brew tap sambadevi/powerlevel9k && brew install powerlevel9k"
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
