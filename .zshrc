@@ -24,7 +24,7 @@ export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 ### テーマの設定 ###
 # IMPORTANT: Set POWERLEVEL9K_MODE before loading the theme
 # Check if Nerd Font is available, fallback to powerline mode
-if [ -f "$HOME/Library/Fonts/"*"Nerd Font"* ] 2>/dev/null || fc-list 2>/dev/null | grep -i "nerd" >/dev/null; then
+if ls "$HOME/Library/Fonts/"*"Nerd"* 2>/dev/null | head -1 >/dev/null || fc-list 2>/dev/null | grep -i "nerd" >/dev/null 2>&1; then
     POWERLEVEL9K_MODE="nerdfont-complete"
 else
     # Fallback to powerline mode if Nerd Font is not available
