@@ -302,6 +302,28 @@ else
     echo "  ✅ DeepL installed"
 fi
 
+# Install Claude Code
+echo "🤖 Installing Claude Code..."
+if command -v claude &> /dev/null; then
+    echo "  ✓ Claude Code already installed"
+    echo "  Version: $(claude --version 2>/dev/null || echo 'Unknown')"
+else
+    echo "  Installing Claude Code via Homebrew..."
+    if brew install --cask claude-code; then
+        echo "  ✅ Claude Code installed successfully"
+        echo "  To get started: Run 'claude doctor' to verify installation"
+        echo "  Authentication: Run 'claude' in any project directory to set up"
+    else
+        echo "  ⚠️  Homebrew installation failed, trying universal installer..."
+        if curl -fsSL https://claude.ai/install.sh | bash; then
+            echo "  ✅ Claude Code installed via universal installer"
+        else
+            echo "  ❌ Failed to install Claude Code"
+            echo "     Please visit https://code.claude.com/docs/ja/setup for manual installation"
+        fi
+    fi
+fi
+
 # Other useful apps
 productivity_apps=()
 
@@ -677,11 +699,13 @@ echo ""
 echo "📝 Next steps:"
 echo "  1. Launch iTerm2 from Applications folder to use the configured profile"
 echo "  2. Restart your terminal or run: source ~/.zshrc"
-echo "  3. If Docker was just installed, launch Docker Desktop from Applications"
-echo "  4. Install any additional language-specific tools (pyenv, nodenv, etc.)"
+echo "  3. Set up Claude Code authentication: Run 'claude' in any project directory"
+echo "  4. If Docker was just installed, launch Docker Desktop from Applications"
+echo "  5. Install any additional language-specific tools (pyenv, nodenv, etc.)"
 echo ""
 echo "💡 Tips:"
-echo "  - Use 'claude' as an alias for claude-code"
+echo "  - Use 'claude' command to start Claude Code in any project"
+echo "  - Run 'claude doctor' to verify installation and check health"
 echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"

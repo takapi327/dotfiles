@@ -173,7 +173,7 @@ case $REPLY in
         docker_tools=("docker-compose" "docker-credential-helper" "lazydocker" "dive")
         
         # Productivity apps
-        productivity_apps=("deepl")
+        productivity_apps=("deepl" "claude-code")
         
         all_packages=("${brew_packages[@]}" "${docker_tools[@]}")
         

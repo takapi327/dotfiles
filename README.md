@@ -53,6 +53,7 @@ cd ~/Development/dotfiles
 - **Zsh補完**: Docker/docker-compose用の自動補完
 
 ### 生産性向上ツール
+- **Claude Code**: AI統合開発環境
 - **DeepL**: 高精度翻訳アプリ
 
 ## 必要な環境
@@ -555,6 +556,27 @@ sam local invoke FunctionName
 # デプロイ
 sam deploy --guided
 ```
+
+### Claude Codeの使い方
+
+#### 初期セットアップ
+```bash
+# インストール確認
+claude doctor
+
+# 任意のプロジェクトディレクトリで認証設定
+cd /path/to/your/project
+claude
+# ブラウザが開き、認証フローが始まります
+
+# エイリアスを使った起動
+claude  # claude-code と同じ
+```
+
+#### 基本的な使用方法
+- プロジェクトディレクトリで `claude` コマンドを実行
+- Claude Console (console.anthropic.com) での認証が必要
+- アクティブな課金アカウントが必要
 
 ### MySQL Shellの使い方
 
