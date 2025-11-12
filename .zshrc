@@ -163,7 +163,7 @@ alias mshpy='mysqlsh --py'
 alias mshdump='mysqlsh --util dumpInstance'
 
 # Claude Code用のalias
-alias claude='claude-code'
+alias claude='claude'
 
 # Docker aliases
 alias dps='docker ps'
