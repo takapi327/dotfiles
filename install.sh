@@ -292,6 +292,18 @@ else
     echo "  ⚠️  Skipping Neovim plugin installation (vim-plug or .vimrc not found)"
 fi
 
+# Install Powerlevel9k theme
+echo "🎨 Setting up Powerlevel9k theme..."
+POWERLEVEL9K_DIR="$HOME/Development/vim/powerlevel9k"
+if [ ! -d "$POWERLEVEL9K_DIR" ]; then
+    echo "  Installing Powerlevel9k..."
+    mkdir -p "$HOME/Development/vim"
+    git clone https://github.com/Powerlevel9k/powerlevel9k.git "$POWERLEVEL9K_DIR"
+    echo "  ✅ Powerlevel9k installed"
+else
+    echo "  ✓ Powerlevel9k already installed"
+fi
+
 # Install fzf key bindings and completion
 echo "🔍 Setting up fzf..."
 if [ -f "$HOME/.fzf.zsh" ]; then
@@ -312,7 +324,13 @@ fi
 
 # Install Java (Amazon Corretto)
 echo "☕ Installing Java (Amazon Corretto)..."
-if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "21"; then
+if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "Corretto.*21"; then
+    # Add Corretto tap if not already added
+    if ! brew tap | grep -q "corretto"; then
+        echo "  Adding Amazon Corretto tap..."
+        brew tap homebrew/cask-versions
+    fi
+    
     if brew list --cask corretto21 &>/dev/null; then
         echo "  ✓ Amazon Corretto 21 already installed"
     else
@@ -322,13 +340,16 @@ if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "21"; then
     fi
     
     # Set JAVA_HOME for current session
-    export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null)
-    export PATH="$JAVA_HOME/bin:$PATH"
-    
-    echo "  ✅ Java 21 configured"
-    echo "  Java version: $(java -version 2>&1 | head -n 1)"
+    if JAVA_HOME_TEMP=$(/usr/libexec/java_home -v 21 2>/dev/null); then
+        export JAVA_HOME="$JAVA_HOME_TEMP"
+        export PATH="$JAVA_HOME/bin:$PATH"
+        echo "  ✅ Java 21 configured: $JAVA_HOME"
+        echo "  Java version: $(java -version 2>&1 | head -n 1)"
+    else
+        echo "  ⚠️  Failed to configure Java 21"
+    fi
 else
-    echo "  ✓ Java 21 already installed"
+    echo "  ✓ Amazon Corretto 21 already installed"
     echo "  Java version: $(java -version 2>&1 | head -n 1)"
 fi
 

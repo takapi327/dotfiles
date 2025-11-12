@@ -110,6 +110,13 @@ if command -v cs &> /dev/null; then
     fi
 fi
 
+# Remove Powerlevel9k theme
+echo "🎨 Removing Powerlevel9k theme..."
+if [ -d "$HOME/Development/vim/powerlevel9k" ]; then
+    echo "  🗑️  Removing $HOME/Development/vim/powerlevel9k"
+    rm -rf "$HOME/Development/vim/powerlevel9k"
+fi
+
 # Remove completions and configurations
 echo "🔧 Removing shell completions and configurations..."
 if [ -d "$HOME/.zsh/completions" ]; then

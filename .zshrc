@@ -178,10 +178,12 @@ alias awsw='aws sts get-caller-identity'
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme
-if [ -f ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme ]; then
-    source ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme
+POWERLEVEL9K_THEME_PATH="$HOME/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
+if [ -f "$POWERLEVEL9K_THEME_PATH" ]; then
+    source "$POWERLEVEL9K_THEME_PATH"
 else
-    echo "⚠️  Powerlevel9k theme not found at ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
+    echo "⚠️  Powerlevel9k theme not found at $POWERLEVEL9K_THEME_PATH"
+    echo "    Using default zsh prompt instead"
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -205,7 +207,7 @@ if command -v /usr/libexec/java_home &> /dev/null; then
 fi
 
 # pnpm
-export PNPM_HOME="/Users/takapi327/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -217,7 +219,7 @@ export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init -)"
 
 # bun completions
-[ -s "/Users/takapi327/.bun/_bun" ] && source "/Users/takapi327/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
