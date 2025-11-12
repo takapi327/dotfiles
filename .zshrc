@@ -23,12 +23,28 @@ export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
 ### テーマの設定 ###
 # IMPORTANT: Set POWERLEVEL9K_MODE before loading the theme
-# Check if Nerd Font is available, fallback to powerline mode
-if ls "$HOME/Library/Fonts/"*"Nerd"* 2>/dev/null | head -1 >/dev/null || fc-list 2>/dev/null | grep -i "nerd" >/dev/null 2>&1; then
+# Check if Nerd Font is available using multiple detection methods
+POWERLEVEL9K_MODE="awesome-patched"  # Default fallback
+
+# Method 1: Check font files directly
+if ls "$HOME/Library/Fonts/"*"Nerd"* 2>/dev/null | head -1 >/dev/null; then
     POWERLEVEL9K_MODE="nerdfont-complete"
+# Method 2: Check system fonts via fc-list
+elif fc-list 2>/dev/null | grep -i "nerd" >/dev/null 2>&1; then
+    POWERLEVEL9K_MODE="nerdfont-complete"
+# Method 3: Check specific Nerd Font files
+elif [ -f "$HOME/Library/Fonts/MesloLGSNerdFont-Regular.ttf" ] || [ -f "$HOME/Library/Fonts/MesloLGS NF Regular.ttf" ]; then
+    POWERLEVEL9K_MODE="nerdfont-complete"
+# Method 4: Check Homebrew cask installation
+elif brew list --cask font-meslo-lg-nerd-font &>/dev/null 2>&1; then
+    POWERLEVEL9K_MODE="nerdfont-complete"
+fi
+
+# Debug output to help troubleshoot
+if [ "$POWERLEVEL9K_MODE" = "nerdfont-complete" ]; then
+    # Uncomment the line below for debugging
+    # echo "✓ Nerd Font detected, using nerdfont-complete mode"
 else
-    # Fallback to powerline mode if Nerd Font is not available
-    POWERLEVEL9K_MODE="awesome-patched"
     echo "ℹ️  Using Powerline mode. For full icon support, install Nerd Fonts."
 fi
 
@@ -39,6 +55,21 @@ POWERLEVEL9K_CUSTOM_WIFI_SIGNAL_FOREGROUND="black"
 
 # アイコン表示
 POWERLEVEL9K_OS_ICON_BACKGROUND='234'
+
+# Explicit icon configuration for better compatibility
+if [ "$POWERLEVEL9K_MODE" = "nerdfont-complete" ]; then
+    # Nerd Font icons
+    POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''
+    POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''
+    POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=''
+    POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=''
+else
+    # Powerline/Awesome Font fallback icons
+    POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''
+    POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''
+    POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='|'
+    POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='|'
+fi
 
 # user情報
 POWERLEVEL9K_CONTEXT_TEMPLATE='%n'
@@ -188,7 +219,14 @@ alias awsw='aws sts get-caller-identity'
 # Powerlevel9k theme (official vanilla zsh installation)
 POWERLEVEL9K_INSTALLATION_PATH="$HOME/Development/vim/powerlevel9k"
 if [ -f "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme" ]; then
+    # Ensure all POWERLEVEL9K variables are set before sourcing the theme
     source "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme"
+    
+    # Verify theme loaded with correct mode
+    if [ "$POWERLEVEL9K_MODE" = "nerdfont-complete" ] && [ -n "$POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR" ]; then
+        # Uncomment for debugging: echo "✓ Powerlevel9k loaded with Nerd Font mode"
+        true
+    fi
 else
     echo "⚠️  Powerlevel9k theme not found at $POWERLEVEL9K_INSTALLATION_PATH"
     echo "    The installation script will download it automatically."
