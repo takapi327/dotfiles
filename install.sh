@@ -581,6 +581,16 @@ else
     echo "  ⚠️  nodenv not found, skipping Node.js setup"
 fi
 
+# Install iTerm2
+echo "🖥️  Installing iTerm2..."
+if [ -d "/Applications/iTerm.app" ]; then
+    echo "  ✓ iTerm2 already installed"
+else
+    echo "  Installing iTerm2..."
+    brew install --cask iterm2
+    echo "  ✅ iTerm2 installed"
+fi
+
 # iTerm2 configuration
 echo "🖥️  Configuring iTerm2..."
 
@@ -619,9 +629,10 @@ echo ""
 echo "✨ Dotfiles installation complete!"
 echo ""
 echo "📝 Next steps:"
-echo "  1. Restart your terminal or run: source ~/.zshrc"
-echo "  2. If Docker was just installed, launch Docker Desktop from Applications"
-echo "  3. Install any additional language-specific tools (pyenv, nodenv, etc.)"
+echo "  1. Launch iTerm2 from Applications folder to use the configured profile"
+echo "  2. Restart your terminal or run: source ~/.zshrc"
+echo "  3. If Docker was just installed, launch Docker Desktop from Applications"
+echo "  4. Install any additional language-specific tools (pyenv, nodenv, etc.)"
 echo ""
 echo "💡 Tips:"
 echo "  - Use 'cc' as an alias for claude-code"

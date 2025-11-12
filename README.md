@@ -56,9 +56,9 @@ cd ~/Development/dotfiles
 ## 必要な環境
 
 - macOS (M1/M2 Mac推奨)
-- Homebrew
-- iTerm2
-- Git
+- Git（通常はmacOSに標準インストール済み）
+
+※ Homebrew、iTerm2は install.sh で自動インストールされます
 
 ## 含まれる開発環境
 

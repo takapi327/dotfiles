@@ -211,6 +211,12 @@ case $REPLY in
             brew uninstall --cask corretto@21 2>/dev/null || true
         fi
         
+        # Remove iTerm2
+        if brew list --cask iterm2 &>/dev/null; then
+            echo "  🗑️  Uninstalling iTerm2..."
+            brew uninstall --cask iterm2 2>/dev/null || true
+        fi
+        
         # Remove Nerd Font
         if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
             echo "  🗑️  Uninstalling Nerd Font..."
