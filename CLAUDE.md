@@ -37,7 +37,7 @@
 ### Zsh
 - テーマ: Powerlevel9k
 - プラグイン: git, zsh-syntax-highlighting, zsh-autosuggestions
-- エイリアス: `cc` (claude-code), git shortcuts
+- エイリアス: `claude` (claude-code), git shortcuts
 
 ## インストール手順
 

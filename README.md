@@ -36,7 +36,7 @@ cd ~/Development/dotfiles
 - **パッケージマネージャー**: Homebrew, pyenv, nodenv, rbenv対応
 - **エイリアス**: 
   - Git shortcuts
-  - Claude Code (`cc`)
+  - Claude Code (`claude`)
   - Docker (`dps`, `dimg`, `dc`, `ld`等)
 
 **注意**: Powerlevel9kは2020年にアーカイブされましたが、安定版として使用可能です。

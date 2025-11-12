@@ -681,7 +681,7 @@ echo "  3. If Docker was just installed, launch Docker Desktop from Applications
 echo "  4. Install any additional language-specific tools (pyenv, nodenv, etc.)"
 echo ""
 echo "💡 Tips:"
-echo "  - Use 'cc' as an alias for claude-code"
+echo "  - Use 'claude' as an alias for claude-code"
 echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"
