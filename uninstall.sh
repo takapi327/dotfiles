@@ -223,6 +223,13 @@ case $REPLY in
             brew uninstall --cask font-meslo-lg-nerd-font 2>/dev/null || true
         fi
         
+        # Remove Powerline Source Code Pro font
+        POWERLINE_FONT_PATH="$HOME/Library/Fonts/SourceCodePro+Powerline+Awesome+Regular.ttf"
+        if [ -f "$POWERLINE_FONT_PATH" ]; then
+            echo "  🗑️  Removing Powerline Source Code Pro font..."
+            rm -f "$POWERLINE_FONT_PATH"
+        fi
+        
         # Clean up Homebrew
         echo "  🧹 Running Homebrew cleanup..."
         brew cleanup 2>/dev/null || true

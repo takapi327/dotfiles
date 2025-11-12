@@ -170,6 +170,27 @@ else
     brew install --cask font-meslo-lg-nerd-font
 fi
 
+# Install Powerline Source Code Pro font
+echo "🔤 Installing Powerline Source Code Pro font..."
+POWERLINE_FONT_URL="https://raw.githubusercontent.com/Falkor/dotfiles/master/fonts/SourceCodePro%2BPowerline%2BAwesome%2BRegular.ttf"
+FONT_NAME="SourceCodePro+Powerline+Awesome+Regular.ttf"
+FONT_DIR="$HOME/Library/Fonts"
+FONT_PATH="$FONT_DIR/$FONT_NAME"
+
+if [ -f "$FONT_PATH" ]; then
+    echo "  ✓ Powerline Source Code Pro font already installed"
+else
+    echo "  Downloading and installing Powerline Source Code Pro font..."
+    mkdir -p "$FONT_DIR"
+    
+    if curl -fL "$POWERLINE_FONT_URL" -o "$FONT_PATH"; then
+        echo "  ✅ Powerline Source Code Pro font installed"
+        echo "    Font location: $FONT_PATH"
+    else
+        echo "  ⚠️  Failed to download Powerline Source Code Pro font"
+    fi
+fi
+
 # Install Docker and related tools
 echo "🐳 Installing Docker..."
 
@@ -605,10 +626,14 @@ if [ -f "$DOTFILES_DIR/iterm2/profiles.json" ]; then
     
     # Check if iTerm2 is running
     if pgrep -q "iTerm2"; then
-        echo "  ℹ️  Profile 'M1 Mac Development' is now available in iTerm2"
-        echo "     To set as default: Preferences → Profiles → Select 'M1 Mac Development' → Set as Default"
+        echo "  ℹ️  Available profiles in iTerm2:"
+        echo "     - M1 Mac Development (MesloLGS Nerd Font)"
+        echo "     - M1 Mac Development (Source Code Pro) (Powerline Font)"
+        echo "     To set as default: Preferences → Profiles → Select profile → Set as Default"
     else
-        echo "  ℹ️  Profile will be available when you launch iTerm2"
+        echo "  ℹ️  Profiles will be available when you launch iTerm2"
+        echo "     - M1 Mac Development (MesloLGS Nerd Font)"
+        echo "     - M1 Mac Development (Source Code Pro) (Powerline Font)"
     fi
 else
     echo "  ⚠️  iTerm2 profile not found at $DOTFILES_DIR/iterm2/profiles.json"
