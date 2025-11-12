@@ -163,10 +163,6 @@ done
 
 # Install Nerd Font
 echo "🔤 Installing Nerd Font..."
-if ! brew tap | grep -q "homebrew/cask-fonts"; then
-    brew tap homebrew/cask-fonts
-fi
-
 if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
     echo "  ✓ Nerd Font already installed"
 else
