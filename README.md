@@ -52,9 +52,6 @@ cd ~/Development/dotfiles
 
 ### 生産性向上ツール
 - **DeepL**: 高精度翻訳アプリ
-- **Rectangle**: ウィンドウ管理（キーボードショートカット）
-- **Alt-tab**: Windowsスタイルのアプリ切り替え
-- **Raycast**: Spotlight代替（高機能ランチャー）
 
 ## 必要な環境
 

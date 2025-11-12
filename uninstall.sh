@@ -162,7 +162,7 @@ case $REPLY in
         docker_tools=("docker-compose" "docker-credential-helper" "lazydocker" "dive")
         
         # Productivity apps
-        productivity_apps=("rectangle" "alt-tab" "raycast" "deepl")
+        productivity_apps=("deepl")
         
         all_packages=("${brew_packages[@]}" "${docker_tools[@]}")
         

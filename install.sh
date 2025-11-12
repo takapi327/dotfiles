@@ -256,11 +256,7 @@ else
 fi
 
 # Other useful apps
-productivity_apps=(
-    "rectangle"  # Window management
-    "alt-tab"    # Better app switcher
-    "raycast"    # Spotlight replacement
-)
+productivity_apps=()
 
 for app in "${productivity_apps[@]}"; do
     if brew list --cask "$app" &>/dev/null 2>&1; then
