@@ -282,3 +282,7 @@ eval "$(rbenv init - zsh)"
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
     . $HOME/.nix-profile/etc/profile.d/nix.sh;
 fi
+
+# Docker completions
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
