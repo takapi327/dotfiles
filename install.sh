@@ -315,6 +315,28 @@ else
     fi
 fi
 
+# Install Java (Amazon Corretto)
+echo "☕ Installing Java (Amazon Corretto)..."
+if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "21"; then
+    if brew list --cask corretto21 &>/dev/null; then
+        echo "  ✓ Amazon Corretto 21 already installed"
+    else
+        echo "  Installing Amazon Corretto 21..."
+        brew install --cask corretto21
+        echo "  ✅ Amazon Corretto 21 installed"
+    fi
+    
+    # Set JAVA_HOME for current session
+    export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null)
+    export PATH="$JAVA_HOME/bin:$PATH"
+    
+    echo "  ✅ Java 21 configured"
+    echo "  Java version: $(java -version 2>&1 | head -n 1)"
+else
+    echo "  ✓ Java 21 already installed"
+    echo "  Java version: $(java -version 2>&1 | head -n 1)"
+fi
+
 # Install Scala development tools
 echo "🔧 Setting up Scala development tools..."
 if command -v cs &> /dev/null; then

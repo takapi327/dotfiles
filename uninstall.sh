@@ -187,6 +187,12 @@ case $REPLY in
             brew uninstall --cask docker 2>/dev/null || true
         fi
         
+        # Remove Java (Amazon Corretto)
+        if brew list --cask corretto21 &>/dev/null; then
+            echo "  🗑️  Uninstalling Amazon Corretto 21..."
+            brew uninstall --cask corretto21 2>/dev/null || true
+        fi
+        
         # Remove Nerd Font
         if brew list --cask font-meslo-lg-nerd-font &>/dev/null; then
             echo "  🗑️  Uninstalling Nerd Font..."

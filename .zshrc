@@ -178,16 +178,31 @@ alias awsw='aws sts get-caller-identity'
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme
-source  ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme
+if [ -f ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme ]; then
+    source ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme
+else
+    echo "⚠️  Powerlevel9k theme not found at ~/Development/vim/powerlevel9k/powerlevel9k.zsh-theme"
+fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
 
-# Java用
-export JAVA_HOME=`/usr/libexec/java_home -v "21"`
-export PATH=$JAVA_HOME/bin/:$PATH
+# Java用 (Amazon Corretto 21)
+if command -v /usr/libexec/java_home &> /dev/null; then
+    # Try Java 21 first, fallback to any available version
+    if JAVA_HOME_TEMP=$(/usr/libexec/java_home -v "21" 2>/dev/null); then
+        export JAVA_HOME="$JAVA_HOME_TEMP"
+    elif JAVA_HOME_TEMP=$(/usr/libexec/java_home 2>/dev/null); then
+        export JAVA_HOME="$JAVA_HOME_TEMP"
+        echo "⚠️  Java 21 not found, using $(java -version 2>&1 | head -n 1)"
+    fi
+    
+    if [ ! -z "$JAVA_HOME" ] && [ -d "$JAVA_HOME" ]; then
+        export PATH="$JAVA_HOME/bin:$PATH"
+    fi
+fi
 
 # pnpm
 export PNPM_HOME="/Users/takapi327/Library/pnpm"
