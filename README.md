@@ -55,7 +55,6 @@ cd ~/Development/dotfiles
 - **Rectangle**: ウィンドウ管理（キーボードショートカット）
 - **Alt-tab**: Windowsスタイルのアプリ切り替え
 - **Raycast**: Spotlight代替（高機能ランチャー）
-- **Stats**: メニューバーにシステム情報表示
 
 ## 必要な環境
 

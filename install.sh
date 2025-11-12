@@ -260,7 +260,6 @@ productivity_apps=(
     "rectangle"  # Window management
     "alt-tab"    # Better app switcher
     "raycast"    # Spotlight replacement
-    "stats"      # System monitor in menu bar
 )
 
 for app in "${productivity_apps[@]}"; do
