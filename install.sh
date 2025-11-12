@@ -44,7 +44,9 @@ mkdir -p "$HOME/.vim/autoload"
 
 # Symlink dotfiles
 echo "🔗 Creating symbolic links..."
-create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.vimrc"
+# Create Neovim config directory
+mkdir -p "$HOME/.config/nvim"
+create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.config/nvim/init.vim"
 create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile"
 
@@ -274,27 +276,29 @@ for app in "${productivity_apps[@]}"; do
     fi
 done
 
-# Install vim-plug
-echo "🔌 Installing vim-plug..."
-if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
-    curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
+# Install vim-plug for Neovim
+echo "🔌 Installing vim-plug for Neovim..."
+NVIM_AUTOLOAD_DIR="$HOME/.local/share/nvim/site/autoload"
+if [ ! -f "$NVIM_AUTOLOAD_DIR/plug.vim" ]; then
+    curl -fLo "$NVIM_AUTOLOAD_DIR/plug.vim" --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    echo "  ✅ vim-plug installed"
+    echo "  ✅ vim-plug for Neovim installed"
 else
-    echo "  ✓ vim-plug already installed"
+    echo "  ✓ vim-plug for Neovim already installed"
 fi
 
-# Install Vim plugins
-echo "📦 Installing Vim plugins..."
-if [ -f "$HOME/.vim/autoload/plug.vim" ] && [ -f "$HOME/.vimrc" ]; then
-    vim +PlugInstall +qall 2>/dev/null || true
+# Install Neovim plugins
+echo "📦 Installing Neovim plugins..."
+if [ -f "$NVIM_AUTOLOAD_DIR/plug.vim" ] && [ -f "$HOME/.vimrc" ]; then
+    echo "  Installing plugins with nvim..."
+    nvim +PlugInstall +qall 2>/dev/null || true
     
     # Install CoC extensions for TypeScript and Svelte
     echo "  Installing CoC extensions..."
-    vim -c "CocInstall -sync coc-tsserver coc-eslint coc-prettier coc-json coc-svelte" -c "qall" 2>/dev/null || true
+    nvim -c "CocInstall -sync coc-tsserver coc-eslint coc-prettier coc-json coc-svelte" -c "qall" 2>/dev/null || true
     echo "  ✅ CoC TypeScript and Svelte extensions installed"
 else
-    echo "  ⚠️  Skipping Vim plugin installation (vim-plug or .vimrc not found)"
+    echo "  ⚠️  Skipping Neovim plugin installation (vim-plug or .vimrc not found)"
 fi
 
 # Install fzf key bindings and completion
@@ -555,7 +559,7 @@ echo "  3. Install any additional language-specific tools (pyenv, nodenv, etc.)"
 echo ""
 echo "💡 Tips:"
 echo "  - Use 'cc' as an alias for claude-code"
-echo "  - Leader key in Vim is set to <Space>"
+echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"
 echo "  - Rectangle: Use for window management (⌃⌥ + arrows)"

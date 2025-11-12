@@ -1,12 +1,12 @@
 # M1 Mac Dotfiles
 
-vim + iTerm2 + Claude Code向けの効率的な開発環境設定ファイル集です。
+Neovim + iTerm2 + Claude Code向けの効率的な開発環境設定ファイル集です。
 
 ## 特徴
 
 - 🚀 M1 Mac最適化済み
 - 🎨 Gruvboxカラーテーマ
-- ⚡ Vim (vim-plug) + Neovim対応
+- ⚡ Neovim (vim-plug)
 - 🔧 既存のzsh設定を保持
 - 🤖 Claude Code統合（`cc`エイリアス）
 - 📦 自動インストールスクリプト付き
@@ -21,7 +21,7 @@ cd ~/Development/dotfiles
 
 ## 含まれる設定
 
-### Vim設定 (`.vimrc`)
+### Neovim設定 (`.vimrc` → `~/.config/nvim/init.vim`)
 - **プラグイン管理**: vim-plug
 - **ファイルエクスプローラー**: NERDTree
 - **ファジーファインダー**: fzf.vim
@@ -89,7 +89,7 @@ cd ~/Development/dotfiles
    - `iterm2/profiles.json`を選択
 3. 必要に応じて言語固有のツールをインストール
 
-## Vim設定と使用方法
+## Neovim設定と使用方法
 
 ### インストールされるプラグイン
 
@@ -124,7 +124,7 @@ cd ~/Development/dotfiles
 
 ### 主要なキーバインド
 
-**リーダーキー**: `Space`
+**リーダーキー**: `Space` (Neovim)
 
 #### ファイル操作
 
@@ -217,7 +217,7 @@ cd ~/Development/dotfiles
 
 ### カラーテーマ
 
-Gruvbox Darkテーマが適用されています。変更する場合は`.vimrc`の`colorscheme gruvbox`を編集してください。
+Gruvbox Darkテーマが適用されています。変更する場合は`~/.config/nvim/init.vim`の`colorscheme gruvbox`を編集してください。
 
 ### 言語別設定
 
@@ -404,7 +404,7 @@ cs install metals
 brew install sbt
 ```
 
-#### 2. Vimでの初回セットアップ
+#### 2. Neovimでの初回セットアップ
 ```vim
 " プラグインのインストール
 :PlugInstall
@@ -616,7 +616,7 @@ project/project/
 ## カスタマイズ
 
 各設定ファイルはカスタマイズ可能です:
-- Vimのキーマッピング: `.vimrc`の`Key mappings`セクション
+- Neovimのキーマッピング: `~/.config/nvim/init.vim`の`Key mappings`セクション
 - Zshエイリアス: `.zshrc`の`永続的なalias`セクション
 - iTerm2設定: `iterm2/profiles.json`を編集
 
@@ -628,9 +628,9 @@ brew tap homebrew/cask-fonts
 brew install --cask font-meslo-lg-nerd-font
 ```
 
-### Vim pluginがインストールされない
+### Neovim pluginがインストールされない
 ```bash
-vim +PlugInstall +qall
+nvim +PlugInstall +qall
 ```
 
 ## ライセンス

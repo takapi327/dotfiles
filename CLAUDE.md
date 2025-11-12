@@ -4,7 +4,7 @@
 
 ## プロジェクト構成
 
-- `.vimrc` - Vim設定ファイル（プラグイン管理、キーマッピング、UI設定）
+- `.vimrc` - Neovim設定ファイル（プラグイン管理、キーマッピング、UI設定、~/.config/nvim/init.vimとしてシンボリックリンク）
 - `.zshrc` - Zsh設定ファイル（既存設定を保持）
 - `.zprofile` - Zshプロファイル設定
 - `iterm2/` - iTerm2用設定ディレクトリ
@@ -16,7 +16,7 @@
 
 - **OS**: macOS (M1 Mac)
 - **Shell**: Zsh (Powerlevel9k theme)
-- **エディタ**: Vim/Neovim (vim-plug)
+- **エディタ**: Neovim (vim-plug)
 - **ターミナル**: iTerm2
 - **フォント**: Nerd Fonts (MesloLGS NF)
 - **Python**: pyenv + pyenv-virtualenv
@@ -26,7 +26,7 @@
 
 ## 主要な設定内容
 
-### Vim
+### Neovim
 - プラグイン管理: vim-plug
 - ファイルエクスプローラー: NERDTree
 - ファジーファインダー: fzf
