@@ -325,12 +325,6 @@ fi
 # Install Java (Amazon Corretto)
 echo "☕ Installing Java (Amazon Corretto)..."
 if ! java -version &>/dev/null || ! java -version 2>&1 | grep -q "Corretto.*21"; then
-    # Add Corretto tap if not already added
-    if ! brew tap | grep -q "corretto"; then
-        echo "  Adding Amazon Corretto tap..."
-        brew tap homebrew/cask-versions
-    fi
-    
     if brew list --cask corretto21 &>/dev/null; then
         echo "  ✓ Amazon Corretto 21 already installed"
     else
