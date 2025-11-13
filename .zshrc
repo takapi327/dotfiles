@@ -286,3 +286,6 @@ fi
 # Docker completions
 fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit && compinit
+
+# MySQL Client configuration
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"

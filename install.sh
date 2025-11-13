@@ -150,6 +150,7 @@ brew_packages=(
     "awscli"
     "aws-sam-cli"
     "mysql-shell"
+    "mysql-client"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -759,6 +760,45 @@ if command -v mysqlsh &> /dev/null; then
     echo "     or use: mysqlsh --uri username@hostname:port/database"
 else
     echo "  ⚠️  MySQL Shell not found"
+fi
+
+# Setup MySQL CLI
+echo "🗄️  Setting up MySQL CLI..."
+if brew list mysql-client &>/dev/null; then
+    echo "  ✓ MySQL CLI is installed"
+
+    # mysql-client is keg-only, so we need to add it to PATH
+    MYSQL_CLIENT_PATH="$(brew --prefix)/opt/mysql-client/bin"
+
+    # Check if mysql command is available
+    if command -v mysql &> /dev/null; then
+        echo "  ✓ mysql command is already available in PATH"
+        echo "  Version: $(mysql --version)"
+    else
+        echo "  ⚠️  mysql command not in PATH, adding to shell configuration..."
+
+        # Add MySQL client to PATH in .zshrc if not already present
+        if ! grep -q "mysql-client/bin" "$HOME/.zshrc" 2>/dev/null; then
+            echo "" >> "$HOME/.zshrc"
+            echo "# MySQL Client configuration" >> "$HOME/.zshrc"
+            echo "export PATH=\"$MYSQL_CLIENT_PATH:\$PATH\"" >> "$HOME/.zshrc"
+            echo "  ✅ Added MySQL client to .zshrc"
+        fi
+
+        # Add to current session
+        export PATH="$MYSQL_CLIENT_PATH:$PATH"
+
+        if command -v mysql &> /dev/null; then
+            echo "  ✅ mysql command is now available"
+            echo "  Version: $(mysql --version)"
+        fi
+    fi
+
+    echo "  ℹ️  To connect to MySQL:"
+    echo "     mysql -u username -h hostname -P port -p"
+    echo "     or use: mysql --host=hostname --port=port --user=username --password database"
+else
+    echo "  ⚠️  MySQL CLI not found"
 fi
 
 # Make install script executable
