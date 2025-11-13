@@ -151,6 +151,8 @@ brew_packages=(
     "aws-sam-cli"
     "mysql-shell"
     "mysql-client"
+    "mkcert"
+    "nss"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -799,6 +801,38 @@ if brew list mysql-client &>/dev/null; then
     echo "     or use: mysql --host=hostname --port=port --user=username --password database"
 else
     echo "  ⚠️  MySQL CLI not found"
+fi
+
+# Setup mkcert for local HTTPS development
+echo "🔒 Setting up mkcert for local HTTPS development..."
+if command -v mkcert &> /dev/null; then
+    echo "  ✓ mkcert is installed"
+    echo "  Version: $(mkcert -version 2>&1 | head -n 1)"
+
+    # Check if local CA is already installed
+    if mkcert -CAROOT &> /dev/null; then
+        CA_ROOT=$(mkcert -CAROOT)
+        if [ -f "$CA_ROOT/rootCA.pem" ]; then
+            echo "  ✓ Local CA already installed at: $CA_ROOT"
+        else
+            echo "  Installing local CA for mkcert..."
+            mkcert -install
+            echo "  ✅ Local CA installed successfully"
+            echo "  CA Root: $(mkcert -CAROOT)"
+        fi
+    else
+        echo "  Installing local CA for mkcert..."
+        mkcert -install
+        echo "  ✅ Local CA installed successfully"
+        echo "  CA Root: $(mkcert -CAROOT)"
+    fi
+
+    echo "  ℹ️  To create a certificate for localhost:"
+    echo "     mkcert localhost 127.0.0.1 ::1"
+    echo "  ℹ️  To create a certificate for a custom domain:"
+    echo "     mkcert example.test '*.example.test'"
+else
+    echo "  ⚠️  mkcert not found"
 fi
 
 # Make install script executable
