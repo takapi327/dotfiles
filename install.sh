@@ -49,6 +49,7 @@ mkdir -p "$HOME/.config/nvim"
 create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.config/nvim/init.vim"
 create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile"
+create_symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
@@ -712,6 +713,8 @@ echo "  - Run 'claude doctor' to verify installation and check health"
 echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"
+echo "  - tmux: Mouse support enabled - use mouse wheel to scroll, drag to select text"
+echo "  - tmux: Prefix + [ then j/k to scroll, v to select, y to copy (Vi mode)"
 echo "  - Check CLAUDE.md for more information about this setup"
 echo ""
 echo "🔤 Font Setup:"
