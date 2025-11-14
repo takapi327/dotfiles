@@ -154,6 +154,7 @@ brew_packages=(
     "mysql-client"
     "mkcert"
     "nss"
+    "tfenv"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -164,6 +165,20 @@ for package in "${brew_packages[@]}"; do
         brew install "$package"
     fi
 done
+
+# Ensure tfenv is properly linked
+if brew list tfenv &>/dev/null; then
+    if ! command -v tfenv &> /dev/null; then
+        echo "  Linking tfenv..."
+        # Unlink conflicting packages if they exist
+        if brew list terraform &>/dev/null 2>&1; then
+            echo "  Unlinking conflicting terraform package..."
+            brew unlink terraform 2>/dev/null || true
+        fi
+        brew link tfenv
+        echo "  ✅ tfenv linked successfully"
+    fi
+fi
 
 # Install Nerd Font
 echo "🔤 Installing Nerd Font..."
@@ -836,6 +851,64 @@ if command -v mkcert &> /dev/null; then
     echo "     mkcert example.test '*.example.test'"
 else
     echo "  ⚠️  mkcert not found"
+fi
+
+# Setup Terraform with tfenv
+echo "🏗️  Setting up Terraform with tfenv..."
+if command -v tfenv &> /dev/null; then
+    echo "  ✓ tfenv is installed"
+
+    # Check if any Terraform version is installed
+    if tfenv list 2>/dev/null | grep -q "No versions"; then
+        echo "  Installing latest Terraform version..."
+        tfenv install latest
+        tfenv use latest
+        echo "  ✅ Terraform installed via tfenv"
+    elif tfenv list 2>/dev/null | grep -q "*"; then
+        echo "  ✓ Terraform already installed via tfenv"
+        CURRENT_VERSION=$(tfenv list 2>/dev/null | grep "*" | awk '{print $2}')
+        echo "  Current version: $CURRENT_VERSION"
+    else
+        # tfenv is installed but no version is set as current
+        INSTALLED_VERSIONS=$(tfenv list 2>/dev/null | head -1 | awk '{print $1}')
+        if [ ! -z "$INSTALLED_VERSIONS" ]; then
+            echo "  Setting Terraform version..."
+            tfenv use $INSTALLED_VERSIONS
+            echo "  ✅ Terraform version set: $INSTALLED_VERSIONS"
+        else
+            echo "  Installing latest Terraform version..."
+            tfenv install latest
+            tfenv use latest
+            echo "  ✅ Terraform installed via tfenv"
+        fi
+    fi
+
+    # Verify terraform command is available
+    if command -v terraform &> /dev/null; then
+        echo "  Terraform version: $(terraform version | head -n 1)"
+    fi
+
+    # Check if Terraform plugins directory exists
+    TERRAFORM_PLUGIN_DIR="$HOME/.terraform.d/plugins"
+    if [ ! -d "$TERRAFORM_PLUGIN_DIR" ]; then
+        mkdir -p "$TERRAFORM_PLUGIN_DIR"
+        echo "  Created Terraform plugins directory: $TERRAFORM_PLUGIN_DIR"
+    fi
+
+    echo "  ℹ️  tfenv commands:"
+    echo "     tfenv list              - List installed Terraform versions"
+    echo "     tfenv list-remote       - List available Terraform versions"
+    echo "     tfenv install <version> - Install a specific Terraform version"
+    echo "     tfenv use <version>     - Switch to a specific Terraform version"
+    echo ""
+    echo "  ℹ️  Terraform commands:"
+    echo "     terraform init          - Initialize a Terraform working directory"
+    echo "     terraform plan          - Generate and show an execution plan"
+    echo "     terraform apply         - Build or change infrastructure"
+    echo "     terraform destroy       - Destroy Terraform-managed infrastructure"
+    echo "     terraform validate      - Validate the Terraform files"
+else
+    echo "  ⚠️  tfenv not found"
 fi
 
 # Make install script executable
