@@ -762,6 +762,55 @@ else
     echo "  ⚠️  AWS SAM CLI not found"
 fi
 
+# Install AWS Session Manager Plugin
+echo "🔌 Installing AWS Session Manager Plugin..."
+if command -v session-manager-plugin &> /dev/null; then
+    echo "  ✓ AWS Session Manager Plugin is already installed"
+    echo "  Version: $(session-manager-plugin --version 2>&1 | head -n 1)"
+else
+    echo "  Downloading AWS Session Manager Plugin..."
+
+    # Create temporary directory for download
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+
+    # Download the plugin
+    if curl -fL "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip" -o "sessionmanager-bundle.zip"; then
+        echo "  Download completed"
+
+        # Unzip the bundle
+        echo "  Extracting files..."
+        if unzip -q sessionmanager-bundle.zip; then
+            echo "  Installing Session Manager Plugin (requires sudo)..."
+
+            # Run the installer with sudo
+            if sudo ./sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin; then
+                echo "  ✅ AWS Session Manager Plugin installed successfully"
+
+                # Verify installation
+                if command -v session-manager-plugin &> /dev/null; then
+                    echo "  Version: $(session-manager-plugin --version 2>&1 | head -n 1)"
+                fi
+            else
+                echo "  ⚠️  Failed to install Session Manager Plugin"
+            fi
+        else
+            echo "  ⚠️  Failed to extract sessionmanager-bundle.zip"
+        fi
+    else
+        echo "  ⚠️  Failed to download Session Manager Plugin"
+    fi
+
+    # Clean up temporary files
+    cd - > /dev/null
+    rm -rf "$TEMP_DIR"
+    echo "  Cleaned up temporary files"
+fi
+
+echo "  ℹ️  To use AWS Session Manager:"
+echo "     aws ssm start-session --target <instance-id>"
+echo "     aws ssm start-session --target <instance-id> --document-name AWS-StartPortForwardingSession --parameters 'portNumber=3306,localPortNumber=13306'"
+
 # Setup MySQL Shell
 echo "🗄️  Setting up MySQL Shell..."
 if command -v mysqlsh &> /dev/null; then
