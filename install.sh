@@ -49,6 +49,7 @@ mkdir -p "$HOME/.config/nvim"
 create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.config/nvim/init.vim"
 create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile"
+create_symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
@@ -150,6 +151,10 @@ brew_packages=(
     "awscli"
     "aws-sam-cli"
     "mysql-shell"
+    "mysql-client"
+    "mkcert"
+    "nss"
+    "tfenv"
 )
 
 for package in "${brew_packages[@]}"; do
@@ -160,6 +165,20 @@ for package in "${brew_packages[@]}"; do
         brew install "$package"
     fi
 done
+
+# Ensure tfenv is properly linked
+if brew list tfenv &>/dev/null; then
+    if ! command -v tfenv &> /dev/null; then
+        echo "  Linking tfenv..."
+        # Unlink conflicting packages if they exist
+        if brew list terraform &>/dev/null 2>&1; then
+            echo "  Unlinking conflicting terraform package..."
+            brew unlink terraform 2>/dev/null || true
+        fi
+        brew link tfenv
+        echo "  ✅ tfenv linked successfully"
+    fi
+fi
 
 # Install Nerd Font
 echo "🔤 Installing Nerd Font..."
@@ -709,6 +728,8 @@ echo "  - Run 'claude doctor' to verify installation and check health"
 echo "  - Leader key in Neovim is set to <Space>"
 echo "  - Use 'lazydocker' for Docker container management"
 echo "  - DeepL: Set up keyboard shortcuts in System Preferences → Keyboard → Shortcuts"
+echo "  - tmux: Mouse support enabled - use mouse wheel to scroll, drag to select text"
+echo "  - tmux: Prefix + [ then j/k to scroll, v to select, y to copy (Vi mode)"
 echo "  - Check CLAUDE.md for more information about this setup"
 echo ""
 echo "🔤 Font Setup:"
@@ -741,6 +762,55 @@ else
     echo "  ⚠️  AWS SAM CLI not found"
 fi
 
+# Install AWS Session Manager Plugin
+echo "🔌 Installing AWS Session Manager Plugin..."
+if command -v session-manager-plugin &> /dev/null; then
+    echo "  ✓ AWS Session Manager Plugin is already installed"
+    echo "  Version: $(session-manager-plugin --version 2>&1 | head -n 1)"
+else
+    echo "  Downloading AWS Session Manager Plugin..."
+
+    # Create temporary directory for download
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+
+    # Download the plugin
+    if curl -fL "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/sessionmanager-bundle.zip" -o "sessionmanager-bundle.zip"; then
+        echo "  Download completed"
+
+        # Unzip the bundle
+        echo "  Extracting files..."
+        if unzip -q sessionmanager-bundle.zip; then
+            echo "  Installing Session Manager Plugin (requires sudo)..."
+
+            # Run the installer with sudo
+            if sudo ./sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin; then
+                echo "  ✅ AWS Session Manager Plugin installed successfully"
+
+                # Verify installation
+                if command -v session-manager-plugin &> /dev/null; then
+                    echo "  Version: $(session-manager-plugin --version 2>&1 | head -n 1)"
+                fi
+            else
+                echo "  ⚠️  Failed to install Session Manager Plugin"
+            fi
+        else
+            echo "  ⚠️  Failed to extract sessionmanager-bundle.zip"
+        fi
+    else
+        echo "  ⚠️  Failed to download Session Manager Plugin"
+    fi
+
+    # Clean up temporary files
+    cd - > /dev/null
+    rm -rf "$TEMP_DIR"
+    echo "  Cleaned up temporary files"
+fi
+
+echo "  ℹ️  To use AWS Session Manager:"
+echo "     aws ssm start-session --target <instance-id>"
+echo "     aws ssm start-session --target <instance-id> --document-name AWS-StartPortForwardingSession --parameters 'portNumber=3306,localPortNumber=13306'"
+
 # Setup MySQL Shell
 echo "🗄️  Setting up MySQL Shell..."
 if command -v mysqlsh &> /dev/null; then
@@ -759,6 +829,135 @@ if command -v mysqlsh &> /dev/null; then
     echo "     or use: mysqlsh --uri username@hostname:port/database"
 else
     echo "  ⚠️  MySQL Shell not found"
+fi
+
+# Setup MySQL CLI
+echo "🗄️  Setting up MySQL CLI..."
+if brew list mysql-client &>/dev/null; then
+    echo "  ✓ MySQL CLI is installed"
+
+    # mysql-client is keg-only, so we need to add it to PATH
+    MYSQL_CLIENT_PATH="$(brew --prefix)/opt/mysql-client/bin"
+
+    # Check if mysql command is available
+    if command -v mysql &> /dev/null; then
+        echo "  ✓ mysql command is already available in PATH"
+        echo "  Version: $(mysql --version)"
+    else
+        echo "  ⚠️  mysql command not in PATH, adding to shell configuration..."
+
+        # Add MySQL client to PATH in .zshrc if not already present
+        if ! grep -q "mysql-client/bin" "$HOME/.zshrc" 2>/dev/null; then
+            echo "" >> "$HOME/.zshrc"
+            echo "# MySQL Client configuration" >> "$HOME/.zshrc"
+            echo "export PATH=\"$MYSQL_CLIENT_PATH:\$PATH\"" >> "$HOME/.zshrc"
+            echo "  ✅ Added MySQL client to .zshrc"
+        fi
+
+        # Add to current session
+        export PATH="$MYSQL_CLIENT_PATH:$PATH"
+
+        if command -v mysql &> /dev/null; then
+            echo "  ✅ mysql command is now available"
+            echo "  Version: $(mysql --version)"
+        fi
+    fi
+
+    echo "  ℹ️  To connect to MySQL:"
+    echo "     mysql -u username -h hostname -P port -p"
+    echo "     or use: mysql --host=hostname --port=port --user=username --password database"
+else
+    echo "  ⚠️  MySQL CLI not found"
+fi
+
+# Setup mkcert for local HTTPS development
+echo "🔒 Setting up mkcert for local HTTPS development..."
+if command -v mkcert &> /dev/null; then
+    echo "  ✓ mkcert is installed"
+    echo "  Version: $(mkcert -version 2>&1 | head -n 1)"
+
+    # Check if local CA is already installed
+    if mkcert -CAROOT &> /dev/null; then
+        CA_ROOT=$(mkcert -CAROOT)
+        if [ -f "$CA_ROOT/rootCA.pem" ]; then
+            echo "  ✓ Local CA already installed at: $CA_ROOT"
+        else
+            echo "  Installing local CA for mkcert..."
+            mkcert -install
+            echo "  ✅ Local CA installed successfully"
+            echo "  CA Root: $(mkcert -CAROOT)"
+        fi
+    else
+        echo "  Installing local CA for mkcert..."
+        mkcert -install
+        echo "  ✅ Local CA installed successfully"
+        echo "  CA Root: $(mkcert -CAROOT)"
+    fi
+
+    echo "  ℹ️  To create a certificate for localhost:"
+    echo "     mkcert localhost 127.0.0.1 ::1"
+    echo "  ℹ️  To create a certificate for a custom domain:"
+    echo "     mkcert example.test '*.example.test'"
+else
+    echo "  ⚠️  mkcert not found"
+fi
+
+# Setup Terraform with tfenv
+echo "🏗️  Setting up Terraform with tfenv..."
+if command -v tfenv &> /dev/null; then
+    echo "  ✓ tfenv is installed"
+
+    # Check if any Terraform version is installed
+    if tfenv list 2>/dev/null | grep -q "No versions"; then
+        echo "  Installing latest Terraform version..."
+        tfenv install latest
+        tfenv use latest
+        echo "  ✅ Terraform installed via tfenv"
+    elif tfenv list 2>/dev/null | grep -q "*"; then
+        echo "  ✓ Terraform already installed via tfenv"
+        CURRENT_VERSION=$(tfenv list 2>/dev/null | grep "*" | awk '{print $2}')
+        echo "  Current version: $CURRENT_VERSION"
+    else
+        # tfenv is installed but no version is set as current
+        INSTALLED_VERSIONS=$(tfenv list 2>/dev/null | head -1 | awk '{print $1}')
+        if [ ! -z "$INSTALLED_VERSIONS" ]; then
+            echo "  Setting Terraform version..."
+            tfenv use $INSTALLED_VERSIONS
+            echo "  ✅ Terraform version set: $INSTALLED_VERSIONS"
+        else
+            echo "  Installing latest Terraform version..."
+            tfenv install latest
+            tfenv use latest
+            echo "  ✅ Terraform installed via tfenv"
+        fi
+    fi
+
+    # Verify terraform command is available
+    if command -v terraform &> /dev/null; then
+        echo "  Terraform version: $(terraform version | head -n 1)"
+    fi
+
+    # Check if Terraform plugins directory exists
+    TERRAFORM_PLUGIN_DIR="$HOME/.terraform.d/plugins"
+    if [ ! -d "$TERRAFORM_PLUGIN_DIR" ]; then
+        mkdir -p "$TERRAFORM_PLUGIN_DIR"
+        echo "  Created Terraform plugins directory: $TERRAFORM_PLUGIN_DIR"
+    fi
+
+    echo "  ℹ️  tfenv commands:"
+    echo "     tfenv list              - List installed Terraform versions"
+    echo "     tfenv list-remote       - List available Terraform versions"
+    echo "     tfenv install <version> - Install a specific Terraform version"
+    echo "     tfenv use <version>     - Switch to a specific Terraform version"
+    echo ""
+    echo "  ℹ️  Terraform commands:"
+    echo "     terraform init          - Initialize a Terraform working directory"
+    echo "     terraform plan          - Generate and show an execution plan"
+    echo "     terraform apply         - Build or change infrastructure"
+    echo "     terraform destroy       - Destroy Terraform-managed infrastructure"
+    echo "     terraform validate      - Validate the Terraform files"
+else
+    echo "  ⚠️  tfenv not found"
 fi
 
 # Make install script executable

@@ -9,8 +9,8 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " File explorer
-Plug 'preservim/nerdtree'
-Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-tree.lua'
+Plug 'nvim-tree/nvim-web-devicons'
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -150,11 +150,10 @@ set updatetime=300
 " Key mappings
 let mapleader = " "
 
-" NERDTree
-nnoremap <leader>n :NERDTreeToggle<CR>
-nnoremap <leader>nf :NERDTreeFind<CR>
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.git$', '\.DS_Store$']
+" nvim-tree
+nnoremap <leader>n :NvimTreeToggle<CR>
+nnoremap <leader>nf :NvimTreeFindFile<CR>
+nnoremap <leader>nc :NvimTreeCollapse<CR>
 
 " FZF
 nnoremap <leader>f :Files<CR>
@@ -305,6 +304,89 @@ if !exists('g:context_filetype#same_filetypes')
   let g:context_filetype#same_filetypes = {}
 endif
 let g:context_filetype#same_filetypes.svelte = 'html,javascript,typescript,css,scss'
+
+" nvim-tree configuration
+lua << EOF
+-- Disable netrw (recommended by nvim-tree)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Setup nvim-tree with recommended settings (only if plugin is installed)
+local status_ok, nvim_tree = pcall(require, "nvim-tree")
+if not status_ok then
+  return
+end
+
+nvim_tree.setup({
+  sort = {
+    sorter = "case_sensitive",
+  },
+  view = {
+    width = 35,
+  },
+  renderer = {
+    group_empty = true,
+    icons = {
+      show = {
+        file = true,
+        folder = true,
+        folder_arrow = true,
+        git = true,
+      },
+    },
+  },
+  filters = {
+    dotfiles = false,  -- Show hidden files by default
+    custom = { "^\\.git$", "^\\.DS_Store$" },  -- But hide these
+  },
+  git = {
+    enable = true,
+    ignore = false,
+  },
+  actions = {
+    open_file = {
+      quit_on_open = false,
+      window_picker = {
+        enable = true,
+      },
+    },
+  },
+  -- Auto-open nvim-tree when opening a directory
+  on_attach = function(bufnr)
+    local api = require('nvim-tree.api')
+
+    -- Default mappings
+    api.config.mappings.default_on_attach(bufnr)
+
+    -- Custom mappings
+    local function opts(desc)
+      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+
+    vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+  end,
+})
+
+-- Auto-open nvim-tree when starting Neovim with a directory
+if status_ok then
+  vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function(data)
+      -- Check if the argument is a directory
+      local directory = vim.fn.isdirectory(data.file) == 1
+
+      if directory then
+        -- Change to the directory
+        vim.cmd.cd(data.file)
+        -- Open nvim-tree
+        local api_ok, api = pcall(require, "nvim-tree.api")
+        if api_ok then
+          api.tree.open()
+        end
+      end
+    end,
+  })
+end
+EOF
 
 " Metals (Scala LSP) configuration
 lua << EOF

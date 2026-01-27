@@ -285,7 +285,10 @@ if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
     . $HOME/.nix-profile/etc/profile.d/nix.sh;
 fi
 
-
-
-# Created by `pipx` on 2025-12-06 08:05:28
 export PATH="$PATH:/Users/takapi327/.local/bin"
+# Docker completions
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+
+# MySQL Client configuration
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"

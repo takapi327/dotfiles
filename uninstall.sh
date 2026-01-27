@@ -52,6 +52,7 @@ echo "🔗 Removing dotfile symbolic links..."
 remove_symlink "$HOME/.config/nvim/init.vim" ".vimrc"
 remove_symlink "$HOME/.zshrc" ".zshrc"
 remove_symlink "$HOME/.zprofile" ".zprofile"
+remove_symlink "$HOME/.tmux.conf" ".tmux.conf"
 
 # Remove empty directories
 if [ -d "$HOME/.config/nvim" ] && [ -z "$(ls -A "$HOME/.config/nvim")" ]; then
@@ -96,6 +97,15 @@ if command -v nodenv &> /dev/null; then
     echo "  📂 Removing nodenv Node.js installations..."
     rm -rf "$HOME/.nodenv/versions"
     mkdir -p "$HOME/.nodenv/versions"
+fi
+
+echo "🏗️  Cleaning up Terraform environment (tfenv)..."
+if command -v tfenv &> /dev/null; then
+    echo "  📂 Removing tfenv Terraform installations..."
+    if [ -d "$HOME/.tfenv/versions" ]; then
+        rm -rf "$HOME/.tfenv/versions"
+        mkdir -p "$HOME/.tfenv/versions"
+    fi
 fi
 
 # Remove Scala tools
@@ -147,6 +157,68 @@ if [ -d "$HOME/.mysqlsh" ] && [ -z "$(ls -A "$HOME/.mysqlsh")" ]; then
     rmdir "$HOME/.mysqlsh"
 fi
 
+# Remove AWS Session Manager Plugin
+echo "🔌 Removing AWS Session Manager Plugin..."
+if command -v session-manager-plugin &> /dev/null; then
+    echo "  Found Session Manager Plugin: $(session-manager-plugin --version 2>&1 | head -n 1)"
+    echo "  This requires sudo access to remove system-level installation"
+
+    # Remove the installation directory
+    if [ -d "/usr/local/sessionmanagerplugin" ]; then
+        echo "  🗑️  Removing /usr/local/sessionmanagerplugin (requires sudo)..."
+        sudo rm -rf /usr/local/sessionmanagerplugin
+        echo "  ✅ Removed installation directory"
+    fi
+
+    # Remove the binary symlink
+    if [ -L "/usr/local/bin/session-manager-plugin" ] || [ -f "/usr/local/bin/session-manager-plugin" ]; then
+        echo "  🗑️  Removing /usr/local/bin/session-manager-plugin (requires sudo)..."
+        sudo rm -f /usr/local/bin/session-manager-plugin
+        echo "  ✅ Removed binary"
+    fi
+
+    # Verify removal
+    if ! command -v session-manager-plugin &> /dev/null; then
+        echo "  ✅ AWS Session Manager Plugin successfully removed"
+    else
+        echo "  ⚠️  Session Manager Plugin may still be accessible from PATH"
+    fi
+else
+    echo "  ✓ AWS Session Manager Plugin not found (already removed or not installed)"
+fi
+
+# Remove Terraform plugins directory (if empty)
+if [ -d "$HOME/.terraform.d/plugins" ] && [ -z "$(ls -A "$HOME/.terraform.d/plugins")" ]; then
+    echo "  📁 Removing empty Terraform plugins directory"
+    rmdir "$HOME/.terraform.d/plugins"
+fi
+if [ -d "$HOME/.terraform.d" ] && [ -z "$(ls -A "$HOME/.terraform.d")" ]; then
+    echo "  📁 Removing empty Terraform config directory"
+    rmdir "$HOME/.terraform.d"
+fi
+
+# Remove mkcert local CA
+echo "🔒 Removing mkcert local CA..."
+if command -v mkcert &> /dev/null; then
+    if mkcert -CAROOT &> /dev/null; then
+        CA_ROOT=$(mkcert -CAROOT)
+        if [ -d "$CA_ROOT" ]; then
+            echo "  Found local CA at: $CA_ROOT"
+            echo "  Uninstalling mkcert local CA..."
+            mkcert -uninstall 2>/dev/null || true
+            if [ -d "$CA_ROOT" ]; then
+                echo "  🗑️  Removing CA directory..."
+                rm -rf "$CA_ROOT"
+            fi
+            echo "  ✅ mkcert local CA removed"
+        else
+            echo "  ✓ mkcert local CA not found (already removed)"
+        fi
+    fi
+else
+    echo "  ✓ mkcert not found (already removed or not installed)"
+fi
+
 # Homebrew package removal
 echo ""
 echo "📦 Homebrew package removal options:"
@@ -166,7 +238,7 @@ case $REPLY in
             "neovim" "fzf" "ripgrep" "coreutils" "tmux" "git" "jq" "yq"
             "htop" "tree" "wget" "gh" "sbt" "coursier/formulas/coursier"
             "pyenv" "pyenv-virtualenv" "rbenv" "ruby-build" "nodenv" "node-build"
-            "awscli" "aws-sam-cli" "mysql-shell"
+            "awscli" "aws-sam-cli" "mysql-shell" "mysql-client" "mkcert" "nss" "tfenv"
         )
         
         # Docker tools
