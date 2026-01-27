@@ -1,6 +1,6 @@
 # M1 Mac Dotfiles
 
-Neovim + iTerm2 + Claude Code向けの効率的な開発環境設定ファイル集です。
+Neovim + Ghostty + Claude Code向けの効率的な開発環境設定ファイル集です。
 
 ## 特徴
 
@@ -41,10 +41,12 @@ cd ~/Development/dotfiles
 
 **注意**: Powerlevel9kは2020年にアーカイブされましたが、安定版として使用可能です。
 
-### iTerm2設定
-- **カラースキーム**: Gruvbox Dark
-- **フォント**: MesloLGS Nerd Font
-- **キーバインド**: 最適化済み
+### Ghostty設定
+- **カラーテーマ**: Arthur
+- **背景**: 透過 (90%) + すりガラス効果
+- **画面分割**: Cmd+Enter (下), Cmd+Shift+Enter (右)
+- **ペイン移動**: Shift+矢印キー
+- **設定ファイル**: `~/.config/ghostty/config`
 
 ### Docker
 - **Docker Desktop**: 自動インストール
@@ -61,7 +63,7 @@ cd ~/Development/dotfiles
 - macOS (M1/M2 Mac推奨)
 - Git（通常はmacOSに標準インストール済み）
 
-※ Homebrew、iTerm2は install.sh で自動インストールされます
+※ Homebrew、Ghosttyは install.sh で自動インストールされます
 
 ## 含まれる開発環境
 
@@ -74,7 +76,7 @@ cd ~/Development/dotfiles
 
 ### 開発ツール
 - **エディタ**: Neovim (vim-plug)
-- **ターミナル**: iTerm2 + Zsh (Powerlevel9k)
+- **ターミナル**: Ghostty + Zsh (Powerlevel9k)
 - **コンテナ**: Docker Desktop + lazydocker
 - **Git**: gh CLI + fugitive (Vim統合)
 - **AWS**: AWS CLI + SAM CLI
@@ -83,9 +85,7 @@ cd ~/Development/dotfiles
 ## インストール後の設定
 
 1. ターミナルを再起動するか `source ~/.zshrc` を実行
-2. iTerm2でプロファイルをインポート:
-   - Preferences → Profiles → Import JSON Profiles...
-   - `iterm2/profiles.json`を選択
+2. Ghosttyを起動（設定は自動的に適用済み）
 3. 必要に応じて言語固有のツールをインストール
 
 ## Neovim設定と使用方法
@@ -638,7 +638,7 @@ project/project/
 各設定ファイルはカスタマイズ可能です:
 - Neovimのキーマッピング: `~/.config/nvim/init.vim`の`Key mappings`セクション
 - Zshエイリアス: `.zshrc`の`永続的なalias`セクション
-- iTerm2設定: `iterm2/profiles.json`を編集
+- Ghostty設定: `~/.config/ghostty/config`を編集
 
 ## トラブルシューティング
 

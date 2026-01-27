@@ -143,12 +143,16 @@ if [ -f "$HOME/.fzf.zsh" ]; then
     rm -f "$HOME/.fzf.zsh"
 fi
 
-# Remove iTerm2 profile
-echo "🖥️  Removing iTerm2 configuration..."
-DYNAMIC_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-if [ -f "$DYNAMIC_PROFILES_DIR/dotfiles-profile.json" ]; then
-    echo "  🗑️  Removing iTerm2 profile"
-    rm -f "$DYNAMIC_PROFILES_DIR/dotfiles-profile.json"
+# Remove Ghostty config
+echo "👻 Removing Ghostty configuration..."
+GHOSTTY_CONFIG_DIR="$HOME/.config/ghostty"
+if [ -f "$GHOSTTY_CONFIG_DIR/config" ]; then
+    echo "  🗑️  Removing Ghostty config"
+    rm -f "$GHOSTTY_CONFIG_DIR/config"
+    # Remove directory if empty
+    if [ -d "$GHOSTTY_CONFIG_DIR" ] && [ -z "$(ls -A "$GHOSTTY_CONFIG_DIR")" ]; then
+        rmdir "$GHOSTTY_CONFIG_DIR"
+    fi
 fi
 
 # Remove MySQL Shell config directory (if empty)
@@ -276,10 +280,10 @@ case $REPLY in
             brew uninstall --cask corretto@21 2>/dev/null || true
         fi
         
-        # Remove iTerm2
-        if brew list --cask iterm2 &>/dev/null; then
-            echo "  🗑️  Uninstalling iTerm2..."
-            brew uninstall --cask iterm2 2>/dev/null || true
+        # Remove Ghostty
+        if brew list --cask ghostty &>/dev/null; then
+            echo "  🗑️  Uninstalling Ghostty..."
+            brew uninstall --cask ghostty 2>/dev/null || true
         fi
         
         # Remove Nerd Font

@@ -7,9 +7,8 @@
 - `.vimrc` - Neovim設定ファイル（プラグイン管理、キーマッピング、UI設定、~/.config/nvim/init.vimとしてシンボリックリンク）
 - `.zshrc` - Zsh設定ファイル（既存設定を保持）
 - `.zprofile` - Zshプロファイル設定
-- `iterm2/` - iTerm2用設定ディレクトリ
-  - `profiles.json` - iTerm2プロファイル（Gruvboxテーマ、Nerd Font設定）
-  - `README.md` - iTerm2設定手順
+- `ghostty/` - Ghostty用設定ディレクトリ
+  - `config` - Ghostty設定ファイル（Arthurテーマ、透過背景、画面分割キーバインド）
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
@@ -17,7 +16,7 @@
 - **OS**: macOS (M1 Mac)
 - **Shell**: Zsh (Powerlevel9k theme)
 - **エディタ**: Neovim (vim-plug)
-- **ターミナル**: iTerm2
+- **ターミナル**: Ghostty
 - **フォント**: Nerd Fonts (MesloLGS NF)
 - **Python**: pyenv + pyenv-virtualenv
 - **Node.js**: nodenv
@@ -50,7 +49,7 @@ cd ~/Development/dotfiles
 
 - 既存のzsh設定は保持されています
 - Homebrew、pyenv、nodenv、rbenvなどの設定も含まれています
-- iTerm2プロファイルは自動でDynamic Profilesとしてインストールされます
+- Ghostty設定は ~/.config/ghostty/config にコピーされます
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します

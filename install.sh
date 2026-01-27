@@ -664,41 +664,31 @@ else
     echo "  ⚠️  nodenv not found, skipping Node.js setup"
 fi
 
-# Install iTerm2
-echo "🖥️  Installing iTerm2..."
-if [ -d "/Applications/iTerm.app" ]; then
-    echo "  ✓ iTerm2 already installed"
+# Install Ghostty
+echo "👻 Installing Ghostty..."
+if [ -d "/Applications/Ghostty.app" ]; then
+    echo "  ✓ Ghostty already installed"
 else
-    echo "  Installing iTerm2..."
-    brew install --cask iterm2
-    echo "  ✅ iTerm2 installed"
+    echo "  Installing Ghostty..."
+    brew install --cask ghostty
+    echo "  ✅ Ghostty installed"
 fi
 
-# iTerm2 configuration
-echo "🖥️  Configuring iTerm2..."
+# Ghostty configuration
+echo "👻 Configuring Ghostty..."
 
-# Dynamic Profiles method - automatically loads profiles
-DYNAMIC_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-if [ -f "$DOTFILES_DIR/iterm2/profiles.json" ]; then
-    mkdir -p "$DYNAMIC_PROFILES_DIR"
-    
-    # Copy profile to DynamicProfiles directory
-    cp "$DOTFILES_DIR/iterm2/profiles.json" "$DYNAMIC_PROFILES_DIR/dotfiles-profile.json"
-    echo "  ✅ iTerm2 profile installed automatically"
-    
-    # Check if iTerm2 is running
-    if pgrep -q "iTerm2"; then
-        echo "  ℹ️  Available profiles in iTerm2:"
-        echo "     - M1 Mac Development (MesloLGS Nerd Font)"
-        echo "     - M1 Mac Development (Source Code Pro) (Powerline Font)"
-        echo "     To set as default: Preferences → Profiles → Select profile → Set as Default"
-    else
-        echo "  ℹ️  Profiles will be available when you launch iTerm2"
-        echo "     - M1 Mac Development (MesloLGS Nerd Font)"
-        echo "     - M1 Mac Development (Source Code Pro) (Powerline Font)"
-    fi
+# Ghostty config directory
+GHOSTTY_CONFIG_DIR="$HOME/.config/ghostty"
+if [ -f "$DOTFILES_DIR/ghostty/config" ]; then
+    mkdir -p "$GHOSTTY_CONFIG_DIR"
+
+    # Copy config file
+    cp "$DOTFILES_DIR/ghostty/config" "$GHOSTTY_CONFIG_DIR/config"
+    echo "  ✅ Ghostty config installed"
+    echo "  ℹ️  Config location: $GHOSTTY_CONFIG_DIR/config"
+    echo "  ℹ️  Reload config with Cmd+Shift+, or restart Ghostty"
 else
-    echo "  ⚠️  iTerm2 profile not found at $DOTFILES_DIR/iterm2/profiles.json"
+    echo "  ⚠️  Ghostty config not found at $DOTFILES_DIR/ghostty/config"
 fi
 
 # Check Docker Desktop status
@@ -716,7 +706,7 @@ echo ""
 echo "✨ Dotfiles installation complete!"
 echo ""
 echo "📝 Next steps:"
-echo "  1. Launch iTerm2 from Applications folder to use the configured profile"
+echo "  1. Launch Ghostty from Applications folder"
 echo "  2. Restart your terminal or run: source ~/.zshrc"
 echo "  3. Set up Claude Code authentication: Run 'claude' in any project directory"
 echo "  4. If Docker was just installed, launch Docker Desktop from Applications"
@@ -733,9 +723,9 @@ echo "  - tmux: Prefix + [ then j/k to scroll, v to select, y to copy (Vi mode)"
 echo "  - Check CLAUDE.md for more information about this setup"
 echo ""
 echo "🔤 Font Setup:"
-echo "  - For full Powerlevel9k icon support, use MesloLGS Nerd Font in your terminal"
-echo "  - Alternative: Use any Powerline-patched font for basic icon support"
-echo "  - iTerm2: Preferences → Profiles → Text → Font"
+echo "  - Ghostty has built-in Nerd Font support"
+echo "  - For full Powerlevel9k icon support, add 'font-family = MesloLGS NF' to Ghostty config"
+echo "  - Config location: ~/.config/ghostty/config"
 
 # Setup AWS CLI
 echo "☁️  Setting up AWS CLI..."
