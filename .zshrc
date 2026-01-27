@@ -2,6 +2,10 @@ export LANG=ja_JP.UTF-8
 
 export XDG_CONFIG_HOME=$HOME/.config
 export TERM=screen-256color
+
+# デフォルトエディタをNeovimに設定（yazi等で使用）
+export EDITOR="nvim"
+export VISUAL="nvim"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 
