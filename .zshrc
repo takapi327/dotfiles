@@ -216,6 +216,17 @@ alias awsp='aws --profile'
 alias awsl='aws configure list-profiles'
 alias awsw='aws sts get-caller-identity'
 
+# yazi - terminal file manager
+# y()でyaziを起動し、終了時にカレントディレクトリを変更
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme (official vanilla zsh installation)
@@ -292,3 +303,12 @@ autoload -Uz compinit && compinit
 
 # MySQL Client configuration
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
