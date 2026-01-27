@@ -351,6 +351,17 @@ nvim_tree.setup({
       },
     },
   },
+  filesystem_watchers = {
+    enable = true,
+    ignore_dirs = {
+      ".bloop",
+      ".metals",
+      ".scala-build",
+      "node_modules",
+      "target",
+      ".git",
+    },
+  },
   -- Auto-open nvim-tree when opening a directory
   on_attach = function(bufnr)
     local api = require('nvim-tree.api')
@@ -465,4 +476,12 @@ augroup scala_bindings
   autocmd FileType scala nnoremap <buffer> <leader>sc :MetalsCompileCascade<CR>
   autocmd FileType scala nnoremap <buffer> <leader>sr :MetalsRestartServer<CR>
   autocmd FileType scala nnoremap <buffer> <leader>so :MetalsOrganizeImports<CR>
+  " Scala用LSPキーマッピング（Metals使用）
+  autocmd FileType scala nnoremap <buffer> gd <cmd>lua vim.lsp.buf.definition()<CR>
+  autocmd FileType scala nnoremap <buffer> gy <cmd>lua vim.lsp.buf.type_definition()<CR>
+  autocmd FileType scala nnoremap <buffer> gi <cmd>lua vim.lsp.buf.implementation()<CR>
+  autocmd FileType scala nnoremap <buffer> gr <cmd>lua vim.lsp.buf.references()<CR>
+  autocmd FileType scala nnoremap <buffer> K <cmd>lua vim.lsp.buf.hover()<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+  autocmd FileType scala nnoremap <buffer> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 augroup END
