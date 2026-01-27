@@ -78,7 +78,7 @@ cd ~/Development/dotfiles
 - **エディタ**: Neovim (vim-plug)
 - **ターミナル**: Ghostty + Zsh (Powerlevel9k)
 - **コンテナ**: Docker Desktop + lazydocker
-- **Git**: gh CLI + fugitive (Vim統合)
+- **Git**: gh CLI + lazygit + fugitive (Vim統合)
 - **AWS**: AWS CLI + SAM CLI
 - **データベース**: MySQL Shell
 
