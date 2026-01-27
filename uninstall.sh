@@ -52,7 +52,14 @@ echo "🔗 Removing dotfile symbolic links..."
 remove_symlink "$HOME/.config/nvim/init.vim" ".vimrc"
 remove_symlink "$HOME/.zshrc" ".zshrc"
 remove_symlink "$HOME/.zprofile" ".zprofile"
-remove_symlink "$HOME/.tmux.conf" ".tmux.conf"
+# Remove Zellij config
+if [ -f "$HOME/.config/zellij/config.kdl" ]; then
+    echo "  🗑️  Removing Zellij config"
+    rm -f "$HOME/.config/zellij/config.kdl"
+    if [ -d "$HOME/.config/zellij" ] && [ -z "$(ls -A "$HOME/.config/zellij")" ]; then
+        rmdir "$HOME/.config/zellij"
+    fi
+fi
 
 # Remove empty directories
 if [ -d "$HOME/.config/nvim" ] && [ -z "$(ls -A "$HOME/.config/nvim")" ]; then
@@ -239,7 +246,7 @@ case $REPLY in
         
         # Essential tools
         brew_packages=(
-            "neovim" "fzf" "ripgrep" "coreutils" "tmux" "git" "jq" "yq"
+            "neovim" "fzf" "ripgrep" "coreutils" "zellij" "git" "jq" "yq"
             "htop" "tree" "wget" "gh" "sbt" "coursier/formulas/coursier"
             "pyenv" "pyenv-virtualenv" "rbenv" "ruby-build" "nodenv" "node-build"
             "awscli" "aws-sam-cli" "mysql-shell" "mysql-client" "mkcert" "nss" "tfenv"

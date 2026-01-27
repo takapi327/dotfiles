@@ -9,6 +9,8 @@
 - `.zprofile` - Zshプロファイル設定
 - `ghostty/` - Ghostty用設定ディレクトリ
   - `config` - Ghostty設定ファイル（Arthurテーマ、透過背景、画面分割キーバインド）
+- `zellij/` - Zellij用設定ディレクトリ
+  - `config.kdl` - Zellij設定ファイル（マウス対応、copy-on-select、キーバインド）
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
@@ -50,6 +52,7 @@ cd ~/Development/dotfiles
 - 既存のzsh設定は保持されています
 - Homebrew、pyenv、nodenv、rbenvなどの設定も含まれています
 - Ghostty設定は ~/.config/ghostty/config にコピーされます
+- Zellij設定は ~/.config/zellij/config.kdl にコピーされます
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します

@@ -48,6 +48,19 @@ cd ~/Development/dotfiles
 - **ペイン移動**: Shift+矢印キー
 - **設定ファイル**: `~/.config/ghostty/config`
 
+### Zellij設定（ターミナルマルチプレクサ）
+- **テーマ**: catppuccin-mocha
+- **マウスサポート**: 有効
+- **Copy on Select**: 有効（選択するだけでクリップボードにコピー）
+- **スクロールバック**: 10000行
+- **主要キーバインド**:
+  - `Ctrl+p`: ペインモード（n:新規, d:下分割, r:右分割, x:閉じる）
+  - `Ctrl+t`: タブモード（n:新規, x:閉じる, r:名前変更）
+  - `Ctrl+s`: スクロールモード（j/k:移動, /:検索）
+  - `Alt+矢印`: ペイン間移動
+  - `Alt+h/j/k/l`: ペイン間移動（Vim風: 左/下/上/右）
+- **設定ファイル**: `~/.config/zellij/config.kdl`
+
 ### Docker
 - **Docker Desktop**: 自動インストール
 - **Docker CLI ツール**: docker-compose, lazydocker
