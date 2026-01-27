@@ -16,6 +16,9 @@ macos-titlebar-style = transparent
 macos-window-shadow = true
 
 # --- 操作性 ---
+# OptionキーをAltとして使用（Zellij等でAlt+キーを使うために必要）
+macos-option-as-alt = true
+
 # 選択しただけでクリップボードにコピー
 copy-on-select = true
 # クリップボードの読み書きを許可
