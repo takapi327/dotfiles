@@ -61,6 +61,15 @@ if [ -f "$HOME/.config/zellij/config.kdl" ]; then
     fi
 fi
 
+# Remove Yazi config
+if [ -f "$HOME/.config/yazi/yazi.toml" ]; then
+    echo "  🗑️  Removing Yazi config"
+    rm -f "$HOME/.config/yazi/yazi.toml"
+    if [ -d "$HOME/.config/yazi" ] && [ -z "$(ls -A "$HOME/.config/yazi")" ]; then
+        rmdir "$HOME/.config/yazi"
+    fi
+fi
+
 # Remove empty directories
 if [ -d "$HOME/.config/nvim" ] && [ -z "$(ls -A "$HOME/.config/nvim")" ]; then
     echo "  📁 Removing empty directory: $HOME/.config/nvim"
