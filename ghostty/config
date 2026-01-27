@@ -1,0 +1,42 @@
+theme = Arthur
+
+# 背景を透過
+background-opacity = 0.90
+# ブラー（すりガラス効果）
+background-blur-radius = 15
+
+# テキストとウィンドウの間に良い感じのスペースを入れます
+window-padding-y = 10
+window-padding-balance = true
+
+# --- Macネイティブな挙動 ---
+# タイトルバーを透明にしてスッキリさせる
+macos-titlebar-style = transparent
+# フルスクリーン時にMac標準の挙動にする
+macos-window-shadow = true
+
+# --- 操作性 ---
+# 選択しただけでクリップボードにコピー
+copy-on-select = true
+# クリップボードの読み書きを許可
+clipboard-read = allow
+clipboard-write = allow
+
+# --- キーバインド設定（画面分割） ---
+#  Cmd+Enter で「下に」分割
+keybind = cmd+enter=new_split:down
+# Cmd+Shift+Enter で「右に」分割
+keybind = cmd+shift+enter=new_split:right
+# Cmd + 矢印キー で分割した画面を「移動」
+keybind = shift+left=goto_split:left
+keybind = shift+right=goto_split:right
+keybind = shift+up=goto_split:top
+keybind = shift+down=goto_split:bottom
+# Cmd + Shift + 矢印キー でサイズを「調整」
+keybind = cmd+shift+left=resize_split:left,20
+keybind = cmd+shift+right=resize_split:right,20
+keybind = cmd+shift+up=resize_split:up,20
+keybind = cmd+shift+down=resize_split:down,20
+
+# Cmd + W で現在の「ペイン（分割）」を閉じる
+keybind = cmd+w=close_surface
