@@ -231,6 +231,9 @@ function y() {
     rm -f -- "$tmp"
 }
 
+# Zellij layouts
+alias zdev='zellij --layout dev'
+
 ### ここから下は環境設定 ###
 
 # Powerlevel9k theme (official vanilla zsh installation)
