@@ -258,20 +258,62 @@ fi
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
 
-# Java用 (Amazon Corretto 21)
+# Java用バージョン管理
 if command -v /usr/libexec/java_home &> /dev/null; then
-    # Try Java 21 first, fallback to any available version
+    # デフォルトでJava 21を設定
     if JAVA_HOME_TEMP=$(/usr/libexec/java_home -v "21" 2>/dev/null); then
         export JAVA_HOME="$JAVA_HOME_TEMP"
     elif JAVA_HOME_TEMP=$(/usr/libexec/java_home 2>/dev/null); then
         export JAVA_HOME="$JAVA_HOME_TEMP"
         echo "⚠️  Java 21 not found, using $(java -version 2>&1 | head -n 1)"
     fi
-    
+
     if [ ! -z "$JAVA_HOME" ] && [ -d "$JAVA_HOME" ]; then
         export PATH="$JAVA_HOME/bin:$PATH"
     fi
 fi
+
+# Javaバージョン切り替え関数
+javaversion() {
+    if [ -z "$1" ]; then
+        echo "📋 インストール済みJavaバージョン:"
+        /usr/libexec/java_home -V 2>&1 | grep -E "^\s+[0-9]" | sed 's/^/  /'
+        echo ""
+        echo "現在のバージョン:"
+        echo "  JAVA_HOME: $JAVA_HOME"
+        java -version 2>&1 | head -n 1 | sed 's/^/  /'
+        echo ""
+        echo "使用方法:"
+        echo "  javaversion 21      # Java 21に切り替え"
+        echo "  javaversion 17      # Java 17に切り替え"
+        echo "  javaversion 11      # Java 11に切り替え"
+        echo "  javaversion 8       # Java 8に切り替え"
+        return
+    fi
+
+    local version=$1
+    # Java 8の場合は1.8に変換
+    if [ "$version" = "8" ]; then
+        version="1.8"
+    fi
+
+    if JAVA_HOME_NEW=$(/usr/libexec/java_home -v "$version" 2>/dev/null); then
+        export JAVA_HOME="$JAVA_HOME_NEW"
+        # PATHからの古いJAVA_HOME/binを削除して新しいものを追加
+        export PATH=$(echo "$PATH" | sed -E "s|[^:]*\/Contents\/Home\/bin:||g")
+        export PATH="$JAVA_HOME/bin:$PATH"
+        echo "✅ Javaバージョンを切り替えました:"
+        java -version 2>&1 | head -n 1
+    else
+        echo "❌ Java $version が見つかりません"
+        echo "インストール済みバージョン:"
+        /usr/libexec/java_home -V 2>&1 | grep -E "^\s+[0-9]" | sed 's/^/  /'
+        return 1
+    fi
+}
+
+# エイリアス
+alias jv='javaversion'
 
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
