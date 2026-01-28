@@ -2,7 +2,12 @@
 // 使用方法: zellij --layout dev
 
 layout {
-    // 左右分割
+    // タブバー（上部）
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+
+    // メインコンテンツ: 左右分割
     pane split_direction="vertical" {
         // 左側 (横70%)
         pane size="70%" split_direction="horizontal" {
@@ -20,5 +25,10 @@ layout {
         }
         // 右側: Claude Code (横30%, 縦100%)
         pane size="30%" command="claude"
+    }
+
+    // ステータスバー（下部）- キーバインドヒント表示
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
     }
 }
