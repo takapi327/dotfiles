@@ -56,6 +56,13 @@ if [ -f "$DOTFILES_DIR/zellij/config.kdl" ]; then
     echo "✅ Zellij config installed"
 fi
 
+# Zellij layouts
+if [ -d "$DOTFILES_DIR/zellij/layouts" ]; then
+    mkdir -p "$HOME/.config/zellij/layouts"
+    cp -r "$DOTFILES_DIR/zellij/layouts/"* "$HOME/.config/zellij/layouts/"
+    echo "✅ Zellij layouts installed"
+fi
+
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
     echo "🍺 Installing Homebrew..."
@@ -169,6 +176,15 @@ brew_packages=(
     "nss"
     "tfenv"
 )
+
+# Handle coursier version conflict
+if brew list coursier &>/dev/null 2>&1; then
+    # Check if it's the old version (not from coursier/formulas)
+    if ! brew list coursier/formulas/coursier &>/dev/null 2>&1; then
+        echo "  Uninstalling old coursier version..."
+        brew uninstall coursier 2>/dev/null || true
+    fi
+fi
 
 for package in "${brew_packages[@]}"; do
     if brew list "$package" &>/dev/null; then

@@ -1,0 +1,24 @@
+// 開発用レイアウト
+// 使用方法: zellij --layout dev
+
+layout {
+    // 左右分割
+    pane split_direction="vertical" {
+        // 左側 (横70%)
+        pane size="70%" split_direction="horizontal" {
+            // 上: nvim (縦60%)
+            pane size="60%" command="nvim" {
+                args "."
+            }
+            // 下: 縦40%を横に2分割（均等）
+            pane size="40%" split_direction="vertical" {
+                // 左: lazygit
+                pane command="lazygit"
+                // 右: 空のターミナル
+                pane
+            }
+        }
+        // 右側: Claude Code (横30%, 縦100%)
+        pane size="30%" command="claude"
+    }
+}
