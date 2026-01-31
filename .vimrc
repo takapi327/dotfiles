@@ -191,6 +191,16 @@ nnoremap <leader>q :q<CR>
 nnoremap <leader>wq :wq<CR>
 
 " CoC.nvim configuration
+" 自動インストールする拡張機能
+let g:coc_global_extensions = [
+      \ 'coc-tsserver',
+      \ 'coc-eslint',
+      \ 'coc-prettier',
+      \ 'coc-json',
+      \ 'coc-svelte',
+      \ 'coc-sql',
+      \ ]
+
 " Use tab for trigger completion
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
