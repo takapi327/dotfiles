@@ -232,7 +232,63 @@ function y() {
 }
 
 # Zellij layouts
-alias zdev='zellij --layout dev'
+# zdev: 通常のzellij起動
+# zdev wt <branch>: worktree作成 → 移動 → zellij起動（終了後に元のディレクトリに戻る）
+function zdev() {
+    if [ $# -eq 0 ]; then
+        zellij --layout dev
+    elif [ "$1" = "wt" ] && [ -n "$2" ]; then
+        local branch="$2"
+        local original_dir="$PWD"
+        # git-wtでworktree作成
+        if command -v git-wt &> /dev/null; then
+            git-wt "$branch"
+            if [ $? -eq 0 ]; then
+                # worktreeのパスを取得して移動
+                local wt_path
+                wt_path=$(git worktree list | grep "\[$branch\]" | awk '{print $1}')
+                if [ -n "$wt_path" ] && [ -d "$wt_path" ]; then
+                    cd "$wt_path"
+                    zellij --layout dev
+                    # zellij終了後に元のディレクトリに戻る
+                    cd "$original_dir"
+                else
+                    echo "Failed to find worktree path for $branch"
+                    return 1
+                fi
+            fi
+        else
+            echo "git-wt is not installed"
+            return 1
+        fi
+    else
+        echo "Usage: zdev [wt <branch>]"
+        return 1
+    fi
+}
+
+# zdev補完
+function _zdev() {
+    local -a subcmds worktrees branches
+    if [ $CURRENT -eq 2 ]; then
+        # 第1引数: wtサブコマンド
+        subcmds=('wt:Create worktree and start zellij')
+        _describe 'subcommand' subcmds
+    elif [ $CURRENT -eq 3 ] && [ "$words[2]" = "wt" ]; then
+        # 第2引数: ブランチ名
+        worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
+        branches=($(git branch --format='%(refname:short)' 2>/dev/null))
+        branches+=($(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's|origin/||' | grep -v HEAD))
+        _describe 'worktree/branch' worktrees -- branches
+    fi
+}
+compdef _zdev zdev
+
+# git-wt (git worktree helper)
+# 自動cd・補完を有効化
+if command -v git-wt &> /dev/null; then
+    eval "$(git wt --init zsh)"
+fi
 
 ### ここから下は環境設定 ###
 

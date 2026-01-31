@@ -153,6 +153,7 @@ brew_packages=(
     "wget"
     "gh"
     "lazygit"
+    "k1LoW/tap/git-wt"
     "yazi"
     "ffmpeg"
     "sevenzip"
@@ -207,6 +208,24 @@ if brew list tfenv &>/dev/null; then
         brew link tfenv
         echo "  ✅ tfenv linked successfully"
     fi
+fi
+
+# Configure git-wt
+if command -v git-wt &> /dev/null; then
+    echo "🌳 Configuring git-wt..."
+    # worktreeをプロジェクト内の.worktreesディレクトリに格納
+    git config --global wt.basedir ".worktrees"
+
+    # グローバルgitignoreで.worktreesを除外
+    GLOBAL_GITIGNORE="$HOME/.config/git/ignore"
+    mkdir -p "$(dirname "$GLOBAL_GITIGNORE")"
+    git config --global core.excludesfile "$GLOBAL_GITIGNORE"
+    if ! grep -q "^\.worktrees/$" "$GLOBAL_GITIGNORE" 2>/dev/null; then
+        echo ".worktrees/" >> "$GLOBAL_GITIGNORE"
+        echo "  ✅ Added .worktrees/ to global gitignore"
+    fi
+
+    echo "  ✅ git-wt configured (basedir: .worktrees)"
 fi
 
 # Install Nerd Font
