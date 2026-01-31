@@ -234,14 +234,28 @@ function y() {
 # Zellij layouts
 # zdev: 通常のzellij起動
 # zdev wt <branch>: worktree作成 → 移動 → zellij起動（終了後に元のディレクトリに戻る）
+# zdev wt -d <branch>: worktree削除（安全）
+# zdev wt -D <branch>: worktree削除（強制）
 function zdev() {
     if [ $# -eq 0 ]; then
         zellij --layout dev
-    elif [ "$1" = "wt" ] && [ -n "$2" ]; then
-        local branch="$2"
-        local original_dir="$PWD"
-        # git-wtでworktree作成
-        if command -v git-wt &> /dev/null; then
+    elif [ "$1" = "wt" ]; then
+        if ! command -v git-wt &> /dev/null; then
+            echo "git-wt is not installed"
+            return 1
+        fi
+
+        # 削除オプション
+        if [ "$2" = "-d" ] && [ -n "$3" ]; then
+            git-wt -d "$3"
+            return $?
+        elif [ "$2" = "-D" ] && [ -n "$3" ]; then
+            git-wt -D "$3"
+            return $?
+        elif [ -n "$2" ]; then
+            # worktree作成
+            local branch="$2"
+            local original_dir="$PWD"
             git-wt "$branch"
             if [ $? -eq 0 ]; then
                 # worktreeのパスを取得して移動
@@ -258,28 +272,33 @@ function zdev() {
                 fi
             fi
         else
-            echo "git-wt is not installed"
+            echo "Usage: zdev [wt [-d|-D] <branch>]"
             return 1
         fi
     else
-        echo "Usage: zdev [wt <branch>]"
+        echo "Usage: zdev [wt [-d|-D] <branch>]"
         return 1
     fi
 }
 
 # zdev補完
 function _zdev() {
-    local -a subcmds worktrees branches
+    local -a subcmds opts worktrees branches
     if [ $CURRENT -eq 2 ]; then
         # 第1引数: wtサブコマンド
-        subcmds=('wt:Create worktree and start zellij')
+        subcmds=('wt:Worktree operations')
         _describe 'subcommand' subcmds
     elif [ $CURRENT -eq 3 ] && [ "$words[2]" = "wt" ]; then
-        # 第2引数: ブランチ名
+        # 第2引数: オプションまたはブランチ名
+        opts=('-d:Delete worktree (safe)' '-D:Delete worktree (force)')
         worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
         branches=($(git branch --format='%(refname:short)' 2>/dev/null))
         branches+=($(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's|origin/||' | grep -v HEAD))
-        _describe 'worktree/branch' worktrees -- branches
+        _describe 'option' opts -- worktrees -- branches
+    elif [ $CURRENT -eq 4 ] && [ "$words[2]" = "wt" ] && [[ "$words[3]" =~ ^-[dD]$ ]]; then
+        # 第3引数（削除時）: 既存のworktreeのみ
+        worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
+        _describe 'worktree' worktrees
     fi
 }
 compdef _zdev zdev
