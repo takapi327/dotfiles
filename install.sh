@@ -47,11 +47,6 @@ echo "🔗 Creating symbolic links..."
 # Create Neovim config directory
 mkdir -p "$HOME/.config/nvim"
 create_symlink "$DOTFILES_DIR/.vimrc" "$HOME/.config/nvim/init.vim"
-# CoC settings (Terraform, SQL等のLanguageServer設定)
-if [ -f "$DOTFILES_DIR/coc-settings.json" ]; then
-    cp "$DOTFILES_DIR/coc-settings.json" "$HOME/.config/nvim/coc-settings.json"
-    echo "✅ CoC settings installed"
-fi
 create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 create_symlink "$DOTFILES_DIR/.zprofile" "$HOME/.zprofile"
 # Zellij config

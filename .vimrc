@@ -40,8 +40,20 @@ Plug 'Shougo/context_filetype.vim'
 Plug 'preservim/nerdcommenter'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
-" Auto completion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Auto completion (nvim-cmp)
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'rafamadriz/friendly-snippets'
+
+" LSP
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 
 " Comments
 Plug 'tpope/vim-commentary'
@@ -190,50 +202,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>wq :wq<CR>
 
-" CoC.nvim configuration
-" 自動インストールする拡張機能
-let g:coc_global_extensions = [
-      \ 'coc-tsserver',
-      \ 'coc-eslint',
-      \ 'coc-prettier',
-      \ 'coc-json',
-      \ 'coc-svelte',
-      \ 'coc-sql',
-      \ ]
-
-" Use tab for trigger completion
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <cr> to confirm completion
-inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
-
-" GoTo code navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
+" LSP keybindings are configured in Lua below
 
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
@@ -409,69 +378,282 @@ if status_ok then
 end
 EOF
 
-" Metals (Scala LSP) configuration
+" Mason and LSP configuration
 lua << EOF
-local metals_config = require'metals'.bare_config()
-metals_config.settings = {
-  showImplicitArguments = true,
-  showImplicitConversionsAndClasses = true,
-  showInferredType = true,
-  superMethodLensesEnabled = true,
-  excludedPackages = {"akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl"},
-}
-
--- Enable DAP
-metals_config.init_options.statusBarProvider = "on"
-
--- Setup DAP
-local dap = require("dap")
-dap.configurations.scala = {
-  {
-    type = "scala",
-    request = "launch",
-    name = "RunOrTest",
-    metals = {
-      runType = "runOrTestFile",
-    },
-  },
-  {
-    type = "scala",
-    request = "launch",
-    name = "Test Target",
-    metals = {
-      runType = "testTarget",
-    },
-  },
-}
-
--- Autocmd to start Metals
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"scala", "sbt", "java"},
-  callback = function()
-    require("metals").initialize_or_attach(metals_config)
-  end,
-  group = vim.api.nvim_create_augroup("nvim-metals", {clear = true}),
-})
-
--- Setup DAP on attach
-metals_config.on_attach = function(client, bufnr)
-  require("metals").setup_dap()
+-- Mason setup (LSP server manager)
+local mason_ok, mason = pcall(require, "mason")
+if mason_ok then
+  mason.setup({
+    ui = {
+      icons = {
+        package_installed = "✓",
+        package_pending = "➜",
+        package_uninstalled = "✗"
+      }
+    }
+  })
 end
 
--- Metals keybindings
-vim.keymap.set("n", "<leader>mc", function() require("metals").compile_cascade() end, { desc = "Metals compile cascade" })
-vim.keymap.set("n", "<leader>mi", function() require("metals").toggle_setting("showImplicitArguments") end, { desc = "Toggle implicit args" })
-vim.keymap.set("n", "<leader>md", function() require("metals").doctor() end, { desc = "Metals doctor" })
-vim.keymap.set("n", "<leader>mw", function() require("metals").hover_worksheet() end, { desc = "Hover worksheet" })
+local mason_lspconfig_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
+if mason_lspconfig_ok then
+  mason_lspconfig.setup({
+    ensure_installed = {
+      "ts_ls",
+      "terraformls",
+      "jsonls",
+      "svelte",
+      "eslint",
+      "sqlls",
+    },
+    automatic_installation = true,
+  })
+end
+
+-- nvim-cmp setup
+local cmp_ok, cmp = pcall(require, "cmp")
+local luasnip_ok, luasnip = pcall(require, "luasnip")
+
+if cmp_ok and luasnip_ok then
+  -- Load friendly-snippets
+  require("luasnip.loaders.from_vscode").lazy_load()
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        luasnip.lsp_expand(args.body)
+      end,
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+      ['<S-Tab>'] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          fallback()
+        end
+      end, { 'i', 's' }),
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+    }, {
+      { name = 'buffer' },
+      { name = 'path' },
+    }),
+    formatting = {
+      format = function(entry, vim_item)
+        vim_item.menu = ({
+          nvim_lsp = "[LSP]",
+          luasnip = "[Snippet]",
+          buffer = "[Buffer]",
+          path = "[Path]",
+        })[entry.source.name]
+        return vim_item
+      end,
+    },
+  })
+
+  -- Cmdline setup
+  cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+end
+
+-- LSP configuration (Neovim 0.11+ native API)
+-- Capabilities for nvim-cmp
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if cmp_lsp_ok then
+  capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+end
+
+-- LSP keybindings (set via LspAttach autocmd)
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+    vim.keymap.set('n', '<leader>ld', vim.diagnostic.setloclist, opts)
+    vim.keymap.set('n', '<leader>fo', function() vim.lsp.buf.format { async = true } end, opts)
+  end,
+})
+
+-- Configure LSP servers using vim.lsp.config (Neovim 0.11+)
+vim.lsp.config('ts_ls', {
+  capabilities = capabilities,
+  filetypes = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.jsx" },
+})
+
+vim.lsp.config('terraformls', {
+  capabilities = capabilities,
+  filetypes = { "terraform", "tf", "terraform-vars" },
+})
+
+vim.lsp.config('jsonls', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('svelte', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('eslint', {
+  capabilities = capabilities,
+})
+
+vim.lsp.config('sqlls', {
+  capabilities = capabilities,
+})
+
+-- Enable LSP servers
+vim.lsp.enable('ts_ls')
+vim.lsp.enable('terraformls')
+vim.lsp.enable('jsonls')
+vim.lsp.enable('svelte')
+vim.lsp.enable('eslint')
+vim.lsp.enable('sqlls')
+
+-- ESLint auto-fix on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = { "*.js", "*.jsx", "*.ts", "*.tsx", "*.svelte" },
+  callback = function()
+    vim.cmd("silent! EslintFixAll")
+  end,
+})
+
+-- Diagnostic signs
+local signs = { Error = "✘", Warn = "⚠", Hint = "💡", Info = "ℹ" }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+-- Diagnostic configuration
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
+EOF
+
+" Metals (Scala LSP) configuration
+lua << EOF
+local metals_ok, metals = pcall(require, "metals")
+if metals_ok then
+  local metals_config = metals.bare_config()
+  metals_config.settings = {
+    showImplicitArguments = true,
+    showImplicitConversionsAndClasses = true,
+    showInferredType = true,
+    superMethodLensesEnabled = true,
+    excludedPackages = {"akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl"},
+  }
+
+  -- Use capabilities from nvim-cmp
+  local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+  if cmp_lsp_ok then
+    metals_config.capabilities = cmp_nvim_lsp.default_capabilities()
+  end
+
+  -- Enable DAP
+  metals_config.init_options.statusBarProvider = "on"
+
+  -- Setup DAP
+  local dap_ok, dap = pcall(require, "dap")
+  if dap_ok then
+    dap.configurations.scala = {
+      {
+        type = "scala",
+        request = "launch",
+        name = "RunOrTest",
+        metals = {
+          runType = "runOrTestFile",
+        },
+      },
+      {
+        type = "scala",
+        request = "launch",
+        name = "Test Target",
+        metals = {
+          runType = "testTarget",
+        },
+      },
+    }
+  end
+
+  -- Setup DAP on attach
+  metals_config.on_attach = function(client, bufnr)
+    metals.setup_dap()
+  end
+
+  -- Autocmd to start Metals
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = {"scala", "sbt", "java"},
+    callback = function()
+      metals.initialize_or_attach(metals_config)
+    end,
+    group = vim.api.nvim_create_augroup("nvim-metals", {clear = true}),
+  })
+end
+
+-- Metals keybindings (only if metals is loaded)
+if metals_ok then
+  vim.keymap.set("n", "<leader>mc", function() require("metals").compile_cascade() end, { desc = "Metals compile cascade" })
+  vim.keymap.set("n", "<leader>mi", function() require("metals").toggle_setting("showImplicitArguments") end, { desc = "Toggle implicit args" })
+  vim.keymap.set("n", "<leader>md", function() require("metals").doctor() end, { desc = "Metals doctor" })
+  vim.keymap.set("n", "<leader>mw", function() require("metals").hover_worksheet() end, { desc = "Hover worksheet" })
+end
 
 -- Debugging keybindings
-vim.keymap.set("n", "<leader>dc", function() require("dap").continue() end, { desc = "Debug continue" })
-vim.keymap.set("n", "<leader>dr", function() require("dap").repl.toggle() end, { desc = "Debug REPL" })
-vim.keymap.set("n", "<leader>dK", function() require("dap.ui.widgets").hover() end, { desc = "Debug hover" })
-vim.keymap.set("n", "<leader>dt", function() require("dap").toggle_breakpoint() end, { desc = "Toggle breakpoint" })
-vim.keymap.set("n", "<leader>dso", function() require("dap").step_over() end, { desc = "Step over" })
-vim.keymap.set("n", "<leader>dsi", function() require("dap").step_into() end, { desc = "Step into" })
-vim.keymap.set("n", "<leader>dl", function() require("dap").run_last() end, { desc = "Run last" })
+local dap_ok, dap = pcall(require, "dap")
+if dap_ok then
+  vim.keymap.set("n", "<leader>dc", function() dap.continue() end, { desc = "Debug continue" })
+  vim.keymap.set("n", "<leader>dr", function() dap.repl.toggle() end, { desc = "Debug REPL" })
+  vim.keymap.set("n", "<leader>dK", function() require("dap.ui.widgets").hover() end, { desc = "Debug hover" })
+  vim.keymap.set("n", "<leader>dt", function() dap.toggle_breakpoint() end, { desc = "Toggle breakpoint" })
+  vim.keymap.set("n", "<leader>dso", function() dap.step_over() end, { desc = "Step over" })
+  vim.keymap.set("n", "<leader>dsi", function() dap.step_into() end, { desc = "Step into" })
+  vim.keymap.set("n", "<leader>dl", function() dap.run_last() end, { desc = "Run last" })
+end
 
 -- Telescope extensions
 pcall(require('telescope').load_extension, 'metals')

@@ -29,10 +29,13 @@
 
 ### Neovim
 - プラグイン管理: vim-plug
-- ファイルエクスプローラー: NERDTree
-- ファジーファインダー: fzf
+- ファイルエクスプローラー: nvim-tree
+- ファジーファインダー: fzf, Telescope
 - Git統合: fugitive, gitgutter
-- 自動補完: CoC.nvim
+- 自動補完: nvim-cmp + nvim-lspconfig
+- LSPサーバー管理: Mason (TypeScript, Terraform, JSON, Svelte, ESLint, SQL)
+- Scala LSP: nvim-metals
+- スニペット: LuaSnip + friendly-snippets
 - カラースキーム: Gruvbox
 
 ### Zsh
