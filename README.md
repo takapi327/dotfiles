@@ -90,7 +90,6 @@ cd ~/Development/dotfiles
 ### 開発ツール
 - **エディタ**: Neovim (vim-plug)
 - **ターミナル**: Ghostty + Zsh (Powerlevel9k)
-- **ファイルマネージャ**: yazi（`y`コマンドで起動、終了時にcdも可能）
 - **コンテナ**: Docker Desktop + lazydocker
 - **Git**: gh CLI + lazygit + fugitive (Vim統合)
 - **AWS**: AWS CLI + SAM CLI

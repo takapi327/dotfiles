@@ -154,13 +154,6 @@ brew_packages=(
     "gh"
     "lazygit"
     "k1LoW/tap/git-wt"
-    "yazi"
-    "ffmpeg"
-    "sevenzip"
-    "poppler"
-    "fd"
-    "zoxide"
-    "imagemagick"
     "sbt"
     "coursier/formulas/coursier"
     "pyenv"
@@ -739,22 +732,6 @@ if [ -f "$DOTFILES_DIR/ghostty/config" ]; then
 else
     echo "  ⚠️  Ghostty config not found at $DOTFILES_DIR/ghostty/config"
 fi
-
-# Yazi configuration
-echo "📁 Configuring Yazi..."
-
-YAZI_CONFIG_DIR="$HOME/.config/yazi"
-if [ -f "$DOTFILES_DIR/yazi/yazi.toml" ]; then
-    mkdir -p "$YAZI_CONFIG_DIR"
-
-    # Copy config file
-    cp "$DOTFILES_DIR/yazi/yazi.toml" "$YAZI_CONFIG_DIR/yazi.toml"
-    echo "  ✅ Yazi config installed"
-    echo "  ℹ️  Config location: $YAZI_CONFIG_DIR/yazi.toml"
-else
-    echo "  ⚠️  Yazi config not found at $DOTFILES_DIR/yazi/yazi.toml"
-fi
-
 # Check Docker Desktop status
 if [ -d "/Applications/Docker.app" ]; then
     if pgrep -q "Docker Desktop"; then
