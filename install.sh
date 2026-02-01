@@ -63,6 +63,19 @@ if [ -d "$DOTFILES_DIR/zellij/layouts" ]; then
     echo "✅ Zellij layouts installed"
 fi
 
+# Custom scripts (bin directory)
+if [ -d "$DOTFILES_DIR/bin" ]; then
+    mkdir -p "$HOME/.local/bin"
+    for script in "$DOTFILES_DIR/bin/"*; do
+        if [ -f "$script" ]; then
+            script_name=$(basename "$script")
+            ln -sf "$script" "$HOME/.local/bin/$script_name"
+            chmod +x "$HOME/.local/bin/$script_name"
+        fi
+    done
+    echo "✅ Custom scripts installed to ~/.local/bin"
+fi
+
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
     echo "🍺 Installing Homebrew..."

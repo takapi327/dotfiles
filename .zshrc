@@ -3,7 +3,7 @@ export LANG=ja_JP.UTF-8
 export XDG_CONFIG_HOME=$HOME/.config
 export TERM=screen-256color
 
-# デフォルトエディタをNeovimに設定（yazi等で使用）
+# デフォルトエディタをNeovimに設定
 export EDITOR="nvim"
 export VISUAL="nvim"
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -220,36 +220,46 @@ alias awsp='aws --profile'
 alias awsl='aws configure list-profiles'
 alias awsw='aws sts get-caller-identity'
 
-# yazi - terminal file manager
-# y()でyaziを起動し、終了時にカレントディレクトリを変更
-function y() {
-    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        builtin cd -- "$cwd"
-    fi
-    rm -f -- "$tmp"
-}
-
 # Zellij layouts
 # zdev: 通常のzellij起動
+# zdev -s <session-id>: Claude Codeを指定セッションで起動
 # zdev wt <branch>: worktree作成 → 移動 → zellij起動（終了後に元のディレクトリに戻る）
 # zdev wt -d <branch>: worktree削除（安全）
 # zdev wt -D <branch>: worktree削除（強制）
 function zdev() {
+    local session_id=""
+    local session_file="$HOME/.claude_session_id"
+
+    # -s オプションの処理
+    if [ "$1" = "-s" ] && [ -n "$2" ]; then
+        session_id="$2"
+        shift 2
+    fi
+
+    # セッションファイルの準備
+    if [ -n "$session_id" ]; then
+        echo "$session_id" > "$session_file"
+    else
+        rm -f "$session_file"
+    fi
+
     if [ $# -eq 0 ]; then
         zellij --layout dev
+        rm -f "$session_file"
     elif [ "$1" = "wt" ]; then
         if ! command -v git-wt &> /dev/null; then
             echo "git-wt is not installed"
+            rm -f "$session_file"
             return 1
         fi
 
         # 削除オプション
         if [ "$2" = "-d" ] && [ -n "$3" ]; then
+            rm -f "$session_file"
             git-wt -d "$3"
             return $?
         elif [ "$2" = "-D" ] && [ -n "$3" ]; then
+            rm -f "$session_file"
             git-wt -D "$3"
             return $?
         elif [ -n "$2" ]; then
@@ -264,41 +274,60 @@ function zdev() {
                 if [ -n "$wt_path" ] && [ -d "$wt_path" ]; then
                     cd "$wt_path"
                     zellij --layout dev
+                    rm -f "$session_file"
                     # zellij終了後に元のディレクトリに戻る
                     cd "$original_dir"
                 else
                     echo "Failed to find worktree path for $branch"
+                    rm -f "$session_file"
                     return 1
                 fi
+            else
+                rm -f "$session_file"
             fi
         else
-            echo "Usage: zdev [wt [-d|-D] <branch>]"
+            echo "Usage: zdev [-s <session-id>] [wt [-d|-D] <branch>]"
+            rm -f "$session_file"
             return 1
         fi
     else
-        echo "Usage: zdev [wt [-d|-D] <branch>]"
+        echo "Usage: zdev [-s <session-id>] [wt [-d|-D] <branch>]"
+        rm -f "$session_file"
         return 1
     fi
 }
 
 # zdev補完
 function _zdev() {
-    local -a subcmds opts worktrees branches
+    local -a subcmds opts worktrees branches sessions
     if [ $CURRENT -eq 2 ]; then
-        # 第1引数: wtサブコマンド
+        # 第1引数: -sオプションまたはwtサブコマンド
+        opts=('-s:Resume Claude session')
         subcmds=('wt:Worktree operations')
-        _describe 'subcommand' subcmds
+        _describe 'option' opts -- subcmds
+    elif [ $CURRENT -eq 3 ] && [ "$words[2]" = "-s" ]; then
+        # -s の後: セッションID（claude sessions listから取得）
+        if command -v claude &> /dev/null; then
+            sessions=($(claude sessions list 2>/dev/null | awk 'NR>1 {print $1}'))
+            _describe 'session' sessions
+        fi
     elif [ $CURRENT -eq 3 ] && [ "$words[2]" = "wt" ]; then
-        # 第2引数: オプションまたはブランチ名
+        # wt の後: オプションまたはブランチ名
         opts=('-d:Delete worktree (safe)' '-D:Delete worktree (force)')
         worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
         branches=($(git branch --format='%(refname:short)' 2>/dev/null))
         branches+=($(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's|origin/||' | grep -v HEAD))
         _describe 'option' opts -- worktrees -- branches
-    elif [ $CURRENT -eq 4 ] && [ "$words[2]" = "wt" ] && [[ "$words[3]" =~ ^-[dD]$ ]]; then
-        # 第3引数（削除時）: 既存のworktreeのみ
-        worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
-        _describe 'worktree' worktrees
+    elif [ $CURRENT -eq 4 ]; then
+        if [ "$words[2]" = "-s" ] && [ "$words[4]" != "wt" ]; then
+            # -s <session> の後: wtサブコマンド
+            subcmds=('wt:Worktree operations')
+            _describe 'subcommand' subcmds
+        elif [ "$words[2]" = "wt" ] && [[ "$words[3]" =~ ^-[dD]$ ]]; then
+            # wt -d/-D の後: 既存のworktreeのみ
+            worktrees=($(git worktree list --porcelain 2>/dev/null | grep "^branch" | sed 's|branch refs/heads/||'))
+            _describe 'worktree' worktrees
+        fi
     fi
 }
 compdef _zdev zdev
@@ -420,7 +449,7 @@ if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
     . $HOME/.nix-profile/etc/profile.d/nix.sh;
 fi
 
-export PATH="$PATH:/Users/takapi327/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 # Docker completions
 fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit && compinit
@@ -428,11 +457,3 @@ autoload -Uz compinit && compinit
 # MySQL Client configuration
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}

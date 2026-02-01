@@ -24,7 +24,8 @@ layout {
             }
         }
         // 右側: Claude Code (横30%, 縦100%)
-        pane size="30%" command="claude"
+        // セッションIDファイルがあれば--resumeで起動 (claude-devは~/.local/binにインストール)
+        pane size="30%" command="claude-dev"
     }
 
     // ステータスバー（下部）- キーバインドヒント表示

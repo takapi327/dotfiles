@@ -1,0 +1,16 @@
+#!/bin/bash
+# Claude Code wrapper for zdev
+# ~/.claude_session_idファイルがあればそのセッションを再開
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+SESSION_FILE="$HOME/.claude_session_id"
+
+if [ -f "$SESSION_FILE" ]; then
+    SESSION_ID=$(cat "$SESSION_FILE")
+    if [ -n "$SESSION_ID" ]; then
+        exec claude --resume "$SESSION_ID"
+    fi
+fi
+
+exec claude
