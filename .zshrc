@@ -297,6 +297,10 @@ function zdev() {
     fi
 }
 
+# Docker completions
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit
+
 # zdev補完
 function _zdev() {
     local -a subcmds opts worktrees branches sessions
@@ -450,9 +454,6 @@ if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
 fi
 
 export PATH="$PATH:$HOME/.local/bin"
-# Docker completions
-fpath=(~/.zsh/completions $fpath)
-autoload -Uz compinit && compinit
 
 # MySQL Client configuration
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
