@@ -93,6 +93,9 @@ Plug 'nvim-neotest/neotest'
 Plug 'nvim-neotest/neotest-vim-test'
 Plug 'vim-test/vim-test'
 
+" Minimap
+Plug 'wfxr/minimap.vim', {'do': ':!brew install code-minimap'}
+
 call plug#end()
 
 " Basic Settings
@@ -377,6 +380,15 @@ if status_ok then
   })
 end
 EOF
+
+" Minimap configuration
+let g:minimap_width = 10
+let g:minimap_auto_start = 0
+let g:minimap_auto_start_win_enter = 0
+let g:minimap_highlight_search = 0
+let g:minimap_git_colors = 0
+let g:minimap_close_filetypes = ['NvimTree', 'TelescopePrompt', 'help']
+nnoremap <leader>mm :MinimapToggle<CR>
 
 " Mason and LSP configuration
 lua << EOF
