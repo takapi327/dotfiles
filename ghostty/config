@@ -43,3 +43,7 @@ keybind = cmd+shift+down=resize_split:down,20
 
 # Cmd + W で現在の「ペイン（分割）」を閉じる
 keybind = cmd+w=close_surface
+
+# --- デスクトップ通知 ---
+# OSC 9/OSC 777によるデスクトップ通知を有効化
+desktop-notifications = true

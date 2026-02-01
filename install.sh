@@ -745,6 +745,66 @@ if [ -f "$DOTFILES_DIR/ghostty/config" ]; then
 else
     echo "  ⚠️  Ghostty config not found at $DOTFILES_DIR/ghostty/config"
 fi
+# Claude Code configuration
+echo "🤖 Configuring Claude Code hooks..."
+CLAUDE_CONFIG_DIR="$HOME/.claude"
+CLAUDE_HOOKS_SRC="$DOTFILES_DIR/.claude/hooks"
+CLAUDE_HOOKS_DST="$CLAUDE_CONFIG_DIR/hooks"
+CLAUDE_SETTINGS_SRC="$DOTFILES_DIR/.claude/settings.json"
+CLAUDE_SETTINGS_DST="$CLAUDE_CONFIG_DIR/settings.json"
+
+if [ -d "$CLAUDE_HOOKS_SRC" ]; then
+    # Create Claude config directory
+    mkdir -p "$CLAUDE_CONFIG_DIR"
+
+    # Copy hooks directory
+    mkdir -p "$CLAUDE_HOOKS_DST"
+    cp -r "$CLAUDE_HOOKS_SRC/"* "$CLAUDE_HOOKS_DST/"
+    chmod +x "$CLAUDE_HOOKS_DST/"*.sh 2>/dev/null || true
+    echo "  ✅ Claude Code hooks installed to $CLAUDE_HOOKS_DST"
+
+    # Merge settings.json
+    if [ -f "$CLAUDE_SETTINGS_SRC" ]; then
+        if [ -f "$CLAUDE_SETTINGS_DST" ]; then
+            # Existing settings found - merge with jq
+            echo "  Merging Claude Code settings..."
+
+            # Create backup
+            cp "$CLAUDE_SETTINGS_DST" "$CLAUDE_SETTINGS_DST.bak"
+
+            # Deep merge: existing settings + new hooks
+            # This preserves existing keys and adds/updates hooks
+            if command -v jq &> /dev/null; then
+                jq -s '.[0] * .[1]' "$CLAUDE_SETTINGS_DST.bak" "$CLAUDE_SETTINGS_SRC" > "$CLAUDE_SETTINGS_DST.tmp"
+                mv "$CLAUDE_SETTINGS_DST.tmp" "$CLAUDE_SETTINGS_DST"
+                echo "  ✅ Claude Code settings merged (backup: $CLAUDE_SETTINGS_DST.bak)"
+            else
+                echo "  ⚠️  jq not found, copying settings (may overwrite existing)"
+                cp "$CLAUDE_SETTINGS_SRC" "$CLAUDE_SETTINGS_DST"
+            fi
+        else
+            # No existing settings - just copy
+            cp "$CLAUDE_SETTINGS_SRC" "$CLAUDE_SETTINGS_DST"
+            echo "  ✅ Claude Code settings installed"
+        fi
+
+        # Update hook paths to use home directory
+        if command -v jq &> /dev/null; then
+            # Use jq to update command paths to absolute paths
+            jq --arg hooks_dir "$CLAUDE_HOOKS_DST" '
+              .hooks.Notification[0].hooks[0].command = ($hooks_dir + "/ghostty-notify.sh") |
+              .hooks.Stop[0].hooks[0].command = ($hooks_dir + "/ghostty-stop-notify.sh")
+            ' "$CLAUDE_SETTINGS_DST" > "$CLAUDE_SETTINGS_DST.tmp" && mv "$CLAUDE_SETTINGS_DST.tmp" "$CLAUDE_SETTINGS_DST"
+            echo "  ✅ Hook paths updated for global use"
+        fi
+    fi
+
+    echo "  ℹ️  Hooks will be active on next Claude Code session"
+    echo "  ℹ️  View hooks with: claude then /hooks"
+else
+    echo "  ⚠️  Claude Code hooks not found at $CLAUDE_HOOKS_SRC"
+fi
+
 # Check Docker Desktop status
 if [ -d "/Applications/Docker.app" ]; then
     if pgrep -q "Docker Desktop"; then

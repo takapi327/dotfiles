@@ -8,9 +8,14 @@
 - `.zshrc` - Zsh設定ファイル（既存設定を保持）
 - `.zprofile` - Zshプロファイル設定
 - `ghostty/` - Ghostty用設定ディレクトリ
-  - `config` - Ghostty設定ファイル（Arthurテーマ、透過背景、画面分割キーバインド）
+  - `config` - Ghostty設定ファイル（Arthurテーマ、透過背景、画面分割キーバインド、デスクトップ通知）
 - `zellij/` - Zellij用設定ディレクトリ
   - `config.kdl` - Zellij設定ファイル（マウス対応、copy-on-select、キーバインド）
+- `.claude/` - Claude Code設定ディレクトリ
+  - `settings.json` - Claude Code Hooks設定
+  - `hooks/` - Hookスクリプト
+    - `ghostty-notify.sh` - 通知イベント用（許可待ち等）
+    - `ghostty-stop-notify.sh` - タスク完了通知用
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
@@ -43,6 +48,11 @@
 - プラグイン: git, zsh-syntax-highlighting, zsh-autosuggestions
 - エイリアス: `claude` (claude-code), git shortcuts
 
+### Claude Code Hooks
+- **Notification**: 許可待ち・アイドル時にGhosttyデスクトップ通知を表示
+- **Stop**: タスク完了時にデスクトップ通知を表示
+- 通知方式: OSC 777エスケープシーケンス（Ghostty対応）
+
 ## インストール手順
 
 ```bash
@@ -59,3 +69,5 @@ cd ~/Development/dotfiles
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します
+- Claude Code Hooks設定は ~/.claude/ にコピー・マージされます
+- 既存の ~/.claude/settings.json がある場合はマージされます（既存設定を保持）
