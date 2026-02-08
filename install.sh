@@ -59,7 +59,13 @@ fi
 # Zellij layouts
 if [ -d "$DOTFILES_DIR/zellij/layouts" ]; then
     mkdir -p "$HOME/.config/zellij/layouts"
-    cp -r "$DOTFILES_DIR/zellij/layouts/"* "$HOME/.config/zellij/layouts/"
+    for layout in "$DOTFILES_DIR/zellij/layouts/"*; do
+        if [ -f "$layout" ]; then
+            layout_name=$(basename "$layout")
+            # __HOME__ プレースホルダーを実際のホームディレクトリに置換
+            sed "s|__HOME__|$HOME|g" "$layout" > "$HOME/.config/zellij/layouts/$layout_name"
+        fi
+    done
     echo "✅ Zellij layouts installed"
 fi
 
@@ -396,6 +402,72 @@ else
             echo "     Please visit https://code.claude.com/docs/ja/setup for manual installation"
         fi
     fi
+fi
+
+# Install claude-dev wrapper script
+echo "🔧 Installing Claude Code wrapper script..."
+if [ -f "$DOTFILES_DIR/bin/claude-dev" ]; then
+    mkdir -p "$HOME/.local/bin"
+    cp "$DOTFILES_DIR/bin/claude-dev" "$HOME/.local/bin/claude-dev"
+    chmod +x "$HOME/.local/bin/claude-dev"
+    echo "  ✅ claude-dev wrapper installed to ~/.local/bin"
+
+    # Ensure ~/.local/bin is in PATH
+    if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+        if ! grep -q 'export PATH="$PATH:.*\.local/bin"' "$HOME/.zshrc" 2>/dev/null; then
+            echo "" >> "$HOME/.zshrc"
+            echo '# User local bin' >> "$HOME/.zshrc"
+            echo 'export PATH="$PATH:$HOME/.local/bin"' >> "$HOME/.zshrc"
+            echo "  ✅ Added ~/.local/bin to PATH in .zshrc"
+        fi
+    fi
+else
+    echo "  ⚠️  bin/claude-dev not found, skipping wrapper installation"
+fi
+
+# Install Claude Code Hooks
+echo "🪝 Installing Claude Code Hooks..."
+if [ -d "$DOTFILES_DIR/.claude" ]; then
+    # Create ~/.claude directory if it doesn't exist
+    mkdir -p "$HOME/.claude"
+
+    # Copy hooks directory
+    if [ -d "$DOTFILES_DIR/.claude/hooks" ]; then
+        mkdir -p "$HOME/.claude/hooks"
+        cp -r "$DOTFILES_DIR/.claude/hooks/"* "$HOME/.claude/hooks/"
+        chmod +x "$HOME/.claude/hooks/"*.sh
+        echo "  ✅ Claude Code hooks installed to ~/.claude/hooks"
+    fi
+
+    # Merge settings.json
+    if [ -f "$DOTFILES_DIR/.claude/settings.json" ]; then
+        if [ -f "$HOME/.claude/settings.json" ]; then
+            echo "  ℹ️  Existing ~/.claude/settings.json found"
+            echo "  Merging hooks configuration..."
+
+            # Backup existing settings
+            cp "$HOME/.claude/settings.json" "$HOME/.claude/settings.json.backup"
+
+            # Merge using jq if available
+            if command -v jq &> /dev/null; then
+                jq -s '.[0] * .[1]' "$HOME/.claude/settings.json" "$DOTFILES_DIR/.claude/settings.json" > "$HOME/.claude/settings.json.tmp"
+                mv "$HOME/.claude/settings.json.tmp" "$HOME/.claude/settings.json"
+                echo "  ✅ Settings merged (backup saved as settings.json.backup)"
+            else
+                echo "  ⚠️  jq not available, copying settings directly (existing settings backed up)"
+                cp "$DOTFILES_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
+            fi
+        else
+            cp "$DOTFILES_DIR/.claude/settings.json" "$HOME/.claude/settings.json"
+            echo "  ✅ Claude Code settings installed to ~/.claude/settings.json"
+        fi
+    fi
+
+    echo "  ℹ️  Claude Code Hooks configured:"
+    echo "     - Notification: Desktop notifications for permission prompts and idle states"
+    echo "     - Stop: Notification when Claude finishes a task"
+else
+    echo "  ⚠️  .claude directory not found, skipping hooks installation"
 fi
 
 # Other useful apps

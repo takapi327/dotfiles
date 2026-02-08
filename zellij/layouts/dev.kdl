@@ -24,8 +24,9 @@ layout {
             }
         }
         // 右側: Claude Code (横30%, 縦100%)
-        // セッションIDファイルがあれば--resumeで起動 (claude-devは~/.local/binにインストール)
-        pane size="30%" command="claude-dev"
+        // セッションIDファイルがあれば--resumeで起動
+        // __HOME__ はinstall.shで実際のホームディレクトリに置換される
+        pane size="30%" command="__HOME__/.local/bin/claude-dev"
     }
 
     // ステータスバー（下部）- キーバインドヒント表示
