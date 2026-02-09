@@ -1137,5 +1137,39 @@ else
     echo "  ⚠️  tfenv not found"
 fi
 
+# Install Nix
+echo "❄️  Installing Nix..."
+if command -v nix &> /dev/null; then
+    echo "  ✓ Nix already installed"
+    echo "  Version: $(nix --version)"
+else
+    echo "  Installing Nix (multi-user/daemon mode)..."
+
+    # Nix公式インストーラ（macOSではマルチユーザーモードが推奨）
+    if sh <(curl -L https://nixos.org/nix/install) --daemon; then
+        # 現在のセッションでNixを有効化
+        if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+            . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+        fi
+
+        if command -v nix &> /dev/null; then
+            echo "  ✅ Nix installed successfully"
+            echo "  Version: $(nix --version)"
+        else
+            echo "  ✅ Nix installed (restart terminal to use)"
+        fi
+    else
+        echo "  ⚠️  Failed to install Nix"
+        echo "     Please visit https://nixos.org/download for manual installation"
+    fi
+fi
+
+echo "  ℹ️  Nix commands:"
+echo "     nix-env -iA nixpkgs.<package>  - Install a package"
+echo "     nix-env -q                     - List installed packages"
+echo "     nix-env -e <package>           - Uninstall a package"
+echo "     nix-channel --update           - Update channels"
+echo "     nix-shell -p <package>         - Temporary shell with package"
+
 # Make install script executable
 chmod +x "$DOTFILES_DIR/install.sh"
