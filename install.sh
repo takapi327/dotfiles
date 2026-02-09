@@ -408,9 +408,14 @@ fi
 echo "🔧 Installing Claude Code wrapper script..."
 if [ -f "$DOTFILES_DIR/bin/claude-dev" ]; then
     mkdir -p "$HOME/.local/bin"
-    cp "$DOTFILES_DIR/bin/claude-dev" "$HOME/.local/bin/claude-dev"
+    # bin セクションでシンボリンク作成済みの場合はスキップ
+    if [ -L "$HOME/.local/bin/claude-dev" ] && [ "$(readlink "$HOME/.local/bin/claude-dev")" = "$DOTFILES_DIR/bin/claude-dev" ]; then
+        echo "  ✓ claude-dev already linked correctly"
+    else
+        cp -f "$DOTFILES_DIR/bin/claude-dev" "$HOME/.local/bin/claude-dev"
+        echo "  ✅ claude-dev wrapper installed to ~/.local/bin"
+    fi
     chmod +x "$HOME/.local/bin/claude-dev"
-    echo "  ✅ claude-dev wrapper installed to ~/.local/bin"
 
     # Ensure ~/.local/bin is in PATH
     if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
@@ -1164,11 +1169,19 @@ else
     fi
 fi
 
+# Nix設定ファイルのインストール
+if [ -f "$DOTFILES_DIR/nix/nix.conf" ]; then
+    mkdir -p "$HOME/.config/nix"
+    cp "$DOTFILES_DIR/nix/nix.conf" "$HOME/.config/nix/nix.conf"
+    echo "  ✅ Nix config installed (experimental-features: nix-command flakes)"
+fi
+
 echo "  ℹ️  Nix commands:"
+echo "     nix develop                    - Enter development shell (flake)"
+echo "     nix build                      - Build a flake"
+echo "     nix flake init                 - Initialize a new flake"
 echo "     nix-env -iA nixpkgs.<package>  - Install a package"
 echo "     nix-env -q                     - List installed packages"
-echo "     nix-env -e <package>           - Uninstall a package"
-echo "     nix-channel --update           - Update channels"
 echo "     nix-shell -p <package>         - Temporary shell with package"
 
 # Make install script executable
