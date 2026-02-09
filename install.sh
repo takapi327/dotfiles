@@ -408,9 +408,14 @@ fi
 echo "🔧 Installing Claude Code wrapper script..."
 if [ -f "$DOTFILES_DIR/bin/claude-dev" ]; then
     mkdir -p "$HOME/.local/bin"
-    cp "$DOTFILES_DIR/bin/claude-dev" "$HOME/.local/bin/claude-dev"
+    # bin セクションでシンボリンク作成済みの場合はスキップ
+    if [ -L "$HOME/.local/bin/claude-dev" ] && [ "$(readlink "$HOME/.local/bin/claude-dev")" = "$DOTFILES_DIR/bin/claude-dev" ]; then
+        echo "  ✓ claude-dev already linked correctly"
+    else
+        cp -f "$DOTFILES_DIR/bin/claude-dev" "$HOME/.local/bin/claude-dev"
+        echo "  ✅ claude-dev wrapper installed to ~/.local/bin"
+    fi
     chmod +x "$HOME/.local/bin/claude-dev"
-    echo "  ✅ claude-dev wrapper installed to ~/.local/bin"
 
     # Ensure ~/.local/bin is in PATH
     if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
@@ -1136,6 +1141,48 @@ if command -v tfenv &> /dev/null; then
 else
     echo "  ⚠️  tfenv not found"
 fi
+
+# Install Nix
+echo "❄️  Installing Nix..."
+if command -v nix &> /dev/null; then
+    echo "  ✓ Nix already installed"
+    echo "  Version: $(nix --version)"
+else
+    echo "  Installing Nix (multi-user/daemon mode)..."
+
+    # Nix公式インストーラ（macOSではマルチユーザーモードが推奨）
+    if sh <(curl -L https://nixos.org/nix/install) --daemon; then
+        # 現在のセッションでNixを有効化
+        if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+            . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+        fi
+
+        if command -v nix &> /dev/null; then
+            echo "  ✅ Nix installed successfully"
+            echo "  Version: $(nix --version)"
+        else
+            echo "  ✅ Nix installed (restart terminal to use)"
+        fi
+    else
+        echo "  ⚠️  Failed to install Nix"
+        echo "     Please visit https://nixos.org/download for manual installation"
+    fi
+fi
+
+# Nix設定ファイルのインストール
+if [ -f "$DOTFILES_DIR/nix/nix.conf" ]; then
+    mkdir -p "$HOME/.config/nix"
+    cp "$DOTFILES_DIR/nix/nix.conf" "$HOME/.config/nix/nix.conf"
+    echo "  ✅ Nix config installed (experimental-features: nix-command flakes)"
+fi
+
+echo "  ℹ️  Nix commands:"
+echo "     nix develop                    - Enter development shell (flake)"
+echo "     nix build                      - Build a flake"
+echo "     nix flake init                 - Initialize a new flake"
+echo "     nix-env -iA nixpkgs.<package>  - Install a package"
+echo "     nix-env -q                     - List installed packages"
+echo "     nix-shell -p <package>         - Temporary shell with package"
 
 # Make install script executable
 chmod +x "$DOTFILES_DIR/install.sh"

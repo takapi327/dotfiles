@@ -230,6 +230,58 @@ else
     echo "  ✓ mkcert not found (already removed or not installed)"
 fi
 
+# Remove Nix
+echo "❄️  Removing Nix..."
+if command -v nix &> /dev/null || [ -d "/nix" ]; then
+    echo "  Found Nix installation"
+    echo "  This will remove Nix daemon, store, and all Nix-installed packages"
+    read -p "  Remove Nix? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # nix-daemon (launchd) の停止
+        if [ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]; then
+            echo "  🛑 Stopping nix-daemon..."
+            sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
+            sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+        fi
+
+        # Nix関連プロファイルの削除
+        if [ -f "/etc/zshrc.backup-before-nix" ]; then
+            echo "  📄 Restoring /etc/zshrc from backup..."
+            sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
+        fi
+        if [ -f "/etc/bashrc.backup-before-nix" ]; then
+            echo "  📄 Restoring /etc/bashrc from backup..."
+            sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
+        fi
+
+        # nixbldグループとユーザーの削除
+        echo "  👤 Removing Nix build users..."
+        for i in $(seq 1 32); do
+            sudo dscl . -delete "/Users/_nixbld$i" 2>/dev/null || true
+        done
+        sudo dscl . -delete /Groups/nixbld 2>/dev/null || true
+
+        # Nixストアとプロファイルの削除
+        echo "  🗑️  Removing /nix directory..."
+        sudo rm -rf /nix
+
+        # ユーザーレベルのNix設定を削除
+        rm -rf "$HOME/.nix-profile" 2>/dev/null || true
+        rm -rf "$HOME/.nix-defexpr" 2>/dev/null || true
+        rm -rf "$HOME/.nix-channels" 2>/dev/null || true
+        rm -rf "$HOME/.config/nix" 2>/dev/null || true
+        rm -rf "$HOME/.cache/nix" 2>/dev/null || true
+        rm -rf "$HOME/.local/state/nix" 2>/dev/null || true
+
+        echo "  ✅ Nix removed"
+    else
+        echo "  ✓ Keeping Nix"
+    fi
+else
+    echo "  ✓ Nix not found (already removed or not installed)"
+fi
+
 # Homebrew package removal
 echo ""
 echo "📦 Homebrew package removal options:"
