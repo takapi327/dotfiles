@@ -18,7 +18,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 alias python='python3'
 alias pip='pip3'
 
-export LDFLAGS="-L/usr/local/opt/zlib/lib"
+export LDFLAGS="-L/opt/homebrew/opt/zlib/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include"
 export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
 
@@ -86,7 +86,7 @@ POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='235'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon context battery dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status time)
 
-# バッテリー表示  
+# バッテリー表示
 POWERLEVEL9K_BATTERY_ICON='\uf1e6 '
 POWERLEVEL9K_BATTERY_CHARGING_FOREGROUND='230'
 POWERLEVEL9K_BATTERY_CHARGING_BACKGROUND='236'
@@ -349,7 +349,7 @@ POWERLEVEL9K_INSTALLATION_PATH="$HOME/Development/vim/powerlevel9k"
 if [ -f "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme" ]; then
     # Ensure all POWERLEVEL9K variables are set before sourcing the theme
     source "$POWERLEVEL9K_INSTALLATION_PATH/powerlevel9k.zsh-theme"
-    
+
     # Verify theme loaded with correct mode
     if [ "$POWERLEVEL9K_MODE" = "nerdfont-complete" ] && [ -n "$POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR" ]; then
         # Uncomment for debugging: echo "✓ Powerlevel9k loaded with Nerd Font mode"
