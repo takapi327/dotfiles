@@ -16,6 +16,10 @@
   - `hooks/` - Hookスクリプト
     - `ghostty-notify.sh` - 通知イベント用（許可待ち等）
     - `ghostty-stop-notify.sh` - タスク完了通知用
+  - `commands/` - カスタムスラッシュコマンド
+    - `structural-verification.md` - アプリケーション全体の構造確認
+    - `difference-review.md` - ブランチ間差分レビュー
+    - `financial-check.md` - 金融機関向けブランチ間差分レビュー
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
@@ -70,4 +74,5 @@ cd ~/Development/dotfiles
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します
 - Claude Code Hooks設定は ~/.claude/ にコピー・マージされます
+- Claude Code カスタムコマンドは ~/.claude/commands/ にコピーされます
 - 既存の ~/.claude/settings.json がある場合はマージされます（既存設定を保持）

@@ -150,6 +150,13 @@ if [ -f "$HOME/.fzf.zsh" ]; then
     rm -f "$HOME/.fzf.zsh"
 fi
 
+# Remove Claude Code commands
+echo "🤖 Removing Claude Code commands..."
+if [ -d "$HOME/.claude/commands" ]; then
+    echo "  🗑️  Removing Claude Code commands"
+    rm -rf "$HOME/.claude/commands"
+fi
+
 # Remove Ghostty config
 echo "👻 Removing Ghostty configuration..."
 GHOSTTY_CONFIG_DIR="$HOME/.config/ghostty"
