@@ -508,16 +508,16 @@ fi
 
 # Install Neovim plugins
 echo "📦 Installing Neovim plugins..."
-if [ -f "$NVIM_AUTOLOAD_DIR/plug.vim" ] && [ -f "$HOME/.vimrc" ]; then
+if [ -f "$NVIM_AUTOLOAD_DIR/plug.vim" ] && [ -f "$HOME/.config/nvim/init.vim" ]; then
     echo "  Installing plugins with nvim..."
     nvim +PlugInstall +qall 2>/dev/null || true
-    
+
     # Install CoC extensions for TypeScript and Svelte
     echo "  Installing CoC extensions..."
     nvim -c "CocInstall -sync coc-tsserver coc-eslint coc-prettier coc-json coc-svelte" -c "qall" 2>/dev/null || true
     echo "  ✅ CoC TypeScript and Svelte extensions installed"
 else
-    echo "  ⚠️  Skipping Neovim plugin installation (vim-plug or .vimrc not found)"
+    echo "  ⚠️  Skipping Neovim plugin installation (vim-plug or init.vim not found)"
 fi
 
 # Install Powerlevel9k theme
