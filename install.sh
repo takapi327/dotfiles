@@ -192,6 +192,7 @@ brew_packages=(
     "nss"
     "tfenv"
     "hashicorp/tap/terraform-ls"
+    "cocoapods"
 )
 
 # Handle coursier version conflict

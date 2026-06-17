@@ -73,6 +73,7 @@ cd ~/Development/dotfiles
 - pyenvはPython 3.11を自動的にインストールし、グローバルバージョンとして設定します
 - rbenvはRuby 3.2を自動的にインストールし、グローバルバージョンとして設定します
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します
+- CocoaPodsはHomebrewで自動インストールされます（iOSネイティブ依存の`pod install`用）
 - Claude Code Hooks設定は ~/.claude/ にコピー・マージされます
 - Claude Code カスタムコマンドは ~/.claude/commands/ にコピーされます
 - 既存の ~/.claude/settings.json がある場合はマージされます（既存設定を保持）
