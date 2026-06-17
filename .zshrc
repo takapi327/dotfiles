@@ -32,8 +32,9 @@ export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 # Check if Nerd Font is available using multiple detection methods
 POWERLEVEL9K_MODE="awesome-patched"  # Default fallback
 
-# Method 1: Check font files directly
-if ls "$HOME/Library/Fonts/"*"Nerd"* 2>/dev/null | head -1 >/dev/null; then
+# Method 1: Check font files directly (N) glob qualifier suppresses "no matches" error
+_nerd_font_files=("$HOME/Library/Fonts/"*Nerd*(N))
+if (( ${#_nerd_font_files} > 0 )); then
     POWERLEVEL9K_MODE="nerdfont-complete"
 # Method 2: Check system fonts via fc-list
 elif fc-list 2>/dev/null | grep -i "nerd" >/dev/null 2>&1; then
@@ -45,6 +46,7 @@ elif [ -f "$HOME/Library/Fonts/MesloLGSNerdFont-Regular.ttf" ] || [ -f "$HOME/Li
 elif brew list --cask font-meslo-lg-nerd-font &>/dev/null 2>&1; then
     POWERLEVEL9K_MODE="nerdfont-complete"
 fi
+unset _nerd_font_files
 
 # Debug output to help troubleshoot
 if [ "$POWERLEVEL9K_MODE" = "nerdfont-complete" ]; then
