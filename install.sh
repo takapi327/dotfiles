@@ -185,6 +185,7 @@ brew_packages=(
     "aws-sam-cli"
     "azure-cli"
     "kayac/tap/ecspresso"
+    "pipx"
     "mysql-shell"
     "mysql-client"
     "mkcert"
@@ -1045,6 +1046,43 @@ fi
 echo "  ℹ️  To use AWS Session Manager:"
 echo "     aws ssm start-session --target <instance-id>"
 echo "     aws ssm start-session --target <instance-id> --document-name AWS-StartPortForwardingSession --parameters 'portNumber=3306,localPortNumber=13306'"
+
+# Install LocalStack CLI wrappers (awslocal, samlocal) via pipx
+echo "🧪 Installing LocalStack CLI wrappers..."
+if command -v pipx &> /dev/null; then
+    # Ensure pipx PATH is configured
+    pipx ensurepath >/dev/null 2>&1 || true
+
+    # awscli-local provides 'awslocal' command
+    if command -v awslocal &> /dev/null; then
+        echo "  ✓ awslocal already installed"
+    else
+        echo "  Installing awscli-local via pipx..."
+        if pipx install awscli-local; then
+            echo "  ✅ awslocal installed"
+        else
+            echo "  ⚠️  Failed to install awscli-local"
+        fi
+    fi
+
+    # aws-sam-cli-local provides 'samlocal' command
+    if command -v samlocal &> /dev/null; then
+        echo "  ✓ samlocal already installed"
+    else
+        echo "  Installing aws-sam-cli-local via pipx..."
+        if pipx install aws-sam-cli-local; then
+            echo "  ✅ samlocal installed"
+        else
+            echo "  ⚠️  Failed to install aws-sam-cli-local"
+        fi
+    fi
+
+    echo "  ℹ️  LocalStack usage:"
+    echo "     awslocal s3 ls                       (= aws --endpoint-url=http://localhost:4566 s3 ls)"
+    echo "     samlocal deploy                      (= sam deploy against LocalStack)"
+else
+    echo "  ⚠️  pipx not found, skipping LocalStack CLI installation"
+fi
 
 # Setup MySQL Shell
 echo "🗄️  Setting up MySQL Shell..."
