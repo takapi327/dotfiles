@@ -183,6 +183,8 @@ brew_packages=(
     "node-build"
     "awscli"
     "aws-sam-cli"
+    "azure-cli"
+    "kayac/tap/ecspresso"
     "mysql-shell"
     "mysql-client"
     "mkcert"
@@ -380,6 +382,48 @@ else
     echo "  Installing DeepL..."
     brew install --cask deepl
     echo "  ✅ DeepL installed"
+fi
+
+# Android Studio
+if [ -d "/Applications/Android Studio.app" ]; then
+    echo "  ✓ Android Studio already installed"
+else
+    echo "  Installing Android Studio..."
+    brew install --cask android-studio
+    echo "  ✅ Android Studio installed"
+fi
+
+# Figma
+if [ -d "/Applications/Figma.app" ]; then
+    echo "  ✓ Figma already installed"
+else
+    echo "  Installing Figma..."
+    brew install --cask figma
+    echo "  ✅ Figma installed"
+fi
+
+# Xcode (via mas - Mac App Store CLI)
+echo "🛠️ Installing Xcode..."
+if [ -d "/Applications/Xcode.app" ]; then
+    echo "  ✓ Xcode already installed"
+else
+    # Ensure mas is installed
+    if ! command -v mas &> /dev/null; then
+        echo "  Installing mas (Mac App Store CLI)..."
+        brew install mas
+    fi
+
+    # Check App Store sign-in status (mas 1.8+ removed account command;
+    # rely on install attempt and surface clear error if not signed in)
+    echo "  Installing Xcode via mas (requires App Store sign-in)..."
+    if mas install 497799835; then
+        echo "  ✅ Xcode installed"
+        echo "  ℹ️  First launch will prompt for additional components"
+    else
+        echo "  ⚠️  Failed to install Xcode via mas"
+        echo "     Please sign in to the App Store and run: mas install 497799835"
+        echo "     Or install manually from the Mac App Store"
+    fi
 fi
 
 # Install Claude Code
@@ -792,6 +836,7 @@ if command -v nodenv &> /dev/null; then
         npm install -g eslint
         npm install -g prettier
         npm install -g npm-check-updates
+        npm install -g @salesforce/cli
         
         # Rehash to register new executables
         nodenv rehash

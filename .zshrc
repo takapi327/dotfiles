@@ -461,3 +461,9 @@ export PATH="$PATH:$HOME/.local/bin"
 # MySQL Client configuration
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/takahiko.tominaga/Development/product/sre/gcp_terraform/.worktrees/feature/2026-04-Added-aihub/common/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/takahiko.tominaga/Development/product/sre/gcp_terraform/.worktrees/feature/2026-04-Added-aihub/common/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/takahiko.tominaga/Development/product/sre/gcp_terraform/.worktrees/feature/2026-04-Added-aihub/common/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/takahiko.tominaga/Development/product/sre/gcp_terraform/.worktrees/feature/2026-04-Added-aihub/common/google-cloud-sdk/completion.zsh.inc'; fi
