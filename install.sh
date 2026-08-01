@@ -925,7 +925,8 @@ if [ -d "$CLAUDE_HOOKS_SRC" ]; then
             # Use jq to update command paths to absolute paths
             jq --arg hooks_dir "$CLAUDE_HOOKS_DST" '
               .hooks.Notification[0].hooks[0].command = ($hooks_dir + "/ghostty-notify.sh") |
-              .hooks.Stop[0].hooks[0].command = ($hooks_dir + "/ghostty-stop-notify.sh")
+              .hooks.Stop[0].hooks[0].command = ($hooks_dir + "/ghostty-stop-notify.sh") |
+              .hooks.Stop[1].hooks[0].command = ($hooks_dir + "/check-authoring-rules.sh")
             ' "$CLAUDE_SETTINGS_DST" > "$CLAUDE_SETTINGS_DST.tmp" && mv "$CLAUDE_SETTINGS_DST.tmp" "$CLAUDE_SETTINGS_DST"
             echo "  ✅ Hook paths updated for global use"
         fi

@@ -18,6 +18,14 @@
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ghostty-stop-notify.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-authoring-rules.sh"
+          }
+        ]
       }
     ]
   }

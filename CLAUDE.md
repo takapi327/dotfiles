@@ -16,6 +16,7 @@
   - `hooks/` - Hookスクリプト
     - `ghostty-notify.sh` - 通知イベント用（許可待ち等）
     - `ghostty-stop-notify.sh` - タスク完了通知用
+    - `check-authoring-rules.sh` - タスク完了時に記述ルール（コード=How/テスト=What/コミット=Why/コメント=Why not）の確認・修正を促す
   - `skills/` - カスタムスキル（各`<name>/SKILL.md`形式、`~/.claude/skills/`にコピー）
     - `structural-verification/` - アプリケーション全体の構造確認
     - `difference-review/` - ブランチ間差分レビュー
@@ -55,7 +56,10 @@
 
 ### Claude Code Hooks
 - **Notification**: 許可待ち・アイドル時にGhosttyデスクトップ通知を表示
-- **Stop**: タスク完了時にデスクトップ通知を表示
+- **Stop**: タスク完了時にデスクトップ通知を表示（`ghostty-stop-notify.sh`）
+- **Stop（記述ルール確認）**: タスク完了時に記述ルールの確認・修正を促す（`check-authoring-rules.sh`）
+  - コード=How / テストコード=What / コミットログ=Why / コードコメント=Why not
+  - 初回のStopをブロックして確認・修正を継続させ、`stop_hook_active`で無限ループを防止
 - 通知方式: OSC 777エスケープシーケンス（Ghostty対応）
 
 ## インストール手順
