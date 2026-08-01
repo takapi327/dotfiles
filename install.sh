@@ -524,7 +524,7 @@ if [ -d "$DOTFILES_DIR/.claude" ]; then
     echo "  ℹ️  Claude Code configured:"
     echo "     - Notification: Desktop notifications for permission prompts and idle states"
     echo "     - Stop: Notification when Claude finishes a task"
-    echo "     - Skills: Custom skills (structural-verification, difference-review, financial-check, oss-versionup-check)"
+    echo "     - Skills: Custom skills (structural-verification, difference-review, financial-check, oss-versionup-check, skeptic-review)"
 else
     echo "  ⚠️  .claude directory not found, skipping hooks installation"
 fi

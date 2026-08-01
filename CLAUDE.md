@@ -22,6 +22,7 @@
     - `difference-review/` - ブランチ間差分レビュー
     - `financial-check/` - 金融機関向けブランチ間差分レビュー
     - `oss-versionup-check/` - 依存ライブラリのバージョンアップレビュー
+    - `skeptic-review/` - 引数で渡したファイルの成果物を懐疑的レビュアーとして反証
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
