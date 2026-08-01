@@ -16,10 +16,11 @@
   - `hooks/` - Hookスクリプト
     - `ghostty-notify.sh` - 通知イベント用（許可待ち等）
     - `ghostty-stop-notify.sh` - タスク完了通知用
-  - `commands/` - カスタムスラッシュコマンド
-    - `structural-verification.md` - アプリケーション全体の構造確認
-    - `difference-review.md` - ブランチ間差分レビュー
-    - `financial-check.md` - 金融機関向けブランチ間差分レビュー
+  - `skills/` - カスタムスキル（各`<name>/SKILL.md`形式、`~/.claude/skills/`にコピー）
+    - `structural-verification/` - アプリケーション全体の構造確認
+    - `difference-review/` - ブランチ間差分レビュー
+    - `financial-check/` - 金融機関向けブランチ間差分レビュー
+    - `oss-versionup-check/` - 依存ライブラリのバージョンアップレビュー
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
@@ -75,5 +76,5 @@ cd ~/Development/dotfiles
 - nodenvはNode.js 22（最新版）を自動的にインストールし、グローバルバージョンとして設定します
 - CocoaPodsはHomebrewで自動インストールされます（iOSネイティブ依存の`pod install`用）
 - Claude Code Hooks設定は ~/.claude/ にコピー・マージされます
-- Claude Code カスタムコマンドは ~/.claude/commands/ にコピーされます
+- Claude Code カスタムスキルは ~/.claude/skills/ にコピーされます
 - 既存の ~/.claude/settings.json がある場合はマージされます（既存設定を保持）

@@ -1,11 +1,14 @@
 ---
-allowed-tools: Bash(git:*), Bash(gh:*), Bash(npm:*), Bash(cat:*), Read(*), Fetch(*), WebSearch(*), WebFetch(*), Grep(*)
-description: "引数で指定したPRで行なった依存ライブラリのバージョンアップに従うレビューを行います"
+name: oss-versionup-check
+description: 引数で指定したPRで行なった依存ライブラリのバージョンアップに従うレビューを行います
+argument-hint: <PR番号>
+arguments: pr_number
+allowed-tools: Bash(git:*), Bash(gh:*), Bash(npm:*), Bash(cat:*), Read, WebSearch, WebFetch, Grep
 ---
 
-PR番号 = $1
+PR番号 = $pr_number
 
-※ $1 が渡されていない場合はエラーメッセージを表示して終了してください。
+※ PR番号（$pr_number）が渡されていない場合はエラーメッセージを表示して終了してください。
 
 ## 手順
 

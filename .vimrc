@@ -269,6 +269,8 @@ augroup filetype_config
   autocmd BufNewFile,BufRead *.js setlocal filetype=javascript
   " Svelte file extensions
   autocmd BufNewFile,BufRead *.svelte setlocal filetype=svelte
+  " Melt file extensions
+  autocmd BufNewFile,BufRead *.melt setlocal filetype=melt
 augroup END
 
 " Svelte configuration
@@ -689,3 +691,29 @@ augroup scala_bindings
   autocmd FileType scala nnoremap <buffer> <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
   autocmd FileType scala nnoremap <buffer> <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 augroup END
+
+" ── Melt LSP ────────────────────────────────────────────────────────
+lua << EOF
+local melt_jar = table.concat({
+  vim.fn.expand("~"),
+  "Development/oss/scala/melt/editors/language-server/target/scala-3.3.7/melt-language-server.jar",
+}, "/")
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern  = "melt",
+  group    = vim.api.nvim_create_augroup("MeltLsp", { clear = true }),
+  callback = function(ev)
+    local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    local caps = cmp_lsp_ok
+      and cmp_nvim_lsp.default_capabilities()
+      or vim.lsp.protocol.make_client_capabilities()
+
+    vim.lsp.start({
+      name         = "melt",
+      cmd          = { "java", "-jar", melt_jar },
+      root_dir     = vim.fs.root(ev.buf, { "build.sbt", ".git" }),
+      capabilities = caps,
+    })
+  end,
+})
+EOF

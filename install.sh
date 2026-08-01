@@ -514,17 +514,17 @@ if [ -d "$DOTFILES_DIR/.claude" ]; then
         fi
     fi
 
-    # Copy commands directory
-    if [ -d "$DOTFILES_DIR/.claude/commands" ]; then
-        mkdir -p "$HOME/.claude/commands"
-        cp -r "$DOTFILES_DIR/.claude/commands/"* "$HOME/.claude/commands/"
-        echo "  ✅ Claude Code commands installed to ~/.claude/commands"
+    # Copy skills directory
+    if [ -d "$DOTFILES_DIR/.claude/skills" ]; then
+        mkdir -p "$HOME/.claude/skills"
+        cp -r "$DOTFILES_DIR/.claude/skills/"* "$HOME/.claude/skills/"
+        echo "  ✅ Claude Code skills installed to ~/.claude/skills"
     fi
 
     echo "  ℹ️  Claude Code configured:"
     echo "     - Notification: Desktop notifications for permission prompts and idle states"
     echo "     - Stop: Notification when Claude finishes a task"
-    echo "     - Commands: Custom slash commands (structural-verification, difference-review, financial-check)"
+    echo "     - Skills: Custom skills (structural-verification, difference-review, financial-check, oss-versionup-check)"
 else
     echo "  ⚠️  .claude directory not found, skipping hooks installation"
 fi
