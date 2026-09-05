@@ -27,6 +27,11 @@
     - `ddd-modeling-check/` - DDDベストプラクティスに照らしてドメインモデリングの違反を敵対的検証
     - `test-coverage-check/` - テストの異常系・網羅性の担保を敵対的検証
     - `regression-check/` - 実装によるデグレの有無を敵対的検証（医療機関向けアプリケーション前提）
+    - `explain-visually/` - 長大な設計文書・PR・Issueを図付き解説HTMLにしてブラウザで開く
+      - `assets/template.html` - 解説ページのHTMLテンプレート（CSS・Mermaid初期化を同梱）
+      - `scripts/verify_page.py` - 生成HTMLをheadless Chromeで描画し、図の描画漏れを検出してスクリーンショットを撮る
+    - `difference-visualize/` - ブランチ間差分を図付き解説HTMLにしてブラウザで開く（解説のみ・指摘は出さない）
+      - テンプレートと検証スクリプトは `explain-visually/` のものを参照する（見た目を揃えるため複製しない）
 - `install.sh` - 自動インストールスクリプト
 
 ## 開発環境
